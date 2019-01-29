@@ -1,0 +1,32 @@
+#tenants {
+
+    &.top-disabled {
+
+        #split-view-vertical-split {
+
+            .top-pane, .split-pane-divider {
+                display: none;
+                min-height: 0;
+                max-height: 0;
+            }
+
+            .bottom-pane {
+                top: 0 !important;
+            }
+        }
+    }
+
+    .detail-panel {
+
+        .action-bar {
+
+            .tenant-status {
+
+                &_label {
+                    padding: 0 10px;
+                    line-height: 30px;
+                }
+            }
+        }
+    }
+}

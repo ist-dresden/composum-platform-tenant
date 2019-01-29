@@ -1,0 +1,108 @@
+[
+  {
+    "path": "${contentRoot}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-visitors"
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-editors",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-editors"
+        ],
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "rep:write"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-publishers"
+        ],
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "${applicationRoot}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-developers",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-developers"
+        ],
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "rep:write"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/etc/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-managers",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-managers"
+        ],
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/groups/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  }
+]
