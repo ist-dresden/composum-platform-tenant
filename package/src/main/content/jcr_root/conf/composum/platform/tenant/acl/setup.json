@@ -64,11 +64,34 @@
     "path": "/content",
     "acl": [
       {
-        "principal": "composum-platform-administrators",
+        "principal": "everyone",
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:all"
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/content",
+    "acl": [
+      {
+        "principal": "everyone"
+      },
+      {
+        "principal": "everyone",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
           }
         ]
       },
@@ -89,6 +112,30 @@
         "groupPath": "composum/platform",
         "memberOf": [
           "composum-pages-editors"
+        ]
+      },
+      {
+        "principal": "composum-platform-administrators",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/content/shared",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "everyone",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
         ]
       }
     ]
