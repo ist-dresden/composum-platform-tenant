@@ -3,19 +3,6 @@
     "path": "/",
     "acl": [
       {
-        "principal": "composum-platform-administrators",
-        "groupPath": "composum/platform",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-members",
         "groupPath": "composum/platform",
         "acl": [
@@ -34,15 +21,6 @@
     "path": "/apps",
     "acl": [
       {
-        "principal": "composum-platform-administrators",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-members",
         "acl": [
           {
@@ -57,23 +35,6 @@
       {
         "principal": "composum-platform-tenant-developers",
         "groupPath": "composum/platform"
-      }
-    ]
-  },
-  {
-    "path": "/content",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
       }
     ]
   },
@@ -113,15 +74,6 @@
         "memberOf": [
           "composum-pages-editors"
         ]
-      },
-      {
-        "principal": "composum-platform-administrators",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
       }
     ]
   },
@@ -144,15 +96,6 @@
     "path": "/preview",
     "jcr:primaryType": "sling:Folder",
     "acl": [
-      {
-        "principal": "composum-platform-administrators",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
       {
         "principal": "composum-platform-tenant-members",
         "acl": [
@@ -178,18 +121,6 @@
   {
     "path": "/etc",
     "acl": [
-      {
-        "principal": "composum-platform-administrators",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
       {
         "principal": "composum-platform-tenant-managers",
         "groupPath": "composum/platform",
@@ -247,20 +178,91 @@
     ]
   },
   {
-    "path": "/home",
+    "path": "/libs/composum/nodes/console",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/assets",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-editors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-editors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/platform/tenant",
     "acl": [
       {
         "principal": "composum-platform-administrators",
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
+            "privileges": "jcr:read"
           }
         ]
       },
+      {
+        "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home",
+    "acl": [
       {
         "principal": "composum-platform-tenant-managers",
         "acl": [
@@ -278,18 +280,6 @@
   {
     "path": "/home/groups",
     "acl": [
-      {
-        "principal": "composum-platform-administrators",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
       {
         "principal": "composum-platform-tenant-managers",
         "acl": [

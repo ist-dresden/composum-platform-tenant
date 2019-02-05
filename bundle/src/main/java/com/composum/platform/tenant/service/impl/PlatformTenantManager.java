@@ -1,8 +1,8 @@
 package com.composum.platform.tenant.service.impl;
 
-import com.composum.platform.tenant.service.impl.PlatformTenant.Status;
 import com.composum.platform.tenant.service.PlatformTenantHook;
 import com.composum.platform.tenant.service.TenantManagerService;
+import com.composum.platform.tenant.service.impl.PlatformTenant.Status;
 import com.composum.sling.core.filter.ResourceFilter;
 import com.composum.sling.core.filter.StringFilter;
 import com.composum.sling.core.service.PermissionsService;
@@ -32,7 +32,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
@@ -73,7 +72,7 @@ import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_STATUS
         property = {
                 Constants.SERVICE_DESCRIPTION + "=Composum Platform Tenant Manager"
         },
-        immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
+        immediate = true,
         service = {TenantManagerService.class, TenantManager.class, TenantProvider.class}
 )
 @Designate(ocd = PlatformTenantManager.Configuration.class)
@@ -333,7 +332,8 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     }
 
     protected final PlatformTenant toTenant(@Nonnull final ResourceResolver context,
-                                            @Nullable final Resource tenantResource) {
+                                            @Nullable final Resource tenantResource,
+                                            boolean checkPermission) {
         if (tenantResource != null) {
             ValueMap values = tenantResource.getValueMap();
             Status status = Status.valueOf(values.get(PN_STATUS, Status.active.name()));
@@ -359,7 +359,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
             public PlatformTenant call(@Nonnull final ResourceResolver resolver,
                                        @Nonnull final ResourceResolver context) {
                 final Resource tenantsRoot = getTenantsRoot(resolver);
-                return toTenant(context, tenantsRoot.getChild(tenantId));
+                return toTenant(context, tenantsRoot.getChild(tenantId), true);
             }
         }, resolver);
     }
@@ -371,7 +371,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
             while (resourceIterator.hasNext()) {
                 Resource resource = resourceIterator.next();
                 if (tenantFilter.accept(resource)) {
-                    add(toTenant(context, resource));
+                    add(toTenant(context, resource, true));
                 }
             }
         }
@@ -433,7 +433,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                 initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
                 initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);
                 Resource tenantResource = resolver.create(tenantsRoot, tenantId, initialProps);
-                PlatformTenant tenant = toTenant(resolver, tenantResource);
+                PlatformTenant tenant = toTenant(resolver, tenantResource, false);
                 final ModifiableValueMap tenantProps = getProperties(resolver, tenantResource);
                 tenantProps.put(CPM_CREATED + "By", context.getUserID());
                 for (TenantManagerHook hook : managerHooks) {
@@ -442,7 +442,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                         updateTenant(tenantProps, changes);
                     }
                 }
-                tenant = toTenant(resolver, tenantResource);
+                tenant = toTenant(resolver, tenantResource, false);
                 for (PlatformTenantHook hook : platformHooks) {
                     Map<String, Object> changes = hook.setup(resolver, context, tenant);
                     if (changes != null && changes.size() > 0) {
@@ -450,7 +450,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                     }
                 }
                 LOG.info("createTenant({}): {}", tenantId, tenant);
-                return toTenant(resolver, tenantResource);
+                return toTenant(resolver, tenantResource, false);
             }
         }, resolver, tenantId);
     }
@@ -467,7 +467,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                 final Resource tenantsRoot = getTenantsRoot(resolver);
                 final Resource tenantResource = tenantsRoot.getChild(tenantId);
                 if (tenantResource != null) {
-                    PlatformTenant tenant = toTenant(resolver, tenantResource);
+                    PlatformTenant tenant = toTenant(resolver, tenantResource, true);
                     LOG.info("changeTenant({})", tenant);
                     final ModifiableValueMap tenantProps = getProperties(resolver, tenantResource);
                     setTimestamp(tenantProps, context, JcrConstants.JCR_LASTMODIFIED);
@@ -478,7 +478,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                             updateTenant(tenantProps, changes);
                         }
                     }
-                    tenant = toTenant(resolver, tenantResource);
+                    tenant = toTenant(resolver, tenantResource, true);
                     for (PlatformTenantHook hook : platformHooks) {
                         Map<String, Object> changes = hook.change(resolver, context, tenant);
                         if (changes != null && changes.size() > 0) {
@@ -518,7 +518,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                     throws PersistenceException {
                 final Resource tenantsRoot = getTenantsRoot(resolver);
                 final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource);
+                PlatformTenant tenant = toTenant(context, tenantResource, true);
                 if (tenant != null && tenant.getStatus() != Status.deactivated) {
                     LOG.info("deactivateTenant({})", tenant);
                     doDeactivate(resolver, context, tenantResource);
@@ -540,7 +540,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                     throws PersistenceException {
                 final Resource tenantsRoot = getTenantsRoot(resolver);
                 final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource);
+                PlatformTenant tenant = toTenant(context, tenantResource, true);
                 if (tenant != null && tenant.getStatus() == Status.deactivated) {
                     LOG.info("activateTenant({})", tenant);
                     doActivate(resolver, context, tenantResource);
@@ -563,7 +563,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                     throws PersistenceException {
                 final Resource tenantsRoot = getTenantsRoot(resolver);
                 final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource);
+                PlatformTenant tenant = toTenant(context, tenantResource, false);
                 if (tenant != null) {
                     if (tenant.getStatus() == Status.active) {
                         LOG.info("delete->deactivateTenant({})", tenant);
@@ -620,7 +620,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
         final ModifiableValueMap tenantProps = getProperties(resolver, tenantResource);
         tenantProps.put(PN_STATUS, status.name());
         setTimestamp(tenantProps, context, timestampProperty);
-        PlatformTenant tenant = toTenant(context, tenantResource);
+        PlatformTenant tenant = toTenant(context, tenantResource, false);
         for (PlatformTenantHook hook : platformHooks) {
             hook.change(resolver, context, tenant);
         }

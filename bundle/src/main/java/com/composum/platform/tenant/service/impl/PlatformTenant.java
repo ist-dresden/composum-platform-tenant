@@ -104,7 +104,7 @@ public class PlatformTenant implements Tenant, Serializable {
      */
     @Nonnull
     public String getPrincipalBase() {
-        return getProperty(PN_PRINCIPAL_BASE, "tenant/" + getId());
+        return getProperty(PN_PRINCIPAL_BASE, "tenants/" + getId());
     }
 
     // Object

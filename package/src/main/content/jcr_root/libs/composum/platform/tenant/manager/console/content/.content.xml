@@ -6,7 +6,8 @@
             jcr:primaryType="nt:unstructured"
             jcr:mixinTypes="[sling:Redirect]"
             jcr:title="Tenants"
+            description="/libs/composum/platform/tenant/manager/console/description"
             sling:redirect="/bin/platform/tenants.html"
             categories="[nodes,platform.tenants]"
-            order="{Long}80"/>
+            order="{Long}200"/>
 </jcr:root>
