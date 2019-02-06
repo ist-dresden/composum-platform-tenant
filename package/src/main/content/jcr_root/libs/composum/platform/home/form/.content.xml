@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:primaryType="nt:unstructured"
+        tenantId="Tenant ID"
+        tenantName="Tenant Name (Title)"
+        description="Description"
+        btnCreate="Create a new Tenant"
+        yourName="Your Name"
+        message="Your Message"
+        btnJoinMe="Role Assignment Request"/>

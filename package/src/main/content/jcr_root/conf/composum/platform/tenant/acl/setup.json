@@ -3,7 +3,7 @@
     "path": "/",
     "acl": [
       {
-        "principal": "composum-platform-tenant-members",
+        "principal": "composum-platform-users",
         "groupPath": "composum/platform",
         "acl": [
           {
@@ -12,6 +12,10 @@
             "restrictions": {
               "rep:glob": ""
             }
+          },
+          {
+            "allow": true,
+            "privileges": "rep:readProperties"
           }
         ]
       }
@@ -34,29 +38,17 @@
       },
       {
         "principal": "composum-platform-tenant-developers",
-        "groupPath": "composum/platform"
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
       }
     ]
   },
   {
     "path": "/content",
     "acl": [
-      {
-        "principal": "everyone"
-      },
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
-      {
+       {
         "principal": "composum-platform-tenant-members",
         "acl": [
           {
@@ -72,7 +64,7 @@
         "principal": "composum-platform-tenant-editors",
         "groupPath": "composum/platform",
         "memberOf": [
-          "composum-pages-editors"
+          "composum-platform-tenant-members"
         ]
       }
     ]
@@ -114,7 +106,10 @@
       },
       {
         "principal": "composum-platform-tenant-publishers",
-        "groupPath": "composum/platform"
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
       }
     ]
   },
@@ -124,6 +119,9 @@
       {
         "principal": "composum-platform-tenant-managers",
         "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ],
         "acl": [
           {
             "allow": true,
@@ -164,6 +162,20 @@
     ]
   },
   {
+    "path": "/libs/composum/platform/home",
+    "acl": [
+      {
+        "principal": "composum-platform-users",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/conf/composum/platform/tenant",
     "acl": [
       {
@@ -182,6 +194,29 @@
     "acl": [
       {
         "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-developers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/nodes/browser",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-developers",
         "acl": [
           {
             "allow": true,
@@ -261,40 +296,6 @@
     ]
   },
   {
-    "path": "/home",
-    "acl": [
-      {
-        "principal": "composum-platform-tenant-managers",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/home/groups",
-    "acl": [
-      {
-        "principal": "composum-platform-tenant-managers",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
     "path": "/home/groups/tenants",
     "acl": [
       {
@@ -303,18 +304,6 @@
           {
             "allow": true,
             "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
-        "principal": "composum-platform-tenant-managers",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
           }
         ]
       }

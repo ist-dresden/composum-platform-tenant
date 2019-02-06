@@ -13,6 +13,7 @@
     <packaging>jar</packaging>
 
     <name>Composum Platform Tenant setup hook</name>
+    <description>the setup implementation code for the Tenant modules</description>
 
     <build>
         <plugins>
@@ -31,6 +32,29 @@
                 </configuration>
             </plugin>
 
+            <!-- embed utilities -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>embed</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.composum.sling.core</groupId>
+                                    <artifactId>composum-sling-core-setup-util</artifactId>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -44,6 +68,12 @@
         <dependency>
             <groupId>com.composum.sling.core</groupId>
             <artifactId>composum-sling-user-management</artifactId>
+        </dependency>
+
+        <!-- Setup utilities -->
+        <dependency>
+            <groupId>com.composum.sling.core</groupId>
+            <artifactId>composum-sling-core-setup-util</artifactId>
         </dependency>
 
         <!-- Apache Sling -->
@@ -77,7 +107,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
-        
+
     </dependencies>
     <profiles>
 

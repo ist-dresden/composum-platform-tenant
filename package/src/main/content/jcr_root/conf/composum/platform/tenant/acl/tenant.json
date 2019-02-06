@@ -26,7 +26,10 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "rep:write"
+            "privileges": [
+              "jcr:read",
+              "rep:write"
+            ]
           }
         ]
       },
@@ -67,7 +70,24 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "rep:write"
+            "privileges": [
+              "jcr:read",
+              "rep:write"
+            ]
+          },
+          {
+            "allow": false,
+            "privileges": "jcr:all",
+            "restrictions": {
+              "rep:glob": "*/config/*"
+            }
+          },
+          {
+            "allow": false,
+            "privileges":"jcr:all",
+            "restrictions": {
+              "rep:glob": "*/install/*"
+            }
           }
         ]
       }
@@ -82,20 +102,6 @@
         "memberOf": [
           "composum-platform-tenant-managers"
         ],
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/home/groups/tenants/${tenantId}",
-    "acl": [
-      {
-        "principal": "tenant-${tenantId}-managers",
         "acl": [
           {
             "allow": true,

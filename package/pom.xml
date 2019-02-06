@@ -105,6 +105,9 @@
                             <root>/conf/composum/platform/tenant</root>
                         </filter>
                         <filter>
+                            <root>/libs/composum/platform/home</root>
+                        </filter>
+                        <filter>
                             <root>/libs/composum/platform/tenant</root>
                         </filter>
                         <filter>

@@ -66,6 +66,10 @@
         <!-- Composum Platform -->
         <dependency>
             <groupId>com.composum.sling.platform</groupId>
+            <artifactId>composum-sling-platform-models-bundle</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.composum.sling.platform</groupId>
             <artifactId>composum-sling-platform-security-bundle</artifactId>
         </dependency>
 

@@ -7,6 +7,7 @@ import com.composum.sling.core.servlet.AbstractServiceServlet;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.util.ResourceUtil;
+import com.composum.sling.core.util.ResponseUtil;
 import com.google.gson.stream.JsonWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -289,7 +290,9 @@ public class TenantManagerServlet extends AbstractServiceServlet {
                     }
                     answer(response, true, tenant, null);
                 } catch (PersistenceException ex) {
-                    response.sendError(SC_BAD_REQUEST, "can't create tenant '" + tenantId + "': " + ex.getMessage());
+                    LOG.error(ex.toString(), ex);
+                    response.sendError(SC_BAD_REQUEST, "can't create tenant '" + tenantId + "': "
+                            + ResponseUtil.getMessage(ex));
                 }
             } else {
                 response.sendError(SC_BAD_REQUEST, "no id for a new tenant found");
@@ -324,7 +327,9 @@ public class TenantManagerServlet extends AbstractServiceServlet {
                         tenantManager.changeTenant(resolver, tenantId, properties);
                         answer(response, true, tenantManager.getTenant(resolver, tenantId), tenant);
                     } catch (PersistenceException ex) {
-                        response.sendError(SC_BAD_REQUEST, "can't create tenant '" + tenantId + "': " + ex);
+                        LOG.error(ex.toString(), ex);
+                        response.sendError(SC_BAD_REQUEST, "can't change tenant '" + tenantId + "': "
+                                + ResponseUtil.getMessage(ex));
                     }
                 } else {
                     response.sendError(SC_BAD_REQUEST, "no tenant '" + tenantId + "' found");
@@ -354,7 +359,9 @@ public class TenantManagerServlet extends AbstractServiceServlet {
                         tenantManager.deleteTenant(resolver, tenantId);
                         answer(response, true, tenantManager.getTenant(resolver, tenantId), tenant);
                     } catch (PersistenceException ex) {
-                        response.sendError(SC_BAD_REQUEST, "can't create tenant '" + tenantId + "': " + ex);
+                        LOG.error(ex.toString(), ex);
+                        response.sendError(SC_BAD_REQUEST, "can't delete tenant '" + tenantId + "': "
+                                + ResponseUtil.getMessage(ex));
                     }
                 } else {
                     response.sendError(SC_BAD_REQUEST, "no tenant '" + tenantId + "' found");
@@ -384,7 +391,9 @@ public class TenantManagerServlet extends AbstractServiceServlet {
                         tenantManager.reanimateTenant(resolver, tenantId);
                         answer(response, true, tenantManager.getTenant(resolver, tenantId), tenant);
                     } catch (PersistenceException ex) {
-                        response.sendError(SC_BAD_REQUEST, "can't create tenant '" + tenantId + "': " + ex);
+                        LOG.error(ex.toString(), ex);
+                        response.sendError(SC_BAD_REQUEST, "can't activate tenant '" + tenantId + "': "
+                                + ResponseUtil.getMessage(ex));
                     }
                 } else {
                     response.sendError(SC_BAD_REQUEST, "no tenant '" + tenantId + "' found");

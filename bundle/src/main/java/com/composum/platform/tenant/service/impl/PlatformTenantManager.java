@@ -385,7 +385,8 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
             @Override
             public final Iterator<Tenant> call(@Nonnull final ResourceResolver resolver,
                                                @Nonnull final ResourceResolver context) {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
+                // use context resolver (request) to avoid access cross tenant without access rights
+                final Resource tenantsRoot = getTenantsRoot(context);
                 ResourceFilter resourceFilter = new ResourceFilter.PrimaryTypeFilter(
                         new StringFilter.WhiteList(config.tenant_primary_type()));
                 if (filter != null) {
