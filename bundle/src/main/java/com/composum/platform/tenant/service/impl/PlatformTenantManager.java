@@ -65,7 +65,9 @@ import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_CREAT
 import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_DEACTIVATED;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_APPLICATION_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_CONTENT_ROOT;
+import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_PREVIEW_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_PRINCIPAL_BASE;
+import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_PUBLIC_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_STATUS;
 
 @Component(
@@ -102,6 +104,18 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                 "^/apps/([^/]+)(/.*)?",
                 "^/etc/tenants/([^/]+)(/.*)?"
         };
+
+        @AttributeDefinition(
+                name = "Tenant Public Root",
+                description = "the tenants public stage root path; default: '/public'"
+        )
+        String tenant_public_root() default "/public";
+
+        @AttributeDefinition(
+                name = "Tenant Preview Root",
+                description = "the tenants preview stage root path; default: '/preview'"
+        )
+        String tenant_preview_root() default "/preview";
 
         @AttributeDefinition(
                 name = "Tenant Content Root",
@@ -430,6 +444,8 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                     initialProps.putAll(properties);
                 }
                 initialProps.put(JcrConstants.JCR_PRIMARYTYPE, config.tenant_primary_type());
+                initialProps.put(PN_PUBLIC_ROOT, config.tenant_public_root() + "/" + tenantId);
+                initialProps.put(PN_PREVIEW_ROOT, config.tenant_preview_root() + "/" + tenantId);
                 initialProps.put(PN_CONTENT_ROOT, config.tenant_content_root() + "/" + tenantId);
                 initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
                 initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);

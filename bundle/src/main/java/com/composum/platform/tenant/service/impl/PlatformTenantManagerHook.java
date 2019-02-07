@@ -84,6 +84,8 @@ public class PlatformTenantManagerHook implements PlatformTenantHook {
     protected Map<String, Object> getTenantValues(@Nonnull final PlatformTenant tenant) {
         return new HashMap<String, Object>() {{
             put("tenantId", tenant.getId());
+            put("publicRoot", tenant.getPublicRoot());
+            put("previewRoot", tenant.getPreviewRoot());
             put("contentRoot", tenant.getContentRoot());
             put("applicationRoot", tenant.getApplicationRoot());
             put("principalBase", tenant.getPrincipalBase());

@@ -21,7 +21,8 @@
         "principal": "tenant-${tenantId}-editors",
         "groupPath": "${principalBase}",
         "memberOf": [
-          "composum-platform-tenant-editors"
+          "composum-platform-tenant-editors",
+          "tenant-${tenantId}-members"
         ],
         "acl": [
           {
@@ -37,8 +38,48 @@
         "principal": "tenant-${tenantId}-publishers",
         "groupPath": "${principalBase}",
         "memberOf": [
-          "composum-platform-tenant-publishers"
+          "composum-platform-tenant-publishers",
+          "tenant-${tenantId}-members"
         ],
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "${publicRoot}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "${previewRoot}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
         "acl": [
           {
             "allow": true,
@@ -65,7 +106,8 @@
         "principal": "tenant-${tenantId}-developers",
         "groupPath": "${principalBase}",
         "memberOf": [
-          "composum-platform-tenant-developers"
+          "composum-platform-tenant-developers",
+          "tenant-${tenantId}-members"
         ],
         "acl": [
           {
@@ -100,7 +142,8 @@
         "principal": "tenant-${tenantId}-managers",
         "groupPath": "${principalBase}",
         "memberOf": [
-          "composum-platform-tenant-managers"
+          "composum-platform-tenant-managers",
+          "tenant-${tenantId}-members"
         ],
         "acl": [
           {

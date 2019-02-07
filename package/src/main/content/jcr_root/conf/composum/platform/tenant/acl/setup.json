@@ -22,8 +22,49 @@
     ]
   },
   {
-    "path": "/apps",
+    "path": "/public",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": false,
+            "privileges": "jcr:all"
+          },
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-administrators",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/preview",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-administrators",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
       {
         "principal": "composum-platform-tenant-members",
         "acl": [
@@ -37,7 +78,11 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-developers",
+        "principal": "composum-platform-tenant-visitors",
+        "groupPath": "composum/platform"
+      },
+      {
+        "principal": "composum-platform-tenant-publishers",
         "groupPath": "composum/platform",
         "memberOf": [
           "composum-platform-tenant-members"
@@ -85,8 +130,7 @@
     ]
   },
   {
-    "path": "/preview",
-    "jcr:primaryType": "sling:Folder",
+    "path": "/apps",
     "acl": [
       {
         "principal": "composum-platform-tenant-members",
@@ -101,11 +145,7 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-visitors",
-        "groupPath": "composum/platform"
-      },
-      {
-        "principal": "composum-platform-tenant-publishers",
+        "principal": "composum-platform-tenant-developers",
         "groupPath": "composum/platform",
         "memberOf": [
           "composum-platform-tenant-members"

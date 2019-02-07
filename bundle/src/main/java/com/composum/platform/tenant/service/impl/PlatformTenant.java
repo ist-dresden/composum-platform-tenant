@@ -14,6 +14,8 @@ import java.util.Iterator;
 public class PlatformTenant implements Tenant, Serializable {
 
     public static final String PN_STATUS = "tenant.status";
+    public static final String PN_PUBLIC_ROOT = "tenant.public_root";
+    public static final String PN_PREVIEW_ROOT = "tenant.preview_root";
     public static final String PN_CONTENT_ROOT = "tenant.content_root";
     public static final String PN_APPLICATION_ROOT = "tenant.application_root";
     public static final String PN_PRINCIPAL_BASE = "tenant.princpal_base";
@@ -77,7 +79,23 @@ public class PlatformTenant implements Tenant, Serializable {
     }
 
     /**
-     * normally: '/content/{name}'
+     * normally: '/public/{id}'
+     */
+    @Nonnull
+    public String getPublicRoot() {
+        return getProperty(PN_PUBLIC_ROOT, "/public/" + getId());
+    }
+
+    /**
+     * normally: '/preview/{id}'
+     */
+    @Nonnull
+    public String getPreviewRoot() {
+        return getProperty(PN_PREVIEW_ROOT, "/preview/" + getId());
+    }
+
+    /**
+     * normally: '/content/{id}'
      */
     @Nonnull
     public String getContentRoot() {
@@ -85,7 +103,7 @@ public class PlatformTenant implements Tenant, Serializable {
     }
 
     /**
-     * normally: '/apps/{name}'
+     * normally: '/apps/{id}'
      */
     @Nonnull
     public String getApplicationRoot() {
