@@ -1,4 +1,4 @@
-package com.composum.platform.tenant.service.impl;
+package com.composum.platform.tenant.support;
 
 import com.composum.pages.commons.service.PlaceholderService;
 import com.composum.sling.core.BeanContext;

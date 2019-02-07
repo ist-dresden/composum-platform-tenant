@@ -840,10 +840,11 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                            @Nullable final ResourceResolver context, @Nullable String tenantId) {
         try {
             return call(task, retrievalGranted, context, tenantId);
+        } catch (IllegalStateException ignore) {
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
-            return null;
         }
+        return null;
     }
 
     /**

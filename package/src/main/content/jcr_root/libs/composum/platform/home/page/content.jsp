@@ -6,7 +6,7 @@
 <cpn:component id="home" type="com.composum.platform.tenant.view.HomePageBean">
     <div class="composum-platform-public_content">
         <sling:include path="/libs/composum/platform/public/page" replaceSelectors="header"/>
-        <div class="composum-platform-public_panel login-panel panel panel-default">
+        <div class="composum-platform-public_panel panel panel-default">
             <div class="panel-body">
                 <c:choose>
                     <c:when test="${home.tenantsAvailable}">
