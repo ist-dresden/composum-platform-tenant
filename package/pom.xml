@@ -113,7 +113,6 @@
                         <filter>
                             <root>/libs/composum/platform/install</root>
                             <includes>
-                                <include>.*/org.apache.sling.tenant.*\.jar</include>
                                 <include>.*/composum-platform-tenant-bundle.*\.jar</include>
                                 <include>.*/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-tenant.config</include>
                             </includes>
@@ -121,11 +120,6 @@
                     </filters>
 
                     <embeddeds>
-                        <embedded>
-                            <groupId>org.apache.sling</groupId>
-                            <artifactId>org.apache.sling.tenant</artifactId>
-                            <target>/libs/composum/platform/install</target>
-                        </embedded>
                         <embedded>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>composum-platform-tenant-bundle</artifactId>
@@ -150,11 +144,6 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>composum-platform-tenant-setup</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.sling</groupId>
-            <artifactId>org.apache.sling.tenant</artifactId>
         </dependency>
 
         <!-- Composum Core -->

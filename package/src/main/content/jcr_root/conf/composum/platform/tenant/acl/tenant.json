@@ -153,5 +153,20 @@
         ]
       }
     ]
+  },
+  {
+    "path": "/var/composum/workflow/${tenantId}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
   }
 ]

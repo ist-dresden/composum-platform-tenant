@@ -348,5 +348,23 @@
         ]
       }
     ]
+  },
+  {
+    "path": "/var/composum/workflow",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

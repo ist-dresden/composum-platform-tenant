@@ -11,6 +11,25 @@
     ]
   },
   {
+    "path": "${publicRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      }
+    ]
+  },
+  {
+    "path": "${previewRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      }
+    ]
+  },
+  {
     "path": "${applicationRoot}",
     "acl": [
       {
@@ -30,10 +49,10 @@
     ]
   },
   {
-    "path": "/home/groups/tenants/${tenantId}",
+    "path": "/var/composum/workflow/${tenantId}",
     "acl": [
       {
-        "principal": "tenant-${tenantId}-managers"
+        "principal": "tenant-${tenantId}-members"
       }
     ]
   }
