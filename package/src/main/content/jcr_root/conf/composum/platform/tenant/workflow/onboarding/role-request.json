@@ -1,0 +1,30 @@
+{
+  "topic": "platform.tenant.workflow.onboarding.role-request",
+  "category": [
+    "tenant",
+    "manage",
+    "user"
+  ],
+  "title": "Role Request",
+  "hint": "a (new) user wants to become a member or a new role",
+  "i18n": {
+    "de": {
+      "title": "Rollenanforderung",
+      "hint": "ein (neuer) Nutzer möchte eine Rolle zugewiesen bekommen"
+    }
+  },
+  "assignee": "tenant-${tenantId}-managers",
+  "data": {
+    "userId": "",
+    "name": "",
+    "message": ""
+  },
+  "options": {
+    "approve": {
+      "script": "/conf/composum/platform/tenant/workflow/onboarding/assign-role.json"
+    },
+    "decline": {
+      "script": "/conf/composum/platform/tenant/workflow/onboarding/decline.json"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "topic": "platform.tenant.workflow.onboarding.decline",
+  "title": "Decline Request",
+  "hint": "reject the rquested change",
+  "i18n": {
+    "de": {
+      "title": "Zurückweisen",
+      "hint": "die Anfrage wird zurückgewiesen"
+    }
+  },
+  "dialog": "composum/platform/tenant/workflow/dialog/decline"
+}

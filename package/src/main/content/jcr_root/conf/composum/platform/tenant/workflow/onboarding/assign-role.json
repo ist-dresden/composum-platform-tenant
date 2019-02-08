@@ -1,0 +1,12 @@
+{
+  "topic": "platform.tenant.workflow.onboarding.assign-role",
+  "title": "Assign Role",
+  "hint": "select a role and assign this role to the user",
+  "i18n": {
+    "de": {
+      "title": "Rolle zuweisen",
+      "hint": "Auswahl und Zuweisung der passende Rolle"
+    }
+  },
+  "dialog": "composum/platform/tenant/workflow/dialog/assign-role"
+}
