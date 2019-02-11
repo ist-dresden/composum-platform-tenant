@@ -3,7 +3,7 @@
 --%><%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %><%--
 --%><sling:defineObjects/><%--
 --%><cpn:component id="home" type="com.composum.platform.tenant.view.HomePageBean"><%
-if (!home.formwardToSites()) {
+if (!home.forwardToSites()) {
 %>
 <html data-context-path="${slingRequest.contextPath}">
 <sling:call script="head.jsp"/>

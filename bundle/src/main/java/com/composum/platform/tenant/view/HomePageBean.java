@@ -21,7 +21,7 @@ public class HomePageBean extends SimpleModel {
         return getResolver().getUserID();
     }
 
-    public boolean formwardToSites() {
+    public boolean forwardToSites() {
         if (isTenantsAvailable()) {
             Resource pagesHome = context.getResolver().getResource("/libs/composum/pages/stage/home");
             if (pagesHome != null) {
@@ -46,8 +46,8 @@ public class HomePageBean extends SimpleModel {
 
     public boolean isTenantsAvailable() {
         if (tenantsAvailable == null) {
-            tenantsAvailable = context.getService(TenantManagerService.class)
-                    .getTenants(context.getResolver(), null).hasNext();
+            TenantManagerService service = context.getService(TenantManagerService.class);
+            tenantsAvailable = service != null && service.getTenants(context.getResolver(), null).hasNext();
         }
         return tenantsAvailable;
     }
