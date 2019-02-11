@@ -12,6 +12,7 @@
       "topic": "",
       "created": "",
       "createdBy": "",
+      "assignee": "tenant-mycompany-managers",
       "finished": "",
       "finishedBy": "",
       "data": {
@@ -27,6 +28,6 @@
     }
   ],
   "template": {
-    "script": "/conf/composum/platform/tenant/workflow/onboarding/role-request.json"
+    "script": "/conf/composum/platform/tenant/workflow/role-request.json"
   }
 }

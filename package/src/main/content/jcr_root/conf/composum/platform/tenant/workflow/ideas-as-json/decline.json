@@ -1,10 +1,10 @@
 {
   "topic": "platform.tenant.workflow.onboarding.decline",
   "title": "Decline Request",
-  "hint": "reject the rquested change",
+  "hint": "reject the requested change",
   "i18n": {
     "de": {
-      "title": "Zurückweisen",
+      "title": "Anfrage Ablehnen",
       "hint": "die Anfrage wird zurückgewiesen"
     }
   },

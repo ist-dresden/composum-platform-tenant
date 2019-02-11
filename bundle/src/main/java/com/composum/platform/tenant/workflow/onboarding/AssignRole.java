@@ -2,7 +2,7 @@ package com.composum.platform.tenant.workflow.onboarding;
 
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.workflow.service.WorkflowService;
-import com.composum.platform.workflow.service.WorkflowTask;
+import com.composum.platform.workflow.model.WorkflowTask;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.Job;
@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AssignRole implements JobConsumer {
 
-    public static final String JOB_TOPIC = "platform.tenant.workflow.onboarding.assign-role";
+    public static final String JOB_TOPIC = "platform.tenant.workflow.assign-role";
 
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -31,7 +31,7 @@ public class AssignRole implements JobConsumer {
     @Override
     public JobResult process(Job job) {
         try (ResourceResolver jobResolver = resolverFactory.getServiceResourceResolver(null)) {
-            WorkflowTask task = workflowService.getTask(jobResolver, job);
+            WorkflowTask task = workflowService.getInstance(jobResolver, job);
 
             return JobResult.OK;
         } catch (Exception ex) {

@@ -21,10 +21,10 @@
   },
   "options": {
     "approve": {
-      "script": "/conf/composum/platform/tenant/workflow/onboarding/assign-role.json"
+      "script": "/conf/composum/platform/tenant/workflow/assign-role.json"
     },
     "decline": {
-      "script": "/conf/composum/platform/tenant/workflow/onboarding/decline.json"
+      "script": "/conf/composum/platform/tenant/workflow/decline.json"
     }
   }
 }
