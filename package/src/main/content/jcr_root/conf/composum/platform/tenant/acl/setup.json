@@ -27,6 +27,7 @@
     "acl": [
       {
         "principal": "composum-platform-tenant-members",
+        "groupPath": "composum/platform",
         "acl": [
           {
             "allow": false,
@@ -377,6 +378,7 @@
   },
   {
     "path": "/home/groups/tenants",
+    "jcr:primaryType": "rep:AuthorizableFolder",
     "acl": [
       {
         "principal": "composum-platform-administrators",
