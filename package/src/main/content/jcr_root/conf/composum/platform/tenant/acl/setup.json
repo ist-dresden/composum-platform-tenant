@@ -271,6 +271,18 @@
     "path": "/libs/composum/assets",
     "acl": [
       {
+        "principal": "everyone",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
         "principal": "composum-platform-tenant-editors",
         "acl": [
           {
@@ -281,6 +293,20 @@
       },
       {
         "principal": "composum-platform-tenant-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/assets/commons",
+    "acl": [
+      {
+        "principal": "everyone",
         "acl": [
           {
             "allow": true,
