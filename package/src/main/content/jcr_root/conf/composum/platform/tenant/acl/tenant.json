@@ -47,6 +47,14 @@
             "privileges": "jcr:read"
           }
         ]
+      },
+      {
+        "principal": "tenant-${tenantId}-managers",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-managers",
+          "tenant-${tenantId}-members"
+        ]
       }
     ]
   },
@@ -126,7 +134,7 @@
           },
           {
             "allow": false,
-            "privileges":"jcr:all",
+            "privileges": "jcr:all",
             "restrictions": {
               "rep:glob": "*/install/*"
             }
@@ -139,12 +147,7 @@
     "path": "/etc/tenants/${tenantId}",
     "acl": [
       {
-        "principal": "tenant-${tenantId}-managers",
-        "groupPath": "${principalBase}",
-        "memberOf": [
-          "composum-platform-tenant-managers",
-          "tenant-${tenantId}-members"
-        ],
+        "principal": "tenant-${tenantId}-members",
         "acl": [
           {
             "allow": true,

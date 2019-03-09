@@ -20,7 +20,7 @@
                 _view: '.view.html'
             },
             url: {
-                base: '/bin/cpm/platform/tenants',
+                base: '/bin/cpm/platform/tenants/manager',
                 _tree: '.tree.json'
             }
         };

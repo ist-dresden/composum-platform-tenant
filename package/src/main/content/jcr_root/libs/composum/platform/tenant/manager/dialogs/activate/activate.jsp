@@ -6,7 +6,7 @@
     <div id="activate-tenant-dialog" class="dialog modal fade" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content form-panel default">
-                <cpn:form classes="widget-form" action="/bin/cpm/platform/tenants.activate.json" method="POST">
+                <cpn:form classes="widget-form" action="/bin/cpm/platform/tenants/manager.activate.json" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal"
                                 aria-label="${cpn:i18n(slingRequest, 'Close')}"><span

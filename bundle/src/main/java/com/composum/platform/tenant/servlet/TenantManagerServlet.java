@@ -47,7 +47,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 @Component(service = Servlet.class,
         property = {
                 Constants.SERVICE_DESCRIPTION + "=Composum Platform Tenant Manager Servlet",
-                ServletResolverConstants.SLING_SERVLET_PATHS + "=/bin/cpm/platform/tenants",
+                ServletResolverConstants.SLING_SERVLET_PATHS + "=/bin/cpm/platform/tenants/manager",
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
