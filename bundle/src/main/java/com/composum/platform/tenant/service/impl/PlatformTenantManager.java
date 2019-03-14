@@ -157,7 +157,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
                 name = "Reserved Tenant IDs",
                 description = "a list of reserved id patterns (not usable for a tenant)"
         )
-        String[] tenant_id_reserved() default {"^.*composum.*$", "^shared.*$", "^site.*$", "^.*sling.*$"};
+        String[] tenant_id_reserved() default {"^composum.*$", "^platform$", "^general$", "^shared$", "^sling.*$"};
 
         @AttributeDefinition(
                 name = "Immutable Tenant Properties",

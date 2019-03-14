@@ -425,6 +425,15 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "composum-platform-administrators",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
         "principal": "composum-platform-tenant-members",
         "acl": [
           {

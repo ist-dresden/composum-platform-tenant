@@ -7,7 +7,7 @@
         assignee="tenant-${tenantId}-managers"
         title="Role Request"
         hint="a (new) user wants to become a member or a new role"
-        dialog="composum/platform/tenant/workflow/dialog/assign-role">
+        dialog="composum/platform/tenant/workflow/dialog/role-request">
     <i18n
             jcr:primaryType="nt:unstructured">
         <de
@@ -19,9 +19,31 @@
             jcr:primaryType="nt:unstructured">
         <approve
                 jcr:primaryType="nt:unstructured"
-                template="/conf/composum/platform/tenant/workflow/assign-role"/>
+                title="Assign and Approve"
+                hint="select the appropriate roles for the user and assign the roles by approving the request"
+                template="/conf/composum/platform/tenant/workflow/assign-role"
+                formType="composum/platform/tenant/workflow/dialog/role-request/approve">
+            <i18n
+                    jcr:primaryType="nt:unstructured">
+                <de
+                        jcr:primaryType="nt:unstructured"
+                        title="Zuweisen und Genehmigen"
+                        hint="Auswahl der passenden Rollen für den Nutzer und Zuweisung durch Bestätigung"/>
+            </i18n>
+        </approve>
         <decline
                 jcr:primaryType="nt:unstructured"
-                template="/conf/composum/platform/tenant/workflow/decline"/>
+                title="Decline"
+                hint="decline the role request with or without a message"
+                template="/conf/composum/platform/workflow/task/decline"
+                formType="composum/platform/workflow/dialog/option-decline">
+            <i18n
+                    jcr:primaryType="nt:unstructured">
+                <de
+                        jcr:primaryType="nt:unstructured"
+                        title="Ablehnen"
+                        hint="Ablehnen der Anfrage mit oder ohne Nachricht"/>
+            </i18n>
+        </decline>
     </options>
 </jcr:root>

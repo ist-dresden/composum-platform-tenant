@@ -14,15 +14,23 @@
                                   type="rich"/>
                     </c:when>
                     <c:otherwise>
-                        <cpn:text tagName="div" class="alert alert-warning" value="${home.properties.noTenant}"
-                                  type="rich"/>
-                        <cpn:text tagName="div" class="alert alert-success" value="${home.properties.invitation}"
-                                  type="rich"/>
-                        <sling:call script="invitation.jsp"/>
-                        <hr/>
-                        <cpn:text tagName="div" class="alert alert-success" value="${home.properties.creation}"
-                                  type="rich"/>
-                        <sling:call script="creation.jsp"/>
+                        <c:choose>
+                            <c:when test="${false and home.openWorkflows}">
+                                <cpn:text tagName="div" class="alert alert-warning" value="${home.properties.openTasks}"
+                                          type="rich"/>
+                            </c:when>
+                            <c:otherwise>
+                                <cpn:text tagName="div" class="alert alert-warning" value="${home.properties.noTenant}"
+                                          type="rich"/>
+                                <cpn:text tagName="div" class="alert alert-success" value="${home.properties.invitation}"
+                                          type="rich"/>
+                                <sling:call script="invitation.jsp"/>
+                                <hr/>
+                                <cpn:text tagName="div" class="alert alert-success" value="${home.properties.creation}"
+                                          type="rich"/>
+                                <sling:call script="creation.jsp"/>
+                            </c:otherwise>
+                        </c:choose>
                     </c:otherwise>
                 </c:choose>
             </div>

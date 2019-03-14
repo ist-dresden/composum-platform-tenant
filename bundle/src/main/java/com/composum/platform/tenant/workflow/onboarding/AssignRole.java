@@ -3,6 +3,7 @@ package com.composum.platform.tenant.workflow.onboarding;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.workflow.service.WorkflowService;
 import com.composum.platform.workflow.model.WorkflowTask;
+import com.composum.sling.core.BeanContext;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.Job;
@@ -31,7 +32,8 @@ public class AssignRole implements JobConsumer {
     @Override
     public JobResult process(Job job) {
         try (ResourceResolver jobResolver = resolverFactory.getServiceResourceResolver(null)) {
-            WorkflowTask task = workflowService.getInstance(jobResolver, job);
+            BeanContext context = new BeanContext.Service(jobResolver);
+            WorkflowTask task = workflowService.getInstance(context, job);
 
             return JobResult.OK;
         } catch (Exception ex) {

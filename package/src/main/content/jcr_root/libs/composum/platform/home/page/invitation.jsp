@@ -3,11 +3,12 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.HomePageBean">
-    <cpn:form action="/bin/cpm/platform/tenants/workfow.joinme.json" method="POST">
+    <cpn:form action="/bin/cpm/platform/workflow.addTask.json" method="POST">
 
         <div class="alert alert-hidden" role="alert"></div>
 
         <input name="_charset_" type="hidden" value="UTF-8"/>
+        <input name="wf.template" type="hidden" value="/conf/composum/platform/tenant/workflow/role-request"/>
         <div class="row">
             <div class="col-xs-4">
                 <div class="form-group">
@@ -19,13 +20,13 @@
             <div class="col-xs-8">
                 <div class="form-group">
                     <label class="control-label">${model.properties['form/yourName']}</label>
-                    <input name="user.name" class="widget text-field-widget form-control" type="text"/>
+                    <input name="data/name" class="widget text-field-widget form-control" type="text"/>
                 </div>
             </div>
         </div>
         <div class="form-group">
             <label class="control-label">${model.properties['form/message']}</label>
-            <input name="user.message" class="widget text-area-widget form-control" type="text"/>
+            <input name="data/message" class="widget text-area-widget form-control" type="text"/>
         </div>
 
         <div class="buttons">

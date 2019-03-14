@@ -2,6 +2,8 @@ package com.composum.platform.tenant.view;
 
 import com.composum.platform.models.simple.SimpleModel;
 import com.composum.platform.tenant.service.TenantManagerService;
+import com.composum.platform.workflow.service.WorkflowService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ public class HomePageBean extends SimpleModel {
 
     private static final Logger LOG = LoggerFactory.getLogger(HomePageBean.class);
 
+    private transient Boolean openWorkflows;
     private transient Boolean tenantsAvailable;
 
     public String getUserId() {
@@ -42,6 +45,16 @@ public class HomePageBean extends SimpleModel {
             }
         }
         return false;
+    }
+
+    public boolean isOpenWorkflows() {
+        if (openWorkflows == null) {
+            String userId = context.getResolver().getUserID();
+            WorkflowService service = context.getService(WorkflowService.class);
+            openWorkflows = service != null && StringUtils.isNotBlank(userId)
+                    && !service.findInitiatedOpenWorkflows(context, userId).isEmpty();
+        }
+        return openWorkflows;
     }
 
     public boolean isTenantsAvailable() {

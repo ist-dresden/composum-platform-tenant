@@ -48,6 +48,18 @@
             }
         });
 
+        tenants.InboxTab = tenants.AbstractManagerTab.extend({
+
+            initContent: function () {
+                tenants.AbstractManagerTab.prototype.initContent.apply(this);
+                this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            reload: function () {
+                window.workflow.onTableLoad();
+            }
+        });
+
     })(window.tenants, window.core);
 
 })(window);

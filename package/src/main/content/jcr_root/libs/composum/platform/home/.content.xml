@@ -3,6 +3,7 @@
         jcr:primaryType="sling:Folder"
         sling:resourceType="composum/platform/home/page"
         noSites="&lt;p>Your sites are not accessible - you have probably insufficient permissions.&lt;/p>&lt;p>Please inform your administrator to solve the problem.&lt;/p>"
+        openTasks="&lt;p>Open processing tasks found; onboarding is in progress...&lt;/p>"
         noTenant="&lt;p>You are not joined to a tenant of this platform.&lt;/p>"
         invitation="&lt;p>If you know your preferred tenant ask them to become a member of that tenant.&lt;/p>"
         creation="&lt;p>If you want to create your own new tenant then fill the form below and submit your request.&lt;/p>"/>

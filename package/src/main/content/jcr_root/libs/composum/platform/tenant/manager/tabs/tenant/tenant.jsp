@@ -10,6 +10,9 @@
                 <a class="general fa fa-university btn btn-default" href="#general" data-group="general"
                    title="${cpn:i18n(slingRequest,'Tenant Summary')}"><cpn:text
                         value="Tenant" tagName="span" tagClass="label" i18n="true"/></a>
+                <a class="view fa fa-inbox btn btn-default" href="#inbox" data-group="inbox"
+                   title="${cpn:i18n(slingRequest,'Task Inbox')}"><cpn:text
+                        value="Inbox" tagName="span" tagClass="label" i18n="true"/></a>
                 <a class="view fa fa-users btn btn-default" href="#users" data-group="users"
                    title="${cpn:i18n(slingRequest,'Users View')}"><cpn:text
                         value="Users" tagName="span" tagClass="label" i18n="true"/></a>
