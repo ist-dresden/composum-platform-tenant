@@ -220,6 +220,21 @@
     ]
   },
   {
+    "path": "/conf/composum/workflow/managers",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/conf/composum/platform/tenant",
     "acl": [
       {

@@ -8,7 +8,7 @@
         <div class="alert alert-hidden" role="alert"></div>
 
         <input name="_charset_" type="hidden" value="UTF-8"/>
-        <input name="wf.template" type="hidden" value="/conf/composum/platform/tenant/workflow/role-request"/>
+        <input name="wf.template" type="hidden" value="/conf/composum/workflow/everyone/role-request"/>
         <div class="row">
             <div class="col-xs-4">
                 <div class="form-group">

@@ -7,7 +7,7 @@
         <tbody>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'User')}</td>
-            <td class="value"><cpn:text value="${wfDialog.task.initiator}"/></td>
+            <td class="value"><cpn:text value="${wfDialog.task.data.userId}"/></td>
         </tr>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'Name')}</td>
