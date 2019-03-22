@@ -6,6 +6,7 @@
     <div>
         <label class="control-label">Select Roles</label>
     </div>
+    <input type="hidden" name="data/role@TypeHint" value="String[]" />
     <div>
         <input class="composum-form_checkbox form-check-input" type="checkbox" name="data/role"
                value="editor"/><label

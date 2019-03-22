@@ -11,7 +11,7 @@
         </tr>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'Role')}</td>
-            <td class="value"><cpn:text value="${wfDialog.task.data.role}"/></td>
+            <td class="value"><cpn:text value="${wfDialog.task.dataView.role}"/></td>
         </tr>
         </tbody>
     </table>

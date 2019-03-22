@@ -8,11 +8,9 @@ import com.composum.sling.core.filter.StringFilter;
 import com.composum.sling.core.service.PermissionsService;
 import com.composum.sling.core.util.ResourceUtil;
 import com.composum.sling.platform.security.PlatformAccessService;
-import com.composum.sling.platform.security.PlatformAccessService.AccessContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.adapter.AdapterFactory;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -78,7 +76,8 @@ import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_STATUS
         service = {TenantManagerService.class, TenantManager.class, TenantProvider.class}
 )
 @Designate(ocd = PlatformTenantManager.Configuration.class)
-public class PlatformTenantManager implements TenantManagerService, TenantManager, TenantProvider {
+public class PlatformTenantManager extends AbstractTenantService
+        implements TenantManagerService, TenantManager, TenantProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformTenantManager.class);
 
@@ -203,16 +202,22 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     }
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    protected void setResolverFactory(ResourceResolverFactory factory){
+        resolverFactory = factory;
+    }
 
     @Reference
-    private PlatformAccessService accessService;
+    protected void setPlatformAccessService(PlatformAccessService service){
+        accessService = service;
+    }
 
     @Reference
-    private PermissionsService permissionsService;
+    protected void setPermissionsService(PermissionsService service){
+        permissionsService = service;
+    }
 
-    protected List<PlatformTenantHook> platformHooks = Collections.synchronizedList(new ArrayList<PlatformTenantHook>());
-    protected List<TenantManagerHook> managerHooks = Collections.synchronizedList(new ArrayList<TenantManagerHook>());
+    protected List<PlatformTenantHook> platformHooks = Collections.synchronizedList(new ArrayList<>());
+    protected List<TenantManagerHook> managerHooks = Collections.synchronizedList(new ArrayList<>());
 
     protected PlatformTenantAdapter adapterFactory;
     protected ServiceRegistration<?> adapterFactoryService;
@@ -276,63 +281,6 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
         platformHooks.remove(service);
     }
 
-    // permission check
-
-    protected final RetrievalGranted retrievalGranted = new RetrievalGranted();
-    protected final ChangingGranted changingGranted = new ChangingGranted();
-    protected final ManagingGranted managingGranted = new ManagingGranted();
-
-    private final class RetrievalGranted implements PermissionCheck {
-        @Override
-        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
-            try {
-                Session session = resolver.adaptTo(Session.class);
-                String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return permissionsService.hasAllPrivileges(session,
-                        StringUtils.isBlank(tenantId) ? tenantsRootPath : tenantsRootPath + "/" + tenantId,
-                        "jcr:read");
-            } catch (Exception ignore) {
-                return false;
-            }
-        }
-    }
-
-    private final class ChangingGranted implements PermissionCheck {
-        @Override
-        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
-            try {
-                Session session = resolver.adaptTo(Session.class);
-                String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return StringUtils.isNotBlank(tenantId)
-                        && permissionsService.isMemberOfOne(session,
-                        "administrators",
-                        "composum-platform-administrators",
-                        "tenant-" + tenantId + "-managers") != null
-                        && permissionsService.hasAllPrivileges(session, tenantsRootPath + "/" + tenantId,
-                        "jcr:read");
-            } catch (Exception ignore) {
-                return false;
-            }
-        }
-    }
-
-    private final class ManagingGranted implements PermissionCheck {
-        @Override
-        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
-            try {
-                Session session = resolver.adaptTo(Session.class);
-                String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return permissionsService.isMemberOfOne(session,
-                        "administrators",
-                        "composum-platform-administrators") != null
-                        && permissionsService.hasAllPrivileges(session, tenantsRootPath,
-                        "rep:write");
-            } catch (Exception ignore) {
-                return false;
-            }
-        }
-    }
-
     // TenantManagerService
 
     @Override
@@ -353,7 +301,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
             Status status = Status.valueOf(values.get(PN_STATUS, Status.active.name()));
             Map<String, Object> properties = new HashMap<>();
             List<String> protectd = managingGranted.isAccessGranted(context, tenantResource.getName())
-                    ? Collections.<String>emptyList() : Arrays.asList(config.tenant_props_protected());
+                    ? Collections.emptyList() : Arrays.asList(config.tenant_props_protected());
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 String key = entry.getKey();
                 if (!protectd.contains(key)) {
@@ -368,13 +316,9 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     @Nullable
     public final PlatformTenant getTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId) {
-        return call(new ResourceResolverTask<PlatformTenant>() {
-            @Override
-            public PlatformTenant call(@Nonnull final ResourceResolver resolver,
-                                       @Nonnull final ResourceResolver context) {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                return toTenant(context, tenantsRoot.getChild(tenantId), true);
-            }
+        return call((resolver1, context) -> {
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            return toTenant(context, tenantsRoot.getChild(tenantId), true);
         }, resolver);
     }
 
@@ -395,22 +339,18 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Nonnull
     public Iterator<Tenant> getTenants(@Nonnull final ResourceResolver resolver,
                                        @Nullable final ResourceFilter filter) {
-        Iterator<Tenant> result = retrieve(new ResourceResolverTask<Iterator<Tenant>>() {
-            @Override
-            public final Iterator<Tenant> call(@Nonnull final ResourceResolver resolver,
-                                               @Nonnull final ResourceResolver context) {
-                // use context resolver (request) to avoid access cross tenant without access rights
-                final Resource tenantsRoot = getTenantsRoot(context);
-                ResourceFilter resourceFilter = new ResourceFilter.PrimaryTypeFilter(
-                        new StringFilter.WhiteList(config.tenant_primary_type()));
-                if (filter != null) {
-                    resourceFilter = new ResourceFilter.FilterSet(
-                            ResourceFilter.FilterSet.Rule.and, resourceFilter, filter);
-                }
-                return new TenantList(context, tenantsRoot.listChildren(), resourceFilter).iterator();
+        Iterator<Tenant> result = retrieve((resolver1, context) -> {
+            // use context resolver (request) to avoid access cross tenant without access rights
+            final Resource tenantsRoot = getTenantsRoot(context);
+            ResourceFilter resourceFilter = new ResourceFilter.PrimaryTypeFilter(
+                    new StringFilter.WhiteList(config.tenant_primary_type()));
+            if (filter != null) {
+                resourceFilter = new ResourceFilter.FilterSet(
+                        ResourceFilter.FilterSet.Rule.and, resourceFilter, filter);
             }
+            return new TenantList(context, tenantsRoot.listChildren(), resourceFilter).iterator();
         }, resolver, null);
-        return result != null ? result : Collections.<Tenant>emptyIterator();
+        return result != null ? result : Collections.emptyIterator();
     }
 
     @Override
@@ -418,57 +358,52 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     public final PlatformTenant createTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                                              @Nullable final Map<String, Object> properties)
             throws PersistenceException {
-        return manage(new ResourceResolverTask<PlatformTenant>() {
-            @Override
-            public final PlatformTenant call(@Nonnull final ResourceResolver resolver,
-                                             @Nonnull final ResourceResolver context)
-                    throws PersistenceException {
-                if (StringUtils.isBlank(tenantId) || !tenantId.matches(config.tenant_id_pattern())) {
-                    throw new PersistenceException("tenant id is not valid");
-                }
-                for (String pattern : config.tenant_id_reserved()) {
-                    if (Pattern.compile(pattern).matcher(tenantId).matches()) {
-                        throw new PersistenceException("tenant id is reserved");
-                    }
-                }
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                if (tenantsRoot.getChild(tenantId) != null) {
-                    throw new PersistenceException("tenant id is already in use");
-                }
-                String value;
-                final Map<String, Object> initialProps = new HashMap<>();
-                if (StringUtils.isNotBlank(value = config.tenant_resource_type())) {
-                    initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, value);
-                }
-                if (properties != null) {
-                    initialProps.putAll(properties);
-                }
-                initialProps.put(JcrConstants.JCR_PRIMARYTYPE, config.tenant_primary_type());
-                initialProps.put(PN_PUBLIC_ROOT, config.tenant_public_root() + "/" + tenantId);
-                initialProps.put(PN_PREVIEW_ROOT, config.tenant_preview_root() + "/" + tenantId);
-                initialProps.put(PN_CONTENT_ROOT, config.tenant_content_root() + "/" + tenantId);
-                initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
-                initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);
-                Resource tenantResource = resolver.create(tenantsRoot, tenantId, initialProps);
-                PlatformTenant tenant = toTenant(resolver, tenantResource, false);
-                final ModifiableValueMap tenantProps = getProperties(resolver, tenantResource);
-                tenantProps.put(CPM_CREATED + "By", context.getUserID());
-                for (TenantManagerHook hook : managerHooks) {
-                    Map<String, Object> changes = hook.setup(tenant);
-                    if (changes != null && changes.size() > 0) {
-                        updateTenant(tenantProps, changes);
-                    }
-                }
-                tenant = toTenant(resolver, tenantResource, false);
-                for (PlatformTenantHook hook : platformHooks) {
-                    Map<String, Object> changes = hook.setup(resolver, context, tenant);
-                    if (changes != null && changes.size() > 0) {
-                        updateTenant(tenantProps, changes);
-                    }
-                }
-                LOG.info("createTenant({}): {}", tenantId, tenant);
-                return toTenant(resolver, tenantResource, false);
+        return manage((resolver1, context) -> {
+            if (StringUtils.isBlank(tenantId) || !tenantId.matches(config.tenant_id_pattern())) {
+                throw new PersistenceException("tenant id is not valid");
             }
+            for (String pattern : config.tenant_id_reserved()) {
+                if (Pattern.compile(pattern).matcher(tenantId).matches()) {
+                    throw new PersistenceException("tenant id is reserved");
+                }
+            }
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            if (tenantsRoot.getChild(tenantId) != null) {
+                throw new PersistenceException("tenant id is already in use");
+            }
+            String value;
+            final Map<String, Object> initialProps = new HashMap<>();
+            if (StringUtils.isNotBlank(value = config.tenant_resource_type())) {
+                initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, value);
+            }
+            if (properties != null) {
+                initialProps.putAll(properties);
+            }
+            initialProps.put(JcrConstants.JCR_PRIMARYTYPE, config.tenant_primary_type());
+            initialProps.put(PN_PUBLIC_ROOT, config.tenant_public_root() + "/" + tenantId);
+            initialProps.put(PN_PREVIEW_ROOT, config.tenant_preview_root() + "/" + tenantId);
+            initialProps.put(PN_CONTENT_ROOT, config.tenant_content_root() + "/" + tenantId);
+            initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
+            initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);
+            Resource tenantResource = resolver1.create(tenantsRoot, tenantId, initialProps);
+            PlatformTenant tenant = toTenant(resolver1, tenantResource, false);
+            final ModifiableValueMap tenantProps = getProperties(resolver1, tenantResource);
+            tenantProps.put(CPM_CREATED + "By", context.getUserID());
+            for (TenantManagerHook hook : managerHooks) {
+                Map<String, Object> changes = hook.setup(tenant);
+                if (changes != null && changes.size() > 0) {
+                    updateTenant(tenantProps, changes);
+                }
+            }
+            tenant = toTenant(resolver1, tenantResource, false);
+            for (PlatformTenantHook hook : platformHooks) {
+                Map<String, Object> changes = hook.setup(resolver1, context, tenant);
+                if (changes != null && changes.size() > 0) {
+                    updateTenant(tenantProps, changes);
+                }
+            }
+            LOG.info("createTenant({}): {}", tenantId, tenant);
+            return toTenant(resolver1, tenantResource, false);
         }, resolver, tenantId);
     }
 
@@ -476,37 +411,32 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     public final void changeTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                                    @Nonnull final Map<String, Object> properties)
             throws PersistenceException {
-        change(new ResourceResolverTask<Void>() {
-            @Override
-            public final Void call(@Nonnull final ResourceResolver resolver,
-                                   @Nonnull final ResourceResolver context)
-                    throws PersistenceException {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                if (tenantResource != null) {
-                    PlatformTenant tenant = toTenant(resolver, tenantResource, true);
-                    LOG.info("changeTenant({})", tenant);
-                    final ModifiableValueMap tenantProps = getProperties(resolver, tenantResource);
-                    setTimestamp(tenantProps, context, JcrConstants.JCR_LASTMODIFIED);
-                    updateTenant(tenantProps, properties);
-                    for (TenantManagerHook hook : managerHooks) {
-                        Map<String, Object> changes = hook.change(tenant);
-                        if (changes != null && changes.size() > 0) {
-                            updateTenant(tenantProps, changes);
-                        }
+        change((ResourceResolverTask<Void>) (resolver1, context) -> {
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            if (tenantResource != null) {
+                PlatformTenant tenant = toTenant(resolver1, tenantResource, true);
+                LOG.info("changeTenant({})", tenant);
+                final ModifiableValueMap tenantProps = getProperties(resolver1, tenantResource);
+                setTimestamp(tenantProps, context, JcrConstants.JCR_LASTMODIFIED);
+                updateTenant(tenantProps, properties);
+                for (TenantManagerHook hook : managerHooks) {
+                    Map<String, Object> changes = hook.change(tenant);
+                    if (changes != null && changes.size() > 0) {
+                        updateTenant(tenantProps, changes);
                     }
-                    tenant = toTenant(resolver, tenantResource, true);
-                    for (PlatformTenantHook hook : platformHooks) {
-                        Map<String, Object> changes = hook.change(resolver, context, tenant);
-                        if (changes != null && changes.size() > 0) {
-                            updateTenant(tenantProps, changes);
-                        }
-                    }
-                } else {
-                    throw new PersistenceException("tenant '" + tenantId + "' not found");
                 }
-                return null;
+                tenant = toTenant(resolver1, tenantResource, true);
+                for (PlatformTenantHook hook : platformHooks) {
+                    Map<String, Object> changes = hook.change(resolver1, context, tenant);
+                    if (changes != null && changes.size() > 0) {
+                        updateTenant(tenantProps, changes);
+                    }
+                }
+            } else {
+                throw new PersistenceException("tenant '" + tenantId + "' not found");
             }
+            return null;
         }, resolver, tenantId);
     }
 
@@ -528,44 +458,34 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     public final void deactivateTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId)
             throws PersistenceException {
-        manage(new ResourceResolverTask<Void>() {
-            @Override
-            public final Void call(@Nonnull final ResourceResolver resolver,
-                                   @Nonnull final ResourceResolver context)
-                    throws PersistenceException {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource, true);
-                if (tenant != null && tenant.getStatus() != Status.deactivated) {
-                    LOG.info("deactivateTenant({})", tenant);
-                    doDeactivate(resolver, context, tenantResource);
-                } else {
-                    throw new PersistenceException("tenant '" + tenantId + "' not found");
-                }
-                return null;
+        manage((ResourceResolverTask<Void>) (resolver1, context) -> {
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            PlatformTenant tenant = toTenant(context, tenantResource, true);
+            if (tenant != null && tenant.getStatus() != Status.deactivated) {
+                LOG.info("deactivateTenant({})", tenant);
+                doDeactivate(resolver1, context, tenantResource);
+            } else {
+                throw new PersistenceException("tenant '" + tenantId + "' not found");
             }
+            return null;
         }, resolver, tenantId);
     }
 
     @Override
     public final void reanimateTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId)
             throws PersistenceException {
-        manage(new ResourceResolverTask<Void>() {
-            @Override
-            public final Void call(@Nonnull final ResourceResolver resolver,
-                                   @Nonnull final ResourceResolver context)
-                    throws PersistenceException {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource, true);
-                if (tenant != null && tenant.getStatus() == Status.deactivated) {
-                    LOG.info("activateTenant({})", tenant);
-                    doActivate(resolver, context, tenantResource);
-                } else {
-                    throw new PersistenceException("tenant '" + tenantId + "' not found");
-                }
-                return null;
+        manage((ResourceResolverTask<Void>) (resolver1, context) -> {
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            PlatformTenant tenant = toTenant(context, tenantResource, true);
+            if (tenant != null && tenant.getStatus() == Status.deactivated) {
+                LOG.info("activateTenant({})", tenant);
+                doActivate(resolver1, context, tenantResource);
+            } else {
+                throw new PersistenceException("tenant '" + tenantId + "' not found");
             }
+            return null;
         }, resolver, tenantId);
     }
 
@@ -573,33 +493,28 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     public final void deleteTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId)
             throws PersistenceException {
-        manage(new ResourceResolverTask<Void>() {
-            @Override
-            public final Void call(@Nonnull final ResourceResolver resolver,
-                                   @Nonnull final ResourceResolver context)
-                    throws PersistenceException {
-                final Resource tenantsRoot = getTenantsRoot(resolver);
-                final Resource tenantResource = tenantsRoot.getChild(tenantId);
-                PlatformTenant tenant = toTenant(context, tenantResource, false);
-                if (tenant != null) {
-                    if (tenant.getStatus() == Status.active) {
-                        LOG.info("delete->deactivateTenant({})", tenant);
-                        doDeactivate(resolver, context, tenantResource);
-                    } else {
-                        LOG.info("deleteTenant({})", tenant);
-                        for (PlatformTenantHook hook : platformHooks) {
-                            hook.remove(resolver, context, tenant);
-                        }
-                        for (TenantManagerHook hook : managerHooks) {
-                            hook.remove(tenant);
-                        }
-                        resolver.delete(tenantResource);
-                    }
+        manage((ResourceResolverTask<Void>) (resolver1, context) -> {
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            PlatformTenant tenant = toTenant(context, tenantResource, false);
+            if (tenant != null) {
+                if (tenant.getStatus() == Status.active) {
+                    LOG.info("delete->deactivateTenant({})", tenant);
+                    doDeactivate(resolver1, context, tenantResource);
                 } else {
-                    throw new PersistenceException("tenant '" + tenantId + "' not found");
+                    LOG.info("deleteTenant({})", tenant);
+                    for (PlatformTenantHook hook : platformHooks) {
+                        hook.remove(resolver1, context, tenant);
+                    }
+                    for (TenantManagerHook hook : managerHooks) {
+                        hook.remove(tenant);
+                    }
+                    resolver1.delete(tenantResource);
                 }
-                return null;
+            } else {
+                throw new PersistenceException("tenant '" + tenantId + "' not found");
             }
+            return null;
         }, resolver, tenantId);
     }
 
@@ -660,14 +575,8 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     public final Tenant create(final String tenantId, final Map<String, Object> properties) {
         try {
-            return manage(new ResourceResolverTask<Tenant>() {
-                @Override
-                public Tenant call(@Nonnull final ResourceResolver resolver,
-                                   @Nonnull final ResourceResolver context)
-                        throws PersistenceException {
-                    return createTenant(resolver, tenantId, properties);
-                }
-            }, null, null);
+            return manage((ResourceResolverTask<Tenant>)
+                    (resolver, context) -> createTenant(resolver, tenantId, properties), null, null);
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
             return null;
@@ -677,14 +586,9 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     public final void remove(@Nonnull final Tenant tenant) {
         try {
-            manage(new ResourceResolverTask<Void>() {
-                @Override
-                public Void call(@Nonnull final ResourceResolver resolver,
-                                 @Nonnull final ResourceResolver context)
-                        throws PersistenceException {
-                    deleteTenant(resolver, tenant.getId());
-                    return null;
-                }
+            manage((ResourceResolverTask<Void>) (resolver, context) -> {
+                deleteTenant(resolver, tenant.getId());
+                return null;
             }, null, tenant.getId());
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -695,16 +599,11 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     public final void setProperty(@Nonnull final Tenant tenant,
                                   @Nonnull final String name, @Nullable final Object value) {
         try {
-            change(new ResourceResolverTask<Void>() {
-                @Override
-                public Void call(@Nonnull final ResourceResolver resolver,
-                                 @Nonnull final ResourceResolver context)
-                        throws PersistenceException {
-                    changeTenant(resolver, tenant.getId(), new HashMap<String, Object>() {{
-                        put(name, value);
-                    }});
-                    return null;
-                }
+            change((ResourceResolverTask<Void>) (resolver, context) -> {
+                changeTenant(resolver, tenant.getId(), new HashMap<String, Object>() {{
+                    put(name, value);
+                }});
+                return null;
             }, null, tenant.getId());
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -715,14 +614,9 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     public final void setProperties(@Nonnull final Tenant tenant,
                                     @Nonnull final Map<String, Object> properties) {
         try {
-            change(new ResourceResolverTask<Void>() {
-                @Override
-                public Void call(@Nonnull final ResourceResolver resolver,
-                                 @Nonnull final ResourceResolver context)
-                        throws PersistenceException {
-                    changeTenant(resolver, tenant.getId(), properties);
-                    return null;
-                }
+            change((ResourceResolverTask<Void>) (resolver, context) -> {
+                changeTenant(resolver, tenant.getId(), properties);
+                return null;
             }, null, tenant.getId());
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -732,18 +626,13 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     @Override
     public final void removeProperties(@Nonnull final Tenant tenant, final String... propertyNames) {
         try {
-            change(new ResourceResolverTask<Void>() {
-                @Override
-                public Void call(@Nonnull final ResourceResolver resolver,
-                                 @Nonnull final ResourceResolver context)
-                        throws PersistenceException {
-                    Map<String, Object> properties = new HashMap<>();
-                    for (String key : propertyNames) {
-                        properties.put(key, null);
-                    }
-                    changeTenant(resolver, tenant.getId(), properties);
-                    return null;
+            change((ResourceResolverTask<Void>) (resolver, context) -> {
+                Map<String, Object> properties = new HashMap<>();
+                for (String key : propertyNames) {
+                    properties.put(key, null);
                 }
+                changeTenant(resolver, tenant.getId(), properties);
+                return null;
             }, null, tenant.getId());
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -754,13 +643,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
 
     @Override
     public final Tenant getTenant(@Nonnull final String tenantId) {
-        return call(new ResourceResolverTask<Tenant>() {
-            @Override
-            public Tenant call(@Nonnull final ResourceResolver resolver,
-                               @Nonnull final ResourceResolver context) {
-                return getTenant(resolver, tenantId);
-            }
-        }, null);
+        return call((ResourceResolverTask<Tenant>) (resolver, context) -> getTenant(resolver, tenantId), null);
     }
 
     @Override
@@ -770,37 +653,33 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
 
     @Override
     public final Iterator<Tenant> getTenants(@Nullable final String tenantFilter) {
-        return retrieve(new ResourceResolverTask<Iterator<Tenant>>() {
-            @Override
-            public Iterator<Tenant> call(@Nonnull final ResourceResolver resolver,
-                                         @Nonnull final ResourceResolver context) {
-                ResourceFilter resourceFilter = null;
-                if (StringUtils.isNotBlank(tenantFilter)) {
-                    try {
-                        final Filter osgiFilter = FrameworkUtil.createFilter(tenantFilter);
-                        resourceFilter = new ResourceFilter() {
+        return retrieve((resolver, context) -> {
+            ResourceFilter resourceFilter = null;
+            if (StringUtils.isNotBlank(tenantFilter)) {
+                try {
+                    final Filter osgiFilter = FrameworkUtil.createFilter(tenantFilter);
+                    resourceFilter = new ResourceFilter() {
 
-                            @Override
-                            public boolean accept(Resource resource) {
-                                return osgiFilter.matches(resource.getValueMap());
-                            }
+                        @Override
+                        public boolean accept(Resource resource) {
+                            return osgiFilter.matches(resource.getValueMap());
+                        }
 
-                            @Override
-                            public boolean isRestriction() {
-                                return true;
-                            }
+                        @Override
+                        public boolean isRestriction() {
+                            return true;
+                        }
 
-                            @Override
-                            public void toString(StringBuilder builder) {
-                                builder.append(osgiFilter.toString());
-                            }
-                        };
-                    } catch (InvalidSyntaxException ex) {
-                        LOG.error(ex.toString());
-                    }
+                        @Override
+                        public void toString(StringBuilder builder) {
+                            builder.append(osgiFilter.toString());
+                        }
+                    };
+                } catch (InvalidSyntaxException ex) {
+                    LOG.error(ex.toString());
                 }
-                return getTenants(resolver, resourceFilter);
             }
+            return getTenants(resolver, resourceFilter);
         }, null, null);
     }
 
@@ -808,51 +687,10 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     // to implement the interface methods driven in various resolver contexts
     //
 
-    private interface PermissionCheck {
-
-        /**
-         * returns 'true' if requested access is granted
-         *
-         * @param resolver the resolver to use (context resolver) fpr permission check
-         */
-        boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId);
-    }
-
-    private interface ResourceResolverTask<T> {
-
-        /**
-         * performs an operation using the specified resolver (service resolver) honoring the context resolver
-         * (requests resolver); the 'resolver' is used to retrieve and change the resources; the 'context' is used
-         * to build the result (probably restricted to public data)
-         *
-         * @param resolver the (service) resolver to perform the task
-         * @param context  the (request) resolver to produce the result (probably restricted)
-         */
-        T call(@Nonnull ResourceResolver resolver, @Nonnull ResourceResolver context) throws PersistenceException;
-    }
-
-    /**
-     * call using service resolver (without permission check!)...
-     */
-    private <T> T call(@Nonnull final ResourceResolverTask<T> task, @Nullable ResourceResolver context) {
-        T result = null;
-        try {
-            if (context == null) {
-                context = getAccessContextResolver();
-            }
-            try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
-                result = task.call(serviceResolver, context);
-            }
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-        }
-        return result;
-    }
-
     /**
      * call action using service resolver if retrieval access is granted otherwise the given resolver...
      */
-    private <T> T retrieve(@Nonnull final ResourceResolverTask<T> task,
+    protected <T> T retrieve(@Nonnull final ResourceResolverTask<T> task,
                            @Nullable final ResourceResolver context, @Nullable String tenantId) {
         try {
             return call(task, retrievalGranted, context, tenantId);
@@ -866,7 +704,7 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     /**
      * call action using service resolver if changing access is granted otherwise the given resolver...
      */
-    private <T> T change(@Nonnull final ResourceResolverTask<T> task,
+    protected <T> T change(@Nonnull final ResourceResolverTask<T> task,
                          @Nullable final ResourceResolver context, @Nullable String tenantId)
             throws PersistenceException {
         return call(task, changingGranted, context, tenantId);
@@ -875,53 +713,66 @@ public class PlatformTenantManager implements TenantManagerService, TenantManage
     /**
      * call action using service resolver if managing access is granted otherwise the given resolver...
      */
-    private <T> T manage(@Nonnull final ResourceResolverTask<T> task,
+    protected <T> T manage(@Nonnull final ResourceResolverTask<T> task,
                          @Nullable final ResourceResolver context, @Nullable String tenantId)
             throws PersistenceException {
         return call(task, managingGranted, context, tenantId);
     }
 
-    /**
-     * call action using service resolver if requested access is granted otherwise the given resolver...
-     */
-    private <T> T call(@Nonnull final ResourceResolverTask<T> task, @Nullable PermissionCheck permissionCheck,
-                       @Nullable ResourceResolver context, @Nullable String tenantId)
-            throws PersistenceException {
-        T result;
-        try {
-            if (context == null) {
-                context = getAccessContextResolver();
+    // permission check
+
+    protected final RetrievalGranted retrievalGranted = new RetrievalGranted();
+    protected final ChangingGranted changingGranted = new ChangingGranted();
+    protected final ManagingGranted managingGranted = new ManagingGranted();
+
+    private final class RetrievalGranted implements PermissionCheck {
+        @Override
+        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            try {
+                Session session = resolver.adaptTo(Session.class);
+                String tenantsRootPath = getTenantsRoot(resolver).getPath();
+                return permissionsService.hasAllPrivileges(session,
+                        StringUtils.isBlank(tenantId) ? tenantsRootPath : tenantsRootPath + "/" + tenantId,
+                        "jcr:read");
+            } catch (Exception ignore) {
+                return false;
             }
-            if (permissionCheck == null || permissionCheck.isAccessGranted(context, tenantId)) {
-                try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("access granted, using service resolver ({})...", context.getUserID());
-                    }
-                    result = task.call(serviceResolver, context);
-                    serviceResolver.commit();
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("access NOT granted! using request resolver ({})...", context.getUserID());
-                }
-                result = task.call(context, context);
-                context.commit();
-            }
-        } catch (IllegalAccessException | LoginException ex) {
-            throw new PersistenceException(ex.getMessage(), ex);
         }
-        return result;
     }
 
-    private ResourceResolver getAccessContextResolver() throws IllegalAccessException {
-        AccessContext accessContext = accessService.getAccessContext();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("retrieving resolver from access context: {}", accessContext);
+    private final class ChangingGranted implements PermissionCheck {
+        @Override
+        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            try {
+                Session session = resolver.adaptTo(Session.class);
+                String tenantsRootPath = getTenantsRoot(resolver).getPath();
+                return StringUtils.isNotBlank(tenantId)
+                        && permissionsService.isMemberOfOne(session,
+                        "administrators",
+                        "composum-platform-administrators",
+                        "tenant-" + tenantId + "-managers") != null
+                        && permissionsService.hasAllPrivileges(session, tenantsRootPath + "/" + tenantId,
+                        "jcr:read");
+            } catch (Exception ignore) {
+                return false;
+            }
         }
-        if (accessContext != null) {
-            return accessContext.getResolver();
-        } else {
-            throw new IllegalAccessException("can't call resolver from access service");
+    }
+
+    private final class ManagingGranted implements PermissionCheck {
+        @Override
+        public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            try {
+                Session session = resolver.adaptTo(Session.class);
+                String tenantsRootPath = getTenantsRoot(resolver).getPath();
+                return permissionsService.isMemberOfOne(session,
+                        "administrators",
+                        "composum-platform-administrators") != null
+                        && permissionsService.hasAllPrivileges(session, tenantsRootPath,
+                        "rep:write");
+            } catch (Exception ignore) {
+                return false;
+            }
         }
     }
 }

@@ -18,6 +18,7 @@
     </i18n>
     <data
             jcr:primaryType="nt:unstructured"
+            tenantId="${tenantId}"
             userId="${userId}"/>
     <options
             jcr:primaryType="nt:unstructured">

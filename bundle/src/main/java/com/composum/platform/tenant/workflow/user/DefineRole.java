@@ -16,18 +16,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * with 'assign' the roles in the data will be assigned by keeping existing assignments
+ * with 'define' the roles in the data will be assigned all other available roles will be revoked
  */
 @SuppressWarnings("Duplicates")
 @Component(
         property = {
-                Constants.SERVICE_DESCRIPTION + "=Assign Tenant Role Workflow Job",
-                JobConsumer.PROPERTY_TOPICS + "=" + AssignRole.JOB_TOPIC
+                Constants.SERVICE_DESCRIPTION + "=Define Tenant Role Workflow Job",
+                JobConsumer.PROPERTY_TOPICS + "=" + DefineRole.JOB_TOPIC
         }
 )
-public class AssignRole implements WorkflowAction {
+public class DefineRole implements WorkflowAction {
 
-    public static final String JOB_TOPIC = "composum/platform/tenant/workflow/assign-role";
+    public static final String JOB_TOPIC = "composum/platform/tenant/workflow/define-role";
 
     @Reference
     private TenantUserManager userManager;
@@ -43,7 +43,7 @@ public class AssignRole implements WorkflowAction {
             String userId = task.getData().get("userId", "");
             String[] role = task.getData().get("role", new String[0]);
             if (StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)) {
-                userManager.assign(context.getResolver(), tenantId, userId, role);
+                userManager.define(context.getResolver(), tenantId, userId, role);
                 return Result.OK;
             } else {
                 return new Result(Status.failure, new Message(Level.error, "tenant and user must be specified"));
