@@ -48,11 +48,24 @@
             }
         });
 
-        tenants.InboxTab = tenants.AbstractManagerTab.extend({
+        tenants.InboxTab = window.workflow.InboxConsoleTab.extend({
+
+            initialize: function (options) {
+                window.workflow.InboxConsoleTab.prototype.initialize.apply(this, [options]);
+                $(document).off('scope:changed').on('scope:changed', _.bind(this.reloadTab, this));
+            },
 
             initContent: function () {
-                tenants.AbstractManagerTab.prototype.initContent.apply(this);
+                window.workflow.InboxConsoleTab.prototype.initContent.apply(this);
                 this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            reloadTab: function (event) {
+                if (event) {
+                    event.preventDefault();
+                }
+                tenants.detailView.refreshContent(undefined, undefined, this.reloadParameters());
+                return false;
             },
 
             reload: function () {
