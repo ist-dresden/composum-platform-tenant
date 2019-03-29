@@ -52,7 +52,8 @@
 
             initialize: function (options) {
                 window.workflow.InboxConsoleTab.prototype.initialize.apply(this, [options]);
-                $(document).off('scope:changed').on('scope:changed', _.bind(this.reloadTab, this));
+                $(document).off('scope:changed.inbox').on('scope:changed.inbox', _.bind(this.reloadTab, this));
+                $(document).off('detail:reload.inbox').on('detail:reload.inbox', _.bind(this.reloadTab, this));
             },
 
             initContent: function () {

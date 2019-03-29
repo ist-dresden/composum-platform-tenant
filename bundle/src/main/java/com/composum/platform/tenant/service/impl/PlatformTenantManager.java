@@ -101,7 +101,8 @@ public class PlatformTenantManager extends AbstractTenantService
                 "^/preview/([^/]+)(/.*)?",
                 "^/public/([^/]+)(/.*)?",
                 "^/apps/([^/]+)(/.*)?",
-                "^/etc/tenants/([^/]+)(/.*)?"
+                "^/etc/tenants/([^/]+)(/.*)?",
+                "^/var/composum/workflow/([^/]+)(/.*)?"
         };
 
         @AttributeDefinition(

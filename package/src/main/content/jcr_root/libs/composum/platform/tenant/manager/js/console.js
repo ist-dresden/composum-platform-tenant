@@ -13,6 +13,7 @@
 
             initialize: function (options) {
                 core.console.DetailTab.prototype.initialize.apply(this, [options]);
+                $(document).on('detail:reload', _.bind(this.reloadTab, this));
                 this.initContent();
             },
 

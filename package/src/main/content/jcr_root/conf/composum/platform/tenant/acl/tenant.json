@@ -166,28 +166,7 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/var/composum/workflow/${tenantId}/pending",
-    "jcr:primaryType": "sling:OrderedFolder",
-    "acl": [
-      {
-        "principal": "tenant-${tenantId}-members",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": "*"
-            }
+            "privileges": "jcr:read"
           }
         ]
       }
