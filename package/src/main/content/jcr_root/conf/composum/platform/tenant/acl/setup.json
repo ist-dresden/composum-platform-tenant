@@ -398,6 +398,29 @@
     ]
   },
   {
+    "path": "/libs/composum/platform/workflow",
+    "acl": [
+      {
+        "principal": "composum-platform-administrators",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/libs/composum/platform/tenant",
     "acl": [
       {
