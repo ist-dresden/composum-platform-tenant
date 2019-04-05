@@ -76,7 +76,7 @@ import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_STATUS
         service = {TenantManagerService.class, TenantManager.class, TenantProvider.class}
 )
 @Designate(ocd = PlatformTenantManager.Configuration.class)
-public class PlatformTenantManager extends AbstractTenantService
+public final class PlatformTenantManager extends AbstractTenantService
         implements TenantManagerService, TenantManager, TenantProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformTenantManager.class);
@@ -214,6 +214,7 @@ public class PlatformTenantManager extends AbstractTenantService
         permissionsService = service;
     }
 
+    protected List<PlatformTenantHook> earlyHooks = Collections.synchronizedList(new ArrayList<>());
     protected List<PlatformTenantHook> platformHooks = Collections.synchronizedList(new ArrayList<>());
     protected List<TenantManagerHook> managerHooks = Collections.synchronizedList(new ArrayList<>());
 
@@ -226,6 +227,10 @@ public class PlatformTenantManager extends AbstractTenantService
     @Modified
     protected void activate(BundleContext bundleContext, Configuration config) {
         this.config = config;
+        for (PlatformTenantHook hook : earlyHooks) {
+            bindAllowedTenantHook(hook);
+        }
+        earlyHooks.clear();
         adapterFactory = new PlatformTenantAdapter(this, config.tenant_path_matcher());
         Dictionary<String, Object> props = new Hashtable<>();
         props.put(Constants.SERVICE_DESCRIPTION, "Composum Platform Tenant Adapter");
@@ -263,6 +268,14 @@ public class PlatformTenantManager extends AbstractTenantService
             cardinality = ReferenceCardinality.MULTIPLE
     )
     protected void bindPlatformTenantHook(@Nonnull final PlatformTenantHook service) {
+        if (config != null) {
+            bindAllowedTenantHook(service);
+        } else {
+            earlyHooks.add(service);
+        }
+    }
+
+    protected void bindAllowedTenantHook(@Nonnull final PlatformTenantHook service) {
         String pckgName = service.getClass().getPackage().getName();
         for (String pckgPattern : config.tenant_hooks_allowed()) {
             if (pckgName.startsWith(pckgPattern)) {
@@ -294,6 +307,7 @@ public class PlatformTenantManager extends AbstractTenantService
     protected final PlatformTenant toTenant(@Nonnull final ResourceResolver context,
                                             @Nullable final Resource tenantResource,
                                             boolean checkPermission) {
+        PlatformTenant tenant = null;
         if (tenantResource != null && tenantResource.isResourceType(TENANT_RESOURCE_TYPE)) {
             ValueMap values = tenantResource.getValueMap();
             Status status = Status.valueOf(values.get(PN_STATUS, Status.active.name()));
@@ -306,9 +320,12 @@ public class PlatformTenantManager extends AbstractTenantService
                     properties.put(key, entry.getValue());
                 }
             }
-            return new PlatformTenant(tenantResource.getName(), status, new ValueMapDecorator(properties));
+            tenant = new PlatformTenant(tenantResource.getName(), status, new ValueMapDecorator(properties));
         }
-        return null;
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("toTenant({}): {}", tenantResource != null ? tenantResource.getPath() : "NULL", tenant);
+        }
+        return tenant;
     }
 
     @Override
@@ -348,7 +365,11 @@ public class PlatformTenantManager extends AbstractTenantService
                 resourceFilter = new ResourceFilter.FilterSet(
                         ResourceFilter.FilterSet.Rule.and, resourceFilter, filter);
             }
-            return new TenantList(context, tenantsRoot.listChildren(), resourceFilter).iterator();
+            TenantList tenants = new TenantList(context, tenantsRoot.listChildren(), resourceFilter);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("getTenants({}): {}", resolver.getUserID(), tenants.size());
+            }
+            return tenants.iterator();
         }, resolver, null);
         return result != null ? result : Collections.emptyIterator();
     }
@@ -726,25 +747,28 @@ public class PlatformTenantManager extends AbstractTenantService
     private final class RetrievalGranted implements PermissionCheck {
         @Override
         public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            boolean granted = false;
             try {
-                Session session = resolver.adaptTo(Session.class);
                 String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return permissionsService.hasAllPrivileges(session,
-                        StringUtils.isBlank(tenantId) ? tenantsRootPath : tenantsRootPath + "/" + tenantId,
-                        "jcr:read");
+                granted = resolver.getResource(StringUtils.isBlank(tenantId)
+                        ? tenantsRootPath : tenantsRootPath + "/" + tenantId) != null;
             } catch (Exception ignore) {
-                return false;
             }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("retrievalGranted({},{}): {}", resolver.getUserID(), tenantId, granted);
+            }
+            return granted;
         }
     }
 
     private final class ChangingGranted implements PermissionCheck {
         @Override
         public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            boolean granted = false;
             try {
                 Session session = resolver.adaptTo(Session.class);
                 String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return StringUtils.isNotBlank(tenantId)
+                granted = StringUtils.isNotBlank(tenantId)
                         && permissionsService.isMemberOfOne(session,
                         "administrators",
                         "composum-platform-administrators",
@@ -752,25 +776,32 @@ public class PlatformTenantManager extends AbstractTenantService
                         && permissionsService.hasAllPrivileges(session, tenantsRootPath + "/" + tenantId,
                         "jcr:read");
             } catch (Exception ignore) {
-                return false;
             }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("changingGranted({},{}): {}", resolver.getUserID(), tenantId, granted);
+            }
+            return granted;
         }
     }
 
     private final class ManagingGranted implements PermissionCheck {
         @Override
         public boolean isAccessGranted(@Nonnull ResourceResolver resolver, @Nullable String tenantId) {
+            boolean granted = false;
             try {
                 Session session = resolver.adaptTo(Session.class);
                 String tenantsRootPath = getTenantsRoot(resolver).getPath();
-                return permissionsService.isMemberOfOne(session,
+                granted = permissionsService.isMemberOfOne(session,
                         "administrators",
                         "composum-platform-administrators") != null
                         && permissionsService.hasAllPrivileges(session, tenantsRootPath,
                         "rep:write");
             } catch (Exception ignore) {
-                return false;
             }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("managingGranted({},{}): {}", resolver.getUserID(), tenantId, granted);
+            }
+            return granted;
         }
     }
 }

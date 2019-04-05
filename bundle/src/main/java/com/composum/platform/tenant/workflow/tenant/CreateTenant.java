@@ -69,10 +69,12 @@ public class CreateTenant implements WorkflowAction {
                     Tenant tenant = tenantManager.createTenant(resolver, tenantId, tenantProperties);
                     try {
                         userManager.assign(context.getResolver(), tenant.getId(), userId,
-                                TenantUserManager.Role.manager.name());
+                                TenantUserManager.Role.manager.name(),
+                                TenantUserManager.Role.publisher.name(),
+                                TenantUserManager.Role.editor.name());
                     } catch (RepositoryException ex) {
                         LOG.error(ex.getMessage(), ex);
-                        return new Result(Status.failure, new Message(Level.error, "can't assign role '{}' to '{}' ({})",
+                        return new Result(Status.failure, new Message(Level.error, "can't join user '{}' to '{}' ({})",
                                 userId, tenantId, ex.getMessage()));
                     }
                     resolver.commit();

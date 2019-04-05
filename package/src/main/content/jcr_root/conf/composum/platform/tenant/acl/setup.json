@@ -26,6 +26,15 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "composum-pages-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
         "principal": "composum-pages-token-service",
         "acl": [
           {
@@ -67,6 +76,15 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "composum-pages-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
         "principal": "composum-platform-tenant-service",
         "acl": [
           {
@@ -104,7 +122,7 @@
     "path": "/content",
     "acl": [
       {
-        "principal": "composum-pages-token-service",
+        "principal": "composum-pages-service",
         "acl": [
           {
             "allow": true,
@@ -113,7 +131,7 @@
         ]
       },
       {
-        "principal": "composum-pages-service",
+        "principal": "composum-pages-token-service",
         "acl": [
           {
             "allow": true,
@@ -525,6 +543,21 @@
           {
             "allow": true,
             "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/home/groups/composum",
+    "jcr:primaryType": "rep:AuthorizableFolder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
           }
         ]
       }

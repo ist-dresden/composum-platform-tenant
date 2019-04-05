@@ -52,11 +52,12 @@ public class PlatformTenantManagerHook implements PlatformTenantHook {
         try {
             String aclRules = tenant.isActive() ? TENANT_ACLS : DEACTIVATED_ACLS;
             if (LOG.isDebugEnabled()) {
-                LOG.debug("applying ACL rules: {}", aclRules);
+                LOG.debug("{} - applying ACL rules: {}", tenant, aclRules);
             }
             //noinspection ConstantConditions
             setupService.addJsonAcl(resolver.adaptTo(Session.class), aclRules, getTenantValues(tenant));
         } catch (Exception ex) {
+            LOG.error(ex.toString());
             throw new PersistenceException(ex.getMessage(), ex);
         }
         return null;
@@ -70,11 +71,12 @@ public class PlatformTenantManagerHook implements PlatformTenantHook {
         final PlatformTenant tenant = (PlatformTenant) t;
         try {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("removing ACL rules: {}", TENANT_ACLS);
+                LOG.debug("{} - removing ACL rules: {}", tenant, TENANT_ACLS);
             }
             //noinspection ConstantConditions
             setupService.removeJsonAcl(resolver.adaptTo(Session.class), TENANT_ACLS, getTenantValues(tenant));
         } catch (Exception ex) {
+            LOG.error(ex.toString());
             throw new PersistenceException(ex.getMessage(), ex);
         }
     }
