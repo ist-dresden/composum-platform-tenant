@@ -142,12 +142,6 @@ public class PlatformTenantManager extends AbstractTenantService
         String tenant_primary_type() default "sling:Folder";
 
         @AttributeDefinition(
-                name = "Tenant Resource Type",
-                description = "the Sling resource type of a new tenant resource; default: 'composum/platform/tenant/component'"
-        )
-        String tenant_resource_type() default "composum/platform/tenant/component";
-
-        @AttributeDefinition(
                 name = "Tenant ID pattern",
                 description = "the pattern to check an id for a new tenant; default: '^[a-zA-Z_][a-zA-Z_0-9-]+$'"
         )
@@ -202,18 +196,21 @@ public class PlatformTenantManager extends AbstractTenantService
         };
     }
 
+    protected static final ResourceFilter TENANT_NODE_FILTER =
+            new ResourceFilter.ResourceTypeFilter(new StringFilter.WhiteList(TENANT_RESOURCE_TYPE));
+
     @Reference
-    protected void setResolverFactory(ResourceResolverFactory factory){
+    protected void setResolverFactory(ResourceResolverFactory factory) {
         resolverFactory = factory;
     }
 
     @Reference
-    protected void setPlatformAccessService(PlatformAccessService service){
+    protected void setPlatformAccessService(PlatformAccessService service) {
         accessService = service;
     }
 
     @Reference
-    protected void setPermissionsService(PermissionsService service){
+    protected void setPermissionsService(PermissionsService service) {
         permissionsService = service;
     }
 
@@ -297,7 +294,7 @@ public class PlatformTenantManager extends AbstractTenantService
     protected final PlatformTenant toTenant(@Nonnull final ResourceResolver context,
                                             @Nullable final Resource tenantResource,
                                             boolean checkPermission) {
-        if (tenantResource != null) {
+        if (tenantResource != null && tenantResource.isResourceType(TENANT_RESOURCE_TYPE)) {
             ValueMap values = tenantResource.getValueMap();
             Status status = Status.valueOf(values.get(PN_STATUS, Status.active.name()));
             Map<String, Object> properties = new HashMap<>();
@@ -330,7 +327,10 @@ public class PlatformTenantManager extends AbstractTenantService
             while (resourceIterator.hasNext()) {
                 Resource resource = resourceIterator.next();
                 if (tenantFilter.accept(resource)) {
-                    add(toTenant(context, resource, true));
+                    Tenant tenant = toTenant(context, resource, true);
+                    if (tenant != null) {
+                        add(tenant);
+                    }
                 }
             }
         }
@@ -343,8 +343,7 @@ public class PlatformTenantManager extends AbstractTenantService
         Iterator<Tenant> result = retrieve((resolver1, context) -> {
             // use context resolver (request) to avoid access cross tenant without access rights
             final Resource tenantsRoot = getTenantsRoot(context);
-            ResourceFilter resourceFilter = new ResourceFilter.PrimaryTypeFilter(
-                    new StringFilter.WhiteList(config.tenant_primary_type()));
+            ResourceFilter resourceFilter = TENANT_NODE_FILTER;
             if (filter != null) {
                 resourceFilter = new ResourceFilter.FilterSet(
                         ResourceFilter.FilterSet.Rule.and, resourceFilter, filter);
@@ -374,9 +373,7 @@ public class PlatformTenantManager extends AbstractTenantService
             }
             String value;
             final Map<String, Object> initialProps = new HashMap<>();
-            if (StringUtils.isNotBlank(value = config.tenant_resource_type())) {
-                initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, value);
-            }
+            initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, TENANT_RESOURCE_TYPE);
             if (properties != null) {
                 initialProps.putAll(properties);
             }
@@ -692,7 +689,7 @@ public class PlatformTenantManager extends AbstractTenantService
      * call action using service resolver if retrieval access is granted otherwise the given resolver...
      */
     protected <T> T retrieve(@Nonnull final ResourceResolverTask<T> task,
-                           @Nullable final ResourceResolver context, @Nullable String tenantId) {
+                             @Nullable final ResourceResolver context, @Nullable String tenantId) {
         try {
             return call(task, retrievalGranted, context, tenantId);
         } catch (IllegalStateException ignore) {
@@ -706,7 +703,7 @@ public class PlatformTenantManager extends AbstractTenantService
      * call action using service resolver if changing access is granted otherwise the given resolver...
      */
     protected <T> T change(@Nonnull final ResourceResolverTask<T> task,
-                         @Nullable final ResourceResolver context, @Nullable String tenantId)
+                           @Nullable final ResourceResolver context, @Nullable String tenantId)
             throws PersistenceException {
         return call(task, changingGranted, context, tenantId);
     }
@@ -715,7 +712,7 @@ public class PlatformTenantManager extends AbstractTenantService
      * call action using service resolver if managing access is granted otherwise the given resolver...
      */
     protected <T> T manage(@Nonnull final ResourceResolverTask<T> task,
-                         @Nullable final ResourceResolver context, @Nullable String tenantId)
+                           @Nullable final ResourceResolver context, @Nullable String tenantId)
             throws PersistenceException {
         return call(task, managingGranted, context, tenantId);
     }

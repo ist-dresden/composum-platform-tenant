@@ -17,6 +17,8 @@ import java.util.Map;
  */
 public interface TenantManagerService {
 
+    String TENANT_RESOURCE_TYPE = "composum/platform/tenant";
+
     /**
      * @param resolver the resolver of the users session (request resolver)
      * @return the root resource of the managed tenant resources

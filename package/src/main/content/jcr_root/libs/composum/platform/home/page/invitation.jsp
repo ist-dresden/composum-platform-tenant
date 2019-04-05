@@ -3,7 +3,8 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.HomePageBean">
-    <cpn:form action="/bin/cpm/platform/workflow.addTask.json" method="POST">
+    <cpn:form class="composum-platform-tenant_home_member-request-form"
+              action="/bin/cpm/platform/workflow.addTask.json" method="POST">
 
         <div class="alert alert-hidden" role="alert"></div>
 

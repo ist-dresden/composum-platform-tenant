@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:language="de"
+        jcr:mixinTypes="[mix:language]"
+        jcr:primaryType="sling:Folder"
+        sling:basename="composum-platform-workflow">
+
+    <general jcr:primaryType="sling:Folder">
+
+        <tenant jcr:primaryType="sling:MessageEntry"
+                sling:key="Tenant" sling:message="Mandant"/>
+        <message jcr:primaryType="sling:MessageEntry"
+                sling:key="Message" sling:message="Nachricht"/>
+
+    </general>
+    <dialog jcr:primaryType="sling:Folder">
+
+        <tenant-id-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the tenants id" sling:message="Mandanten-ID"/>
+        <message-hint-mgr jcr:primaryType="sling:MessageEntry"
+                sling:key="your message to the manager of the tenant" sling:message="Ihre Nachricht an den Manager des Mandanten"/>
+        <given-name-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="your given name and the surname" sling:message="Ihr Vor- und Zuname"/>
+
+    </dialog>
+</jcr:root>

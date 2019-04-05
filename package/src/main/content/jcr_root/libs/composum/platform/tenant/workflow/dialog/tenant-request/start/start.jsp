@@ -10,8 +10,8 @@
                         class="label-text">${cpn:i18n(slingRequest,'Tenant')}</span><cpn:text
                         tagName="span" class="widget-hint" i18n="true" type="rich"
                         value="the tenants id"/></label>
-                <input name="tenant.id" class="widget text-field-widget form-control" type="text"
-                       data-rules="mandatory" value="${wfDialog.tenantId}"/>
+                <input name="data/tenantId" class="widget text-field-widget form-control" type="text"
+                       data-rules="mandatory"/>
             </div>
         </div>
         <div class="col-xs-8">
@@ -19,7 +19,7 @@
                 <label class="widget-label"><span
                         class="label-text">${cpn:i18n(slingRequest,'Name')}</span><cpn:text
                         tagName="span" class="widget-hint" i18n="true" type="rich"
-                        value="your given name and the surname"/></label>
+                        value="the new tenants name"/></label>
                 <input name="data/name" class="widget text-field-widget form-control" type="text"/>
             </div>
         </div>
@@ -28,7 +28,7 @@
         <label class="widget-label"><span
                 class="label-text">${cpn:i18n(slingRequest,'Message')}</span><cpn:text
                 tagName="span" class="widget-hint" i18n="true" type="rich"
-                value="your message to the manager of the tenant"/></label>
-        <textarea name="data/message" class="widget text-area-widget form-control"></textarea>
+                value="a short description for the new tenant"/></label>
+        <textarea name="data/description" class="widget text-area-widget form-control"></textarea>
     </div>
 </cpn:component>

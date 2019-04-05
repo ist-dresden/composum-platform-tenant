@@ -5,4 +5,6 @@
         openTasks="&lt;p>Der 'Onboarding'- Prozess ist noch in Arbeit; mit dessen Abschluss wird der Zugriff auf das System passend eingerichtet sein...&lt;/p>"
         noTenant="&lt;p>Sie sind keinem Mandanten dieser Plattform zugeordnet.&lt;/p>"
         invitation="&lt;p>Falls Sie ihren gewünschten Mandanten kennen, dann fordern Sie mit dem nachfolgenden Formular die Zuweisung einer passenden Rolle für diesen Mandanten an.&lt;/p>"
-        creation="&lt;p>Wenn Sie ihren eigenen Mandanten anlegen wollen, dann füllen Sie das nachfolgende Formular aus und schicken Sie die Anforderung ab.&lt;/p>"/>
+        creation="&lt;p>Wenn Sie ihren eigenen Mandanten anlegen wollen, dann füllen Sie das nachfolgende Formular aus und schicken Sie die Anforderung ab.&lt;/p>"
+        invalidForm="&lt;p>Es sind benötigte Angaben unvollständig.&lt;/p>"
+        submitError="&lt;p>Fehler bei der Annahme. Bitte informieren Sie den Plattform-Administrator.&lt;/p>"/>

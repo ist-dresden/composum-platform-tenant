@@ -15,13 +15,17 @@
                     </c:when>
                     <c:otherwise>
                         <c:choose>
-                            <c:when test="${false and home.openWorkflows}">
+                            <c:when test="${home.openWorkflows}">
                                 <cpn:text tagName="div" class="alert alert-warning" value="${home.properties.openTasks}"
                                           type="rich"/>
                             </c:when>
                             <c:otherwise>
                                 <cpn:text tagName="div" class="alert alert-warning" value="${home.properties.noTenant}"
                                           type="rich"/>
+                                <cpn:text tagName="div" class="validation-alert alert alert-danger hidden"
+                                          value="${home.properties.invalidForm}" type="rich"/>
+                                <cpn:text tagName="div" class="submission-alert alert alert-danger hidden"
+                                          value="${home.properties.submitError}" type="rich"/>
                                 <cpn:text tagName="div" class="alert alert-success" value="${home.properties.invitation}"
                                           type="rich"/>
                                 <sling:call script="invitation.jsp"/>

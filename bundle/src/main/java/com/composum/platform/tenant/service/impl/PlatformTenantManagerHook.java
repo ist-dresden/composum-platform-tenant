@@ -12,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +56,7 @@ public class PlatformTenantManagerHook implements PlatformTenantHook {
             }
             //noinspection ConstantConditions
             setupService.addJsonAcl(resolver.adaptTo(Session.class), aclRules, getTenantValues(tenant));
-        } catch (RepositoryException | IOException ex) {
+        } catch (Exception ex) {
             throw new PersistenceException(ex.getMessage(), ex);
         }
         return null;
@@ -76,7 +74,7 @@ public class PlatformTenantManagerHook implements PlatformTenantHook {
             }
             //noinspection ConstantConditions
             setupService.removeJsonAcl(resolver.adaptTo(Session.class), TENANT_ACLS, getTenantValues(tenant));
-        } catch (RepositoryException | IOException ex) {
+        } catch (Exception ex) {
             throw new PersistenceException(ex.getMessage(), ex);
         }
     }
