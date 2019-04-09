@@ -1,0 +1,84 @@
+@charset "UTF-8";
+
+.composum-platform-tenant {
+
+    &_users {
+
+        &-table {
+
+            .table {
+                font-size: 14px;
+
+                th, td {
+                    vertical-align: top;
+                    text-align: left;
+
+                    p:last-child {
+                        margin-bottom: 0;
+                    }
+
+                    &.sel, &.role {
+                        text-align: center;
+                    }
+
+                    &.role {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+
+        &-item {
+            cursor: pointer;
+        }
+    }
+}
+
+/* composum core console */
+
+.console .detail-view .detail-content {
+
+    .composum-platform-tenant {
+
+        &_users {
+
+            &-table {
+
+                .table {
+                    font-size: 14px;
+
+                    tbody {
+                        position: absolute;
+                        top: 71px;
+                        left: 0;
+                        right: 0;
+                        bottom: 42px;
+                        overflow: auto;
+                    }
+
+                    tr {
+                        display: inline-table;
+                        width: 100%;
+                    }
+
+                    th, td {
+
+                        &.sel {
+                            width: 32px;
+                            text-align: center;
+                        }
+
+                        &.name, &.id, &.email {
+                            width: 24%;
+                            overflow: hidden;
+                        }
+
+                        &.role {
+                            width: 4%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -19,11 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @Component(
@@ -38,27 +41,168 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
 
     private static final String TENANT_GROUP_PREFIX = "tenant-";
 
+    private static final Role[] TENANT_USER_ROLES =
+            new Role[]{Role.visitor, Role.publisher, Role.editor, Role.developer, Role.manager};
+
+    private class PlatformTenantUser implements TenantUser {
+
+        private String userId;
+        private String name;
+        private String email;
+        private List<Role> roles;
+
+        public PlatformTenantUser(@Nonnull final String userId, @Nullable final String name,
+                                  @Nonnull final String email, @Nonnull final Role... roles) {
+            this.userId = userId;
+            this.name = name;
+            this.email = email;
+            this.roles = Arrays.asList(roles);
+        }
+
+        @Override
+        @Nonnull
+        public String getId() {
+            return userId;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String getEmail() {
+            return email;
+        }
+
+        @Override
+        public boolean isVisitor() {
+            return hasRole(Role.visitor);
+        }
+
+        @Override
+        public boolean isPublisher() {
+            return hasRole(Role.publisher);
+        }
+
+        @Override
+        public boolean isEditor() {
+            return hasRole(Role.editor);
+        }
+
+        @Override
+        public boolean isDeveloper() {
+            return hasRole(Role.developer);
+        }
+
+        @Override
+        public boolean isManager() {
+            return hasRole(Role.manager);
+        }
+
+        @Override
+        public boolean isAssistant() {
+            return hasRole(Role.assistant);
+        }
+
+        @Override
+        public boolean hasRole(Role role) {
+            return roles.contains(role);
+        }
+
+        @Override
+        @Nonnull
+        public List<Role> getRoles() {
+            return roles;
+        }
+
+        @Override
+        public int compareTo(@Nonnull final TenantUser other) {
+            return (getName() + "#" + getId()).compareTo(other.getName() + "#" + other.getId());
+        }
+
+        @Override
+        public String toString() {
+            return userId;
+        }
+
+        @Override
+        public int hashCode() {
+            return userId.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TenantUser && getId().equals(((TenantUser) other).getId());
+        }
+    }
+
     @Reference
-    protected void setResolverFactory(ResourceResolverFactory factory){
+    protected void setResolverFactory(ResourceResolverFactory factory) {
         resolverFactory = factory;
     }
 
     @Reference
-    protected void setPlatformAccessService(PlatformAccessService service){
+    protected void setPlatformAccessService(PlatformAccessService service) {
         accessService = service;
     }
 
     @Reference
-    protected void setPermissionsService(PermissionsService service){
+    protected void setPermissionsService(PermissionsService service) {
         permissionsService = service;
     }
 
     @Override
+    @Nullable
+    public TenantUser getTenantUser(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                                    @Nonnull final String userId)
+            throws RepositoryException {
+        return call((session, context) -> {
+            PlatformTenantUser result = null;
+            final UserManager userManager = session.getUserManager();
+            final Authorizable user = userManager.getAuthorizable(userId);
+            if (user instanceof User
+                    && (isMember(userManager, tenantId, user, Role.member)
+                    || isMember(userManager, tenantId, user, Role.visitor))) {
+                result = loadUser(userManager, tenantId, (User) user);
+            }
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("getTenantUser({},{}): {}", tenantId, userId, result);
+            }
+            return result;
+        }, resolver, tenantId);
+    }
+
+    @Override
     @Nonnull
-    public Collection<UserInfo> getTenantUsers(@Nonnull final ResourceResolver resolver,
-                                               @Nonnull final String tenantId) {
-        List<UserInfo> users = new ArrayList<>();
-        return users;
+    public Collection<TenantUser> getTenantUsers(@Nonnull final ResourceResolver resolver,
+                                                 @Nonnull final String tenantId)
+            throws RepositoryException {
+        return call((session, context) -> {
+            List<User> users = new ArrayList<>();
+            final UserManager userManager = session.getUserManager();
+            for (Role role : TENANT_USER_ROLES) {
+                Authorizable group = userManager.getAuthorizable(getGroupId(tenantId, role));
+                if (group instanceof Group) {
+                    Iterator<Authorizable> members = ((Group) group).getMembers();
+                    while (members.hasNext()) {
+                        Authorizable user = members.next();
+                        if (user instanceof User && !users.contains(user)) {
+                            users.add((User) user);
+                        }
+                    }
+                }
+            }
+            List<TenantUser> result = new ArrayList<>();
+            for (User user : users) {
+                result.add(loadUser(userManager, tenantId, user));
+            }
+            Collections.sort(result);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("getTenantUsers({}): {}", tenantId, users.size());
+            }
+            return result;
+        }, resolver, tenantId);
     }
 
     @Override
@@ -70,19 +214,6 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
                 LOG.debug("assign roles({},{},[{}])...", tenantId, userId, StringUtils.join(roles, ","));
             }
             changeGroup(session, tenantId, Group::addMember, userId, roles);
-            return null;
-        }, resolver, tenantId);
-    }
-
-    @Override
-    public void revoke(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
-                       @Nonnull final String userId, @Nonnull final String... roles)
-            throws RepositoryException {
-        call((session, context) -> {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("revoke roles({},{},[{}])...", tenantId, userId, StringUtils.join(roles, ","));
-            }
-            changeGroup(session, tenantId, Group::removeMember, userId, roles);
             return null;
         }, resolver, tenantId);
     }
@@ -108,9 +239,60 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
         }, resolver, tenantId);
     }
 
+    @Override
+    public void revoke(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                       @Nonnull final String userId, @Nonnull final String... roles)
+            throws RepositoryException {
+        call((session, context) -> {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("revoke roles({},{},[{}])...", tenantId, userId, StringUtils.join(roles, ","));
+            }
+            changeGroup(session, tenantId, Group::removeMember, userId, roles);
+            return null;
+        }, resolver, tenantId);
+    }
+
+    //
+
+    protected PlatformTenantUser loadUser(@Nonnull final UserManager userManager, @Nonnull final String tenantId,
+                                          @Nonnull final User user)
+            throws RepositoryException {
+        List<Role> roles = new ArrayList<>();
+        Iterator<Group> groups = user.memberOf();
+        while (groups.hasNext()) {
+            Role role = getGroupRole(tenantId, groups.next());
+            if (role != null) {
+                roles.add(role);
+            }
+        }
+        return new PlatformTenantUser(user.getID(), "", "", roles.toArray(new Role[0]));
+    }
+
+    protected boolean isMember(@Nonnull final UserManager userManager, @Nonnull final String tenantId,
+                               @Nonnull final Authorizable user, @Nonnull final Role role)
+            throws RepositoryException {
+        Authorizable group = userManager.getAuthorizable(getGroupId(tenantId, role));
+        return group instanceof Group && ((Group) group).isMember(user);
+    }
+
     // group change methods
 
-    protected String getGroupId(@Nonnull final String tenantId, Role role) {
+    protected Role getGroupRole(@Nonnull final String tenantId, @Nonnull final Group group)
+            throws RepositoryException {
+        String id = group.getID();
+        String startPattern = TENANT_GROUP_PREFIX + tenantId + "-";
+        if (id.startsWith(startPattern) && id.endsWith("s")) {
+            id = id.substring(startPattern.length());
+            id = id.substring(0, id.length() - 1);
+            try {
+                return Role.valueOf(id);
+            } catch (Exception ignore) {
+            }
+        }
+        return null;
+    }
+
+    protected String getGroupId(@Nonnull final String tenantId, @Nonnull final Role role) {
         return TENANT_GROUP_PREFIX + tenantId + "-" + role.name() + "s";
     }
 

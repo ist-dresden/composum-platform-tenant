@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+.composum-platform-tenant {
+
+    &_dialog {
+
+        .form-group {
+
+            .checkbox-set {
+                margin-top: -10px;
+                padding-left: 10px;
+            }
+        }
+
+        .composum-form {
+
+            &_checkbox-label {
+
+                .composum-form {
+
+                    &_label-value {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+}

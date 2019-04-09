@@ -68,6 +68,68 @@
             }
           }
         ]
+      },
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "groupPath": "composum/platform",
+        "acl": [
+          {
+            "allow": false,
+            "privileges": "jcr:all"
+          },
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-publishers",
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-editors",
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-developers",
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-managers",
+        "groupPath": "composum/platform",
+        "memberOf": [
+          "composum-platform-tenant-members"
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "groupPath": "composum/platform",
+        "acl": [
+          {
+            "allow": false,
+            "privileges": "jcr:all"
+          },
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
       }
     ]
   },
@@ -94,6 +156,18 @@
         ]
       },
       {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
         "principal": "composum-platform-tenant-members",
         "acl": [
           {
@@ -106,14 +180,15 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-visitors",
-        "groupPath": "composum/platform"
-      },
-      {
-        "principal": "composum-platform-tenant-publishers",
-        "groupPath": "composum/platform",
-        "memberOf": [
-          "composum-platform-tenant-members"
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
         ]
       }
     ]
@@ -161,10 +236,15 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-editors",
-        "groupPath": "composum/platform",
-        "memberOf": [
-          "composum-platform-tenant-members"
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
         ]
       }
     ]
@@ -209,10 +289,15 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-developers",
-        "groupPath": "composum/platform",
-        "memberOf": [
-          "composum-platform-tenant-members"
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
         ]
       }
     ]
@@ -245,10 +330,15 @@
         ]
       },
       {
-        "principal": "composum-platform-tenant-managers",
-        "groupPath": "composum/platform",
-        "memberOf": [
-          "composum-platform-tenant-members"
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
         ]
       }
     ]
@@ -268,6 +358,18 @@
       },
       {
         "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -358,6 +460,15 @@
             "privileges": "jcr:read"
           }
         ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
       }
     ]
   },
@@ -366,6 +477,15 @@
     "acl": [
       {
         "principal": "composum-platform-tenant-developers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -401,6 +521,15 @@
       },
       {
         "principal": "composum-platform-tenant-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -456,6 +585,15 @@
             "privileges": "jcr:read"
           }
         ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
       }
     ]
   },
@@ -501,6 +639,15 @@
       },
       {
         "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -600,6 +747,15 @@
             "restrictions": {
               "rep:glob": ""
             }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
           }
         ]
       }

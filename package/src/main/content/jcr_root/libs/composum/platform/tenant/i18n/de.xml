@@ -13,6 +13,34 @@
                 sling:key="Message" sling:message="Nachricht"/>
 
     </general>
+    <roles jcr:primaryType="sling:Folder">
+
+        <visitor jcr:primaryType="sling:MessageEntry"
+                sling:key="Visitor" sling:message="Visitor"/>
+        <visitor-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a visitor can view preview content only (review guest role)" sling:message="kann die Vorschau des Mandanten ansehen (Review-Gast-Rolle)"/>
+        <publisher jcr:primaryType="sling:MessageEntry"
+                sling:key="Publisher" sling:message="Publisher"/>
+        <publisher-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a publisher can build and publish the tenants site releases" sling:message="kann Content-Releases des Mandanten veröffentlichen"/>
+        <editor jcr:primaryType="sling:MessageEntry"
+                sling:key="Editor" sling:message="Editor"/>
+        <editor-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="an editor can create and modify the tenants sites and pages" sling:message="kann Content-Sites und Seiten des Mandanten bearbeiten"/>
+        <developer jcr:primaryType="sling:MessageEntry"
+                sling:key="Developer" sling:message="Developer"/>
+        <developer-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a developer can create and modify the tenants components" sling:message="kann die Componenten des Mandaten implementieren"/>
+        <manager jcr:primaryType="sling:MessageEntry"
+                sling:key="Manager" sling:message="Manager"/>
+        <manager-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a manager can assign roles to users and configure the tenant" sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
+        <assistant jcr:primaryType="sling:MessageEntry"
+                sling:key="Assistant" sling:message="Assistant"/>
+        <assistant-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a manager can assign roles to users and configure the tenant" sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
+
+    </roles>
     <dialog jcr:primaryType="sling:Folder">
 
         <tenant-id-hint jcr:primaryType="sling:MessageEntry"

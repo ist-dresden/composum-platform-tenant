@@ -11,7 +11,7 @@
 
         tenants.current = {};
 
-        tenants.const = {
+        tenants.const = _.extend(tenants.const || {}, {
             path: {
                 root: '/etc/tenants'
             },
@@ -23,7 +23,7 @@
                 base: '/bin/cpm/platform/tenants/manager',
                 _tree: '.tree.json'
             }
-        };
+        });
 
         tenants.getCurrentId = function () {
             return tenants.current ? tenants.current.id : undefined;
@@ -273,7 +273,7 @@
             selector: '> .tenant-detail',
             tabType: tenants.TenantTab
         }, {
-            selector: '> .tenant-users',
+            selector: '> .composum-platform-tenant_users-console',
             tabType: tenants.UsersTab
         }, {
             selector: '> .tenant-sites',

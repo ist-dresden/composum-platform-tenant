@@ -78,6 +78,9 @@ public class CreateTenant implements WorkflowAction {
                                 userId, tenantId, ex.getMessage()));
                     }
                     resolver.commit();
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("create tenant successful ({},{})", tenantId, userId);
+                    }
                     return Result.OK;
                 } catch (PersistenceException ex) {
                     LOG.error(ex.getMessage(), ex);
@@ -85,6 +88,7 @@ public class CreateTenant implements WorkflowAction {
                             tenantId, ex.getMessage()));
                 }
             } else {
+                LOG.error("process failed, no tenant ({}) or user ({})", tenantId, userId);
                 return new Result(Status.failure, new Message(Level.error, "tenant and user must be specified"));
             }
         } catch (Exception ex) {

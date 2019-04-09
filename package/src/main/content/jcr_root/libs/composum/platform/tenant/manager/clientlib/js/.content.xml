@@ -3,8 +3,7 @@
         jcr:primaryType="sling:OrderedFolder"
         depends="[category:composum.core.console.default]"
         embed="[category:composum.platform.workflow.console,
+                /libs/composum/platform/tenant/manager/components/users/js/users.js,
                 /libs/composum/platform/tenant/manager/js/console.js,
-                /libs/composum/platform/tenant/manager/tabs/root/js/root.js,
-                /libs/composum/platform/tenant/manager/tabs/tenant/js/tenant.js,
                 /libs/composum/platform/tenant/manager/js/dialogs.js,
                 /libs/composum/platform/tenant/manager/js/manager.js]"/>
