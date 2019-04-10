@@ -83,6 +83,10 @@
             <groupId>com.composum.sling.platform</groupId>
             <artifactId>composum-sling-platform-security-bundle</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.composum.sling.platform</groupId>
+            <artifactId>composum-sling-platform-commons-bundle</artifactId>
+        </dependency>
 
         <!-- Composum Nodes (Core) -->
         <dependency>
