@@ -23,6 +23,15 @@
         <plugins>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
             </plugin>
@@ -47,9 +56,6 @@
                             javax.annotation.*;version="[0,4)",
                             *
                         </Import-Package>
-                        <Embed-Dependency>
-                            *;scope=compile|runtime
-                        </Embed-Dependency>
                     </instructions>
                 </configuration>
             </plugin>
