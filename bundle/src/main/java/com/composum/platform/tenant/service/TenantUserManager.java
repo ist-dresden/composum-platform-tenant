@@ -47,6 +47,8 @@ public interface TenantUserManager {
         List<Role> getRoles();
     }
 
+    boolean isInRole(@Nonnull String tenantId, @Nonnull Role role, @Nonnull String userId);
+
     /**
      * @return the user object if the user is joined to the tenant otherwise 'null'
      */

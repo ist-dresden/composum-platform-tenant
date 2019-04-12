@@ -153,6 +153,28 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
     }
 
     @Override
+    public boolean isInRole(@Nonnull final String tenantId, @Nonnull final Role role, @Nonnull final String userId) {
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            JackrabbitSession session = (JackrabbitSession) serviceResolver.adaptTo(Session.class);
+            if (session != null) {
+                final UserManager userManager = session.getUserManager();
+                Authorizable member = userManager.getAuthorizable(userId);
+                if (member != null) {
+                    Authorizable group = userManager.getAuthorizable(getGroupId(tenantId, role));
+                    if (group instanceof Group) {
+                        return ((Group) group).isMember(member);
+                    }
+                }
+            } else {
+                LOG.error("can't adapt to session");
+            }
+        } catch (LoginException | RepositoryException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+        return false;
+    }
+
+    @Override
     @Nullable
     public TenantUser getTenantUser(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                                     @Nonnull final String userId)
