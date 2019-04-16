@@ -143,9 +143,9 @@ public final class PlatformTenantManager extends AbstractTenantService
 
         @AttributeDefinition(
                 name = "Tenant ID pattern",
-                description = "the pattern to check an id for a new tenant; default: '^[a-zA-Z_][a-zA-Z_0-9-]+$'"
+                description = "the pattern to check an id for a new tenant; default: '^[a-zA-Z_][a-zA-Z_0-9]+$'"
         )
-        String tenant_id_pattern() default "^[a-zA-Z_][a-zA-Z_0-9-]+$";
+        String tenant_id_pattern() default "^[a-zA-Z_][a-zA-Z_0-9]+$";
 
         @AttributeDefinition(
                 name = "Reserved Tenant IDs",

@@ -7,7 +7,7 @@
         title="Assign Role"
         hint="assign the selected roles to the user"
         hintAdded="The selected roles will be assigned now to the user."
-        dialog="composum/platform/tenant/workflow/dialog/assign-role">
+        dialog="composum/platform/tenant/workflow/dialog/manage/assign-role">
     <i18n
             jcr:primaryType="nt:unstructured">
         <de

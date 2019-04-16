@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:primaryType="cpp:Widget"
+        jcr:title="Tenant Select Widget"
+        jcr:description="a selct bos widget to choice a tenant id; is using a resources tenant as default value"
+        sling:resourceType="composum/platform/tenant/widget/select/tenant"
+        sling:resourceSuperType="composum/pages/commons/widget/select"
+        modelClass="com.composum.platform.tenant.widget.select.TenantSelect"/>

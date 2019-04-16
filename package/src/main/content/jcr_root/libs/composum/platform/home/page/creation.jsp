@@ -12,22 +12,22 @@
         <input name="wf.template" type="hidden" value="/conf/composum/workflow/everyone/tenant-request"/>
         <div class="row">
             <div class="col-xs-4">
-                <div class="form-group">
+                <div class="form-group widget text-field-widget">
                     <label class="control-label">${model.properties['form/tenantId']}</label>
-                    <input name="data/tenantId" class="widget text-field-widget form-control" type="text"
+                    <input name="data/tenantId" class="form-control" type="text"
                            data-rules="mandatory"/>
                 </div>
             </div>
             <div class="col-xs-8">
-                <div class="form-group">
+                <div class="form-group widget text-field-widget">
                     <label class="control-label">${model.properties['form/tenantName']}</label>
-                    <input name="data/name" class="widget text-field-widget form-control" type="text"/>
+                    <input name="data/name" class="form-control" type="text"/>
                 </div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group widget text-area-widget">
             <label class="control-label">${model.properties['form/description']}</label>
-            <input name="data/description" class="widget text-area-widget form-control" type="text"/>
+            <input name="data/description" class="form-control" type="text"/>
         </div>
 
         <div class="buttons">

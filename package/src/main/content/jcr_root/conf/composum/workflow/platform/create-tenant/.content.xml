@@ -7,7 +7,7 @@
         title="Create Tenant"
         hint="creates a new tenant with the requesting user as the first manager"
         hintAdded="The new tenant  will be created now."
-        dialog="composum/platform/tenant/workflow/dialog/create-tenant">
+        dialog="composum/platform/tenant/workflow/dialog/manage/create-tenant">
     <i18n
             jcr:primaryType="nt:unstructured">
         <de

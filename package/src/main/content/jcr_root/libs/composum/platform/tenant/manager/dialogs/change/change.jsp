@@ -21,9 +21,9 @@
                         <input name="_charset_" type="hidden" value="UTF-8"/>
                         <div class="row">
                             <div class="col-xs-4">
-                                <div class="form-group">
+                                <div class="form-group widget text-field-widget">
                                     <label class="control-label">Tenant-ID</label>
-                                    <input name="tenant.id" class="widget text-field-widget form-control"
+                                    <input name="tenant.id" class="form-control"
                                            type="text" data-rules="mandatory"/>
                                     <div class="hint  text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</div>
                                 </div>

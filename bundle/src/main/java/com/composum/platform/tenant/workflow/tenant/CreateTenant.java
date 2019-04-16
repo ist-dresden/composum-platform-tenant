@@ -1,6 +1,5 @@
 package com.composum.platform.tenant.workflow.tenant;
 
-import com.composum.platform.models.simple.MetaData;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.workflow.WorkflowAction;
@@ -10,6 +9,7 @@ import com.composum.sling.core.BeanContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.apache.sling.tenant.Tenant;
 import org.osgi.framework.Constants;
@@ -48,20 +48,19 @@ public class CreateTenant implements WorkflowAction {
 
     @Override
     @Nonnull
-    public Result process(@Nonnull final BeanContext context,
-                          @Nonnull final WorkflowTaskInstance task,
-                          @Nullable final WorkflowTaskTemplate.Option option, @Nullable final String comment,
-                          @Nonnull final MetaData metaData) {
+    public Result process(@Nonnull final BeanContext context, @Nonnull final WorkflowTaskInstance task,
+                          @Nullable final WorkflowTaskTemplate.Option option, @Nonnull final ValueMap data,
+                          @Nullable final String comment) {
         try {
-            String tenantId = task.getData().get("tenantId", "");
-            String userId = task.getData().get("userId", "");
+            String tenantId = data.get("tenantId", "");
+            String userId = data.get("userId", "");
             if (StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)) {
                 Map<String, Object> tenantProperties = new HashMap<>();
                 String value;
-                if (StringUtils.isNotBlank(value = task.getData().get("name", ""))) {
+                if (StringUtils.isNotBlank(value = data.get("name", ""))) {
                     tenantProperties.put(Tenant.PROP_NAME, value);
                 }
-                if (StringUtils.isNotBlank(value = task.getData().get("description", ""))) {
+                if (StringUtils.isNotBlank(value = data.get("description", ""))) {
                     tenantProperties.put(Tenant.PROP_DESCRIPTION, value);
                 }
                 try {
