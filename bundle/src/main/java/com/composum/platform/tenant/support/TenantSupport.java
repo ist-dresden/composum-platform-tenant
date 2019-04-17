@@ -80,8 +80,15 @@ public class TenantSupport implements PagesTenantSupport {
         Tenant tenant = (focus != null ? focus : context.getResource()).adaptTo(Tenant.class);
         if (tenant != null) {
             String userId = resolver.getUserID();
-            if (StringUtils.isNotBlank(userId) && !"anonymous".equals(userId)) {
-                return userManager.isInRole(tenant.getId(), TenantUserManager.Role.developer, userId);
+            if (StringUtils.isNotBlank(userId)) {
+                switch (userId) {
+                    case "anonymous":
+                        return false;
+                    case "admin":
+                        return true;
+                    default:
+                        return userManager.isInRole(tenant.getId(), TenantUserManager.Role.developer, userId);
+                }
             }
         }
         return false;
