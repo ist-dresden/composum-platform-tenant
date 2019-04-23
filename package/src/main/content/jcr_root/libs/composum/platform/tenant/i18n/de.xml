@@ -51,4 +51,27 @@
                 sling:key="your given name and the surname" sling:message="Ihr Vor- und Zuname"/>
 
     </dialog>
+    <conversation jcr:primaryType="sling:Folder">
+
+        <conversation jcr:primaryType="sling:MessageEntry"
+                sling:key="Conversation" sling:message="Konversation"/>
+        <message jcr:primaryType="sling:MessageEntry"
+                sling:key="Message" sling:message="Nachricht"/>
+        <answer jcr:primaryType="sling:MessageEntry"
+                sling:key="Answer" sling:message="Antwort"/>
+        <reply jcr:primaryType="sling:MessageEntry"
+                sling:key="Reply" sling:message="Antworten"/>
+        <delegate jcr:primaryType="sling:MessageEntry"
+                sling:key="Delegate" sling:message="Delegieren"/>
+
+        <from jcr:primaryType="sling:MessageEntry"
+                sling:key="From" sling:message="Von"/>
+        <to jcr:primaryType="sling:MessageEntry"
+                sling:key="To" sling:message="An"/>
+        <subject jcr:primaryType="sling:MessageEntry"
+                sling:key="Subject" sling:message="Betreff"/>
+        <target jcr:primaryType="sling:MessageEntry"
+                sling:key="Target" sling:message="Ziel"/>
+
+    </conversation>
 </jcr:root>

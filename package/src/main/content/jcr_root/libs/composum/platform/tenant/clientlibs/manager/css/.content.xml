@@ -3,6 +3,7 @@
         jcr:primaryType="sling:OrderedFolder"
         depends="[category:composum.core.console.default]"
         embed="[category:composum.platform.workflow.console,
+                composum/platform/tenant/workflow/dialog/message/clientlib/dialog.css,
                 composum/platform/tenant/manager/components/tenant/css/tenant.css,
                 composum/platform/tenant/manager/components/users/css/users.css,
                 composum/platform/tenant/manager/css/dialogs.css,

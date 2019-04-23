@@ -6,15 +6,16 @@
 <cpn:component id="task" type="com.composum.platform.workflow.model.WorkflowTaskInstance">
     <cpn:div test="${not empty task.head}" class="conversation">
         <c:forEach items="${task.head}" var="head" varStatus="status">
-            <div class="conversation-item hidden">
+            <div class="conversation-item">
                 <c:if test="${not status.first}">
                     <button type="button"
-                            class="conversation-toggle btn btn-xs btn-default">${cpn:i18n(slingRequest,'more')}...
-                    </button>
+                            class="conversation-toggle fa fa-level-up btn btn-xs btn-default"></button>
                 </c:if>
-                <cpn:text value="${head.date}"/>
-                <cpn:text value="${head.assignee}"/>
-                <cpn:div test="${not empty head.data.subject and not task.data.subject eq head.data.subject}"
+                <div class="conversation-meta">
+                    <cpn:text value="${head.date}"/> |
+                    <cpn:text value="${head.data.from}"/>
+                </div>
+                <cpn:div test="${not empty head.data.subject and task.data.subject ne head.data.subject}"
                          class="composum-platform-workflow_message-subject">
                     <cpn:text value="${head.data.subject}"/>
                 </cpn:div>
@@ -23,7 +24,9 @@
                 </cpn:div>
             </div>
         </c:forEach>
-        <button type="button"
-                class="conversation-toggle btn btn-xs btn-default">${cpn:i18n(slingRequest,'Conversation')}</button>
+        <div class="conversation-start">
+            <button type="button"
+                    class="conversation-toggle btn btn-xs btn-default">${cpn:i18n(slingRequest,'Conversation')}</button>
+        </div>
     </cpn:div>
 </cpn:component>

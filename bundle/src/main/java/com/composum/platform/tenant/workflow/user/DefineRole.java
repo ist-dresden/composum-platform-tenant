@@ -39,8 +39,7 @@ public class DefineRole implements WorkflowAction {
     @Override
     @Nonnull
     public Result process(@Nonnull final BeanContext context, @Nonnull final WorkflowTaskInstance task,
-                          @Nullable final WorkflowTaskTemplate.Option option, @Nonnull final ValueMap data,
-                          @Nullable final String comment) {
+                          @Nullable final WorkflowTaskTemplate.Option option, @Nonnull final ValueMap data) {
         try {
             String tenantId = data.get("tenantId", "");
             String userId = data.get("userId", "");

@@ -4,13 +4,13 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.widget.select.Assignee">
-    <div class="form-group widget combobox-widget">
+    <div class="form-group widget combobox-widget" data-rules="mandatory">
         <label class="widget-label"><span
                 class="label-text">${cpn:i18n(slingRequest,'Mail To')}</span><cpn:text
                 tagName="span" class="widget-hint" i18n="true" type="rich"
                 value="the addressed user or group"/></label>
         <div class="input-group">
-            <input name="data/assignee" value="${model.value}" class="form-control" type="text" data-rules="mandatory"/>
+            <sling:call script="value.jsp"/>
             <span class="input-group-btn">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"><i
                     class="fa fa-caret-down"></i></button>

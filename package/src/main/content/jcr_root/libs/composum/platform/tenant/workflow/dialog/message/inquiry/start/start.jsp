@@ -3,12 +3,12 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <sling:include resourceType="composum/platform/tenant/workflow/dialog/message/recipient"/>
-<div class="form-group widget text-field-widget">
+<div class="form-group widget text-field-widget" data-rules="mandatory">
     <label class="widget-label"><span
             class="label-text">${cpn:i18n(slingRequest,'Subject')}</span><cpn:text
             tagName="span" class="widget-hint" i18n="true" type="rich"
             value="a short summary"/></label>
-    <input name="data/subject" class="form-control" type="text" data-rules="mandatory"/>
+    <input name="data/subject" class="form-control" type="text"/>
 </div>
 <sling:call script="target-form.jsp"/>
 <div class="form-group widget richtext-widget composum-widgets-richtext">

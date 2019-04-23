@@ -7,6 +7,7 @@
     <cpn:component id="manager" type="com.composum.platform.tenant.view.TenantManagerBean" scope="request">
         <html data-context-path="${slingRequest.contextPath}">
         <head>
+            <title>Composum ${cpn:i18n(slingRequest,'Tenant Manager')}</title>
             <sling:call script="/libs/composum/nodes/console/page/head.jsp"/>
             <cpn:clientlib type="css" category="composum.platform.tenants.manager"/>
         </head>
@@ -53,9 +54,9 @@
                     <div class="split-pane-component right-pane">
                         <div id="split-view-vertical-split" class="split-pane vertical-split fixed-top">
                             <div class="split-pane-component top-pane">
-                                    <%--div id="tenants-query">
-                                        <sling:include resourceType="composum/tenants/manager/query"/>
-                                    </div--%>
+                                <%--div id="tenants-query">
+                                    <sling:include resourceType="composum/tenants/manager/query"/>
+                                </div--%>
                             </div>
                             <div class="split-pane-divider"><span class="fa fa-ellipsis-h"></span></div>
                             <div class="split-pane-component bottom-pane">

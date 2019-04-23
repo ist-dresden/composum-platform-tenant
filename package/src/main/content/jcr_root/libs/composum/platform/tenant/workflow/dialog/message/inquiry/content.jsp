@@ -8,17 +8,18 @@
         <tbody>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'From')}</td>
-            <td class="value" style="width:40%"><cpn:text value="${task.data.userId}"/></td>
+            <td class="value" style="width:40%"><cpn:text value="${task.data.from}"/></td>
             <td class="name">${cpn:i18n(slingRequest,'To')}</td>
-            <td class="value" style="width:40%"><cpn:text value="${task.assignee}"/></td>
+            <td class="value" style="width:40%"><cpn:text value="${task.data.to}"/></td>
         </tr>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'Subject')}</td>
             <td class="value" colspan="3"><cpn:text value="${task.data.subject}" type="rich"/></td>
-        <tr>
+        </tr>
+        <cpn:div tagName="tr" test="${not empty task.target}">
             <td class="name">${cpn:i18n(slingRequest,'Target')}</td>
             <td class="value" colspan="3"><sling:call script="task-target.jsp"/></td>
-        </tr>
+        </cpn:div>
         </tbody>
     </table>
     <div class="composum-platform-workflow_message-body">

@@ -7,7 +7,7 @@
         <tbody>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'From')}</td>
-            <td class="value"><cpn:text value="${task.data.userId}"/></td>
+            <td class="value"><cpn:text value="${task.data.from}"/></td>
         </tr>
         <tr>
             <td class="name">${cpn:i18n(slingRequest,'To')}</td>

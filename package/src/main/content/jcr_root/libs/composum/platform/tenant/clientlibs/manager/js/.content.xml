@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:primaryType="sling:OrderedFolder"
+        depends="[category:composum.core.console.default]"
+        embed="[category:composum.platform.workflow.console,
+                composum/platform/tenant/workflow/dialog/message/clientlib/dialog.js,
+                composum/platform/tenant/manager/components/users/js/users.js,
+                composum/platform/tenant/manager/js/console.js,
+                composum/platform/tenant/manager/js/dialogs.js,
+                composum/platform/tenant/manager/js/manager.js]"/>

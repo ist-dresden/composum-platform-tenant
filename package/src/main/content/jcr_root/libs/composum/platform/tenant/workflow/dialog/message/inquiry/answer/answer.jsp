@@ -3,6 +3,7 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <cpn:component id="task" type="com.composum.platform.workflow.model.WorkflowTaskInstance">
+    <input type="hidden" name="wf.assignee" value="${task.data.from}">
     <div class="form-group widget text-field-widget">
         <label class="widget-label"><span
                 class="label-text">${cpn:i18n(slingRequest,'Subject')}</span><cpn:text

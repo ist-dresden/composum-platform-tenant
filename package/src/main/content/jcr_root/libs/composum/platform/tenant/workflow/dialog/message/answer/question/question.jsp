@@ -3,7 +3,14 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <cpn:component id="task" type="com.composum.platform.workflow.model.WorkflowTaskInstance">
-    <sling:include resourceType="composum/platform/tenant/workflow/dialog/message/recipient"/>
+    <div class="row">
+        <div class="col-xs-6">
+            <sling:include resourceType="composum/platform/tenant/widget/select/tenant"/>
+        </div>
+        <div class="col-xs-6">
+            <sling:include resourceType="composum/platform/tenant/widget/select/sender"/>
+        </div>
+    </div>
     <div class="form-group widget text-field-widget">
         <label class="widget-label"><span
                 class="label-text">${cpn:i18n(slingRequest,'Subject')}</span><cpn:text
