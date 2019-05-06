@@ -42,6 +42,15 @@ public class TenantSupport implements PagesTenantSupport {
     private TenantUserManager userManager;
 
     /**
+     * @return the tenant of the resource
+     */
+    @Nullable
+    public String getTenantId(@Nonnull Resource resource) {
+        Tenant tenant = resource.adaptTo(Tenant.class);
+        return tenant != null ? tenant.getId() : null;
+    }
+
+    /**
      * @return the list of id/tenant pairs of the joined tenants in the context of the current request
      */
     @Nonnull
