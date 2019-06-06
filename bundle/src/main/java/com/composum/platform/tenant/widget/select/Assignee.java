@@ -4,7 +4,7 @@ import com.composum.pages.commons.widget.ComboBox;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.workflow.model.WorkflowTaskInstance;
 import com.composum.platform.workflow.service.WorkflowService;
-import com.composum.sling.cpnl.CpnlElFunctions;
+import com.composum.sling.core.util.I18N;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
@@ -80,7 +80,7 @@ public class Assignee extends ComboBox {
         for (TenantUserManager.Role role : TenantUserManager.Role.values()) {
             if (role != TenantUserManager.Role.member) {
                 options.add(newOption(request != null
-                                ? CpnlElFunctions.i18n(request, StringUtils.capitalize(role.name())) : role.name(),
+                                ? I18N.get(request, StringUtils.capitalize(role.name())) : role.name(),
                         role.name(), null));
             }
         }
