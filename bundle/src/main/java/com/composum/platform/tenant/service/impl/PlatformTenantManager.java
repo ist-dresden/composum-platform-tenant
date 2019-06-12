@@ -677,7 +677,7 @@ public final class PlatformTenantManager extends AbstractTenantService
             if (StringUtils.isNotBlank(tenantFilter)) {
                 try {
                     final Filter osgiFilter = FrameworkUtil.createFilter(tenantFilter);
-                    resourceFilter = new ResourceFilter() {
+                    resourceFilter = new ResourceFilter.AbstractResourceFilter() {
 
                         @Override
                         public boolean accept(Resource resource) {
