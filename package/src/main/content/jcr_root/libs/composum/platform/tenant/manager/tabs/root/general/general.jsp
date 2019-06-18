@@ -9,12 +9,12 @@
             <div class="btn-group btn-group-sm" role="group">
                 <button class="create fa fa-plus btn btn-default"
                         title="${cpn:i18n(slingRequest,'Create a new Tenant')}"><cpn:text
-                        value="Create" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Create" tagName="span" class="label" i18n="true"/></button>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <button class="reload fa fa-refresh btn btn-default"
                         title="${cpn:i18n(slingRequest,'Reload')}"><cpn:text
-                        value="Reload" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Reload" tagName="span" class="label" i18n="true"/></button>
             </div>
         </div>
         <div>Root</div>

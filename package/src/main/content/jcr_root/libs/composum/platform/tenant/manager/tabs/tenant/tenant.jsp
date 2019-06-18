@@ -9,16 +9,16 @@
             <div class="btn-group btn-group-sm" role="group">
                 <a class="general fa fa-university btn btn-default" href="#general" data-group="general"
                    title="${cpn:i18n(slingRequest,'Tenant Summary')}"><cpn:text
-                        value="Tenant" tagName="span" tagClass="label" i18n="true"/></a>
+                        value="Tenant" tagName="span" class="label" i18n="true"/></a>
                 <a class="view fa fa-inbox btn btn-default" href="#inbox" data-group="inbox"
                    title="${cpn:i18n(slingRequest,'Task Inbox')}"><cpn:text
-                        value="Inbox" tagName="span" tagClass="label" i18n="true"/></a>
+                        value="Inbox" tagName="span" class="label" i18n="true"/></a>
                 <a class="view fa fa-users btn btn-default" href="#users" data-group="users"
                    title="${cpn:i18n(slingRequest,'Users View')}"><cpn:text
-                        value="Users" tagName="span" tagClass="label" i18n="true"/></a>
+                        value="Users" tagName="span" class="label" i18n="true"/></a>
                 <a class="view fa fa-sitemap btn btn-default" href="#sites" data-group="sites"
                    title="${cpn:i18n(slingRequest,'Sites View')}"><cpn:text
-                        value="Sites" tagName="span" tagClass="label" i18n="true"/></a>
+                        value="Sites" tagName="span" class="label" i18n="true"/></a>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <span class="tenant-status_label text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</span>

@@ -9,20 +9,20 @@
             <div class="btn-group btn-group-sm" role="group">
                 <button class="add fa fa-plus btn btn-default"
                         title="${cpn:i18n(slingRequest,'Join User')}"><cpn:text
-                        value="Join User" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Join User" tagName="span" class="label" i18n="true"/></button>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <button class="change fa fa-edit btn btn-default"
                         title="${cpn:i18n(slingRequest,'Change User')}"><cpn:text
-                        value="Change User" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Change User" tagName="span" class="label" i18n="true"/></button>
                 <button class="remove fa fa-minus btn btn-default"
                         title="${cpn:i18n(slingRequest,'Remove User')}"><cpn:text
-                        value="Remove User" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Remove User" tagName="span" class="label" i18n="true"/></button>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <button class="reload fa fa-refresh btn btn-default"
                         title="${cpn:i18n(slingRequest,'Reload')}"><cpn:text
-                        value="Reload" tagName="span" tagClass="label" i18n="true"/></button>
+                        value="Reload" tagName="span" class="label" i18n="true"/></button>
             </div>
         </div>
         <div class="composum-platform-tenant_users-content detail-content">
