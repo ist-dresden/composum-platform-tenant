@@ -12,7 +12,7 @@
             jcr:primaryType="nt:unstructured">
         <de
                 jcr:primaryType="nt:unstructured"
-                title="Rollenanforderung"
+                title="Mandant Anfordern"
                 hint="ein Nutzer möchte einen neuen Mandaten für sein Projekte beantragen"
                 hintAdded="Die Anfrage wird jetzt bearbeitet."/>
     </i18n>
