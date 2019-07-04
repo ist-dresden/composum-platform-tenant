@@ -497,6 +497,7 @@
   },
   {
     "path": "/libs/composum/assets",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
@@ -541,6 +542,7 @@
   },
   {
     "path": "/libs/composum/assets/commons",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
