@@ -6,6 +6,8 @@ import com.composum.sling.core.filter.StringFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 
+import javax.annotation.Nonnull;
+
 public class TenantsRootBean extends AbstractServletBean {
 
     private transient String viewType;
@@ -22,6 +24,7 @@ public class TenantsRootBean extends AbstractServletBean {
         super();
     }
 
+    @Nonnull
     public String getPath() {
         return resource.getPath();
     }

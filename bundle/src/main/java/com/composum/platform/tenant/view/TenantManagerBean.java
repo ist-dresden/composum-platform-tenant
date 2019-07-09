@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.tenant.Tenant;
 
+import javax.annotation.Nonnull;
+
 public class TenantManagerBean extends AbstractServletBean {
 
     private transient String viewType;
@@ -23,6 +25,7 @@ public class TenantManagerBean extends AbstractServletBean {
         super();
     }
 
+    @Nonnull
     public String getPath() {
         return resource.getPath();
     }
