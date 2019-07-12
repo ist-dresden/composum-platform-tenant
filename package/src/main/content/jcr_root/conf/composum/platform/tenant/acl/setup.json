@@ -210,7 +210,7 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:all"
+            "privileges": "jcr:read"
           }
         ]
       },
@@ -722,6 +722,33 @@
           {
             "allow": true,
             "privileges": "jcr:all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/pages",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
           }
         ]
       }
