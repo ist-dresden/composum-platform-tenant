@@ -82,6 +82,15 @@
         ]
       },
       {
+        "principal": "tenant-${tenantId}-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-assistants",
         "acl": [
           {
@@ -102,6 +111,15 @@
           {
             "allow": true,
             "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
           }
         ]
       },
