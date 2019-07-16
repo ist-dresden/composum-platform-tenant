@@ -7,6 +7,9 @@
       },
       {
         "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       }
     ]
   },
@@ -15,6 +18,12 @@
     "acl": [
       {
         "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       }
     ]
   },
@@ -25,7 +34,13 @@
         "principal": "tenant-${tenantId}-members"
       },
       {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
         "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       }
     ]
   },
@@ -37,6 +52,9 @@
       },
       {
         "principal": "tenant-${tenantId}-developers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       }
     ]
   },
@@ -44,7 +62,18 @@
     "path": "/etc/tenants/${tenantId}",
     "acl": [
       {
-        "principal": "tenant-${tenantId}-managers"
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/pages/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
       }
     ]
   },
@@ -53,6 +82,9 @@
     "acl": [
       {
         "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       }
     ]
   }

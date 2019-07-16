@@ -12,6 +12,11 @@
         <message jcr:primaryType="sling:MessageEntry"
                 sling:key="Message" sling:message="Nachricht"/>
 
+        <adapt jcr:primaryType="sling:MessageEntry"
+                sling:key="Adapt" sling:message="Anpassen"/>
+        <change jcr:primaryType="sling:MessageEntry"
+                sling:key="Change" sling:message="Ändern"/>
+
     </general>
     <roles jcr:primaryType="sling:Folder">
 
@@ -38,10 +43,17 @@
         <assistant jcr:primaryType="sling:MessageEntry"
                 sling:key="Assistant" sling:message="Assistant"/>
         <assistant-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="a manager can assign roles to users and configure the tenant" sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
+                sling:key="an assistant can view the resources but change nothing (support role)" sling:message="kann alles sehen aber nichts ändern (Support Rolle)"/>
 
     </roles>
     <dialog jcr:primaryType="sling:Folder">
+
+        <change-roles jcr:primaryType="sling:MessageEntry"
+                sling:key="Change User Roles" sling:message="Benutzer-Rollen Ändern"/>
+        <user-id jcr:primaryType="sling:MessageEntry"
+                sling:key="User ID" sling:message="Nutzer-ID"/>
+        <select-roles jcr:primaryType="sling:MessageEntry"
+                sling:key="Select Roles" sling:message="Rollen auswählen"/>
 
         <tenant-id-hint jcr:primaryType="sling:MessageEntry"
                 sling:key="the tenants id" sling:message="Mandanten-ID"/>
