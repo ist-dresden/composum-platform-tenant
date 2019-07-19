@@ -23,6 +23,12 @@ public class SetupHook implements InstallHook {
 
     private static final String SETUP_ACLS = "/conf/composum/platform/tenant/acl/setup.json";
 
+    private static final String[] EVERYONE_ACLS = {
+            "/conf/composum/platform/security/acl/everyone.json",
+            "/conf/composum/pages/commons/acl/everyone.json",
+            "/conf/composum/platform/tenant/acl/everyone.json"
+    };
+
     @Override
     @SuppressWarnings("SwitchStatementWithTooFewBranches")
     public void execute(InstallContext ctx) throws PackageException {
@@ -67,6 +73,9 @@ public class SetupHook implements InstallHook {
         try {
             Session session = ctx.getSession();
             setupService.addJsonAcl(session, SETUP_ACLS, null);
+            for (String script : EVERYONE_ACLS) {
+                setupService.addJsonAcl(session, script, null);
+            }
             session.save();
         } catch (Exception rex) {
             LOG.error(rex.getMessage(), rex);
