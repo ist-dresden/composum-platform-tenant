@@ -26,24 +26,6 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "composum-pages-service",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
-        "principal": "composum-pages-token-service",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-service",
         "acl": [
           {
@@ -138,15 +120,6 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "composum-pages-service",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-service",
         "acl": [
           {
@@ -197,24 +170,6 @@
     "path": "/content",
     "acl": [
       {
-        "principal": "composum-pages-service",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
-        "principal": "composum-pages-token-service",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-service",
         "acl": [
           {
@@ -244,21 +199,6 @@
             "restrictions": {
               "rep:glob": ""
             }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/content/shared",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       }
@@ -442,6 +382,7 @@
   },
   {
     "path": "/libs/composum/nodes/console",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "composum-platform-tenant-managers",
@@ -474,6 +415,7 @@
   },
   {
     "path": "/libs/composum/nodes/browser",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "composum-platform-tenant-developers",
@@ -500,18 +442,6 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
-      {
         "principal": "composum-platform-tenant-editors",
         "acl": [
           {
@@ -531,21 +461,6 @@
       },
       {
         "principal": "composum-platform-tenant-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/libs/composum/assets/commons",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "everyone",
         "acl": [
           {
             "allow": true,
@@ -557,19 +472,8 @@
   },
   {
     "path": "/libs/composum/pages",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
-          }
-        ]
-      },
       {
         "principal": "composum-platform-tenant-editors",
         "acl": [
@@ -600,35 +504,8 @@
     ]
   },
   {
-    "path": "/libs/composum/pages/commons",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/libs/composum/pages/components",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "path": "/libs/composum/platform/workflow",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "composum-platform-tenant-service",
@@ -673,6 +550,15 @@
       },
       {
         "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -728,7 +614,7 @@
     ]
   },
   {
-    "path": "/var/composum/pages",
+    "path": "/var/composum/content",
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
@@ -742,6 +628,18 @@
       },
       {
         "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
             "allow": true,
@@ -784,7 +682,10 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:read"
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
           }
         ]
       }

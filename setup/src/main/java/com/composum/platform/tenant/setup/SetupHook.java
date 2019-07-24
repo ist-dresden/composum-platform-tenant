@@ -25,8 +25,8 @@ public class SetupHook implements InstallHook {
 
     private static final String[] EVERYONE_ACLS = {
             "/conf/composum/platform/security/acl/everyone.json",
-            "/conf/composum/pages/commons/acl/everyone.json",
-            "/conf/composum/platform/tenant/acl/everyone.json"
+            "/conf/composum/platform/tenant/acl/everyone.json",
+            "/conf/composum/platform/tenant/acl/setup.json"
     };
 
     @Override

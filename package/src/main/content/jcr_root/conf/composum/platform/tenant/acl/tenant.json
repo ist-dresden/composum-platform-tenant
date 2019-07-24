@@ -219,7 +219,7 @@
     ]
   },
   {
-    "path": "/var/composum/pages/${tenantId}",
+    "path": "/var/composum/content/${tenantId}",
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
