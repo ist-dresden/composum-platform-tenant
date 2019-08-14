@@ -38,7 +38,7 @@ public class CreateTenant implements WorkflowAction {
 
     public static final Logger LOG = LoggerFactory.getLogger(CreateTenant.class);
 
-    public static final String JOB_TOPIC = "composum/platform/tenant/workflow/create-tenant";
+    public static final String JOB_TOPIC = "composum/platform/tenant/workflow/tenant/create";
 
     @Reference
     private TenantManagerService tenantManager;
@@ -53,6 +53,9 @@ public class CreateTenant implements WorkflowAction {
         try {
             String tenantId = data.get("tenantId", "");
             String userId = data.get("userId", "");
+            if (LOG.isInfoEnabled()) {
+                LOG.info("process ({},{})", tenantId, userId);
+            }
             if (StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)) {
                 Map<String, Object> tenantProperties = new HashMap<>();
                 String value;
