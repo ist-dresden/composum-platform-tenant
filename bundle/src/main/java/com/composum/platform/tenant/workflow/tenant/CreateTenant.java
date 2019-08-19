@@ -9,6 +9,7 @@ import com.composum.sling.core.BeanContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.apache.sling.tenant.Tenant;
@@ -41,6 +42,9 @@ public class CreateTenant implements WorkflowAction {
     public static final String JOB_TOPIC = "composum/platform/tenant/workflow/tenant/create";
 
     @Reference
+    private ResourceResolverFactory resolverFactory;
+
+    @Reference
     private TenantManagerService tenantManager;
 
     @Reference
@@ -65,11 +69,10 @@ public class CreateTenant implements WorkflowAction {
                 if (StringUtils.isNotBlank(value = data.get("description", ""))) {
                     tenantProperties.put(Tenant.PROP_DESCRIPTION, value);
                 }
-                try {
-                    ResourceResolver resolver = context.getResolver();
+                try (ResourceResolver resolver = resolverFactory.getServiceResourceResolver(null)) {
                     Tenant tenant = tenantManager.createTenant(resolver, tenantId, tenantProperties);
                     try {
-                        userManager.assign(context.getResolver(), tenant.getId(), userId,
+                        userManager.assign(resolver, tenant.getId(), userId,
                                 TenantUserManager.Role.manager.name(),
                                 TenantUserManager.Role.publisher.name(),
                                 TenantUserManager.Role.editor.name());

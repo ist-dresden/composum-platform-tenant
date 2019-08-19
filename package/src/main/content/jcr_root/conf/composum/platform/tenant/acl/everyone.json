@@ -34,6 +34,9 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "everyone"
+      },
+      {
         "principal": "everyone",
         "acl": [
           {

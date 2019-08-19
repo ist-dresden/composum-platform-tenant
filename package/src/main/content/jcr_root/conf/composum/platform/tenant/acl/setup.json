@@ -217,6 +217,36 @@
         ]
       },
       {
+        "principal": "composum-platform-tenant-members"
+      },
+      {
+        "principal": "composum-platform-tenant-assistants"
+      },
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": false,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": "/*"
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": false,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": "/*"
+            }
+          }
+        ]
+      },
+      {
         "principal": "composum-platform-tenant-members",
         "acl": [
           {
@@ -569,7 +599,7 @@
     ]
   },
   {
-    "path": "/home/users",
+    "path": "/home",
     "jcr:primaryType": "rep:AuthorizableFolder",
     "acl": [
       {

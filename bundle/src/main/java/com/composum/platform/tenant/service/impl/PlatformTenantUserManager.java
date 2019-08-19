@@ -372,7 +372,16 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
                     throw new RepositoryException(ex.getMessage(), ex);
                 }
             } else {
-                throw new RepositoryException("insufficient permissions (" + context.getUserID() + ")");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("using context resolver ({})...", context.getUserID());
+                }
+                session = (JackrabbitSession) context.adaptTo(Session.class);
+                if (session != null) {
+                    result = task.call(session, context);
+                    session.save();
+                } else {
+                    throw new RepositoryException("can't adapt to session");
+                }
             }
         } else {
             throw new RepositoryException("can't adapt to session");

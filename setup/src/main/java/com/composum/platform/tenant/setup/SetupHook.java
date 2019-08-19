@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 
 @SuppressWarnings("Duplicates")
@@ -57,10 +59,20 @@ public class SetupHook implements InstallHook {
     protected void setupUsers(InstallContext ctx) throws PackageException {
         try {
             SetupUtil.setupGroupsAndUsers(ctx,
-                    singletonMap("system/composum/platform/composum-platform-services",
-                            emptyList()),
+                    new HashMap<String, List<String>>() {{
+                        put("system/composum/platform/composum-platform-services", emptyList());
+                        put("composum/platform/composum-platform-tenant-members", emptyList());
+                        put("composum/platform/composum-platform-tenant-visitors", emptyList());
+                        put("composum/platform/composum-platform-tenant-publishers", emptyList());
+                        put("composum/platform/composum-platform-tenant-editors", emptyList());
+                        put("composum/platform/composum-platform-tenant-developers", emptyList());
+                        put("composum/platform/composum-platform-tenant-managers", emptyList());
+                        put("composum/platform/composum-platform-tenant-assistants", emptyList());
+                    }},
                     singletonMap("system/composum/platform/composum-platform-tenant-service",
-                            singletonList("composum-platform-services")),
+                            new ArrayList<String>() {{
+                                add("composum-platform-services");
+                            }}),
                     null);
         } catch (RuntimeException e) {
             LOG.error("" + e, e);
