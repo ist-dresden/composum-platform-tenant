@@ -15,6 +15,27 @@
     ]
   },
   {
+    "path": "/content",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "everyone"
+      },
+      {
+        "principal": "everyone",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/content/shared",
     "jcr:primaryType": "sling:Folder",
     "acl": [
