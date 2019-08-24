@@ -18,31 +18,19 @@
         ]
       },
       {
-        "principal": "tenant-${tenantId}-editors",
-        "groupPath": "${principalBase}",
-        "memberOf": [
-          "composum-platform-tenant-editors",
-          "tenant-${tenantId}-members"
-        ],
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
         "principal": "tenant-${tenantId}-publishers",
         "groupPath": "${principalBase}",
         "memberOf": [
           "composum-platform-tenant-publishers",
           "tenant-${tenantId}-members"
-        ],
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-editors",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-editors",
+          "tenant-${tenantId}-members"
         ]
       },
       {
@@ -58,11 +46,35 @@
         "groupPath": "${principalBase}",
         "memberOf": [
           "composum-platform-tenant-assistants"
-        ],
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants",
+        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
             "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers",
+        "groupPath": "${principalBase}",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-editors",
+        "groupPath": "${principalBase}",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
           }
         ]
       }
@@ -162,7 +174,23 @@
         "memberOf": [
           "composum-platform-tenant-developers",
           "tenant-${tenantId}-members"
-        ],
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-developers",
+        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
@@ -181,15 +209,6 @@
             "restrictions": {
               "rep:glob": "*/install/*"
             }
-          }
-        ]
-      },
-      {
-        "principal": "tenant-${tenantId}-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       }
@@ -230,6 +249,15 @@
             "privileges": "jcr:read"
           }
         ]
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/content/${tenantId}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-editors"
       }
     ]
   },
