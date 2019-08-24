@@ -12,10 +12,9 @@
         <input name="wf.template" type="hidden" value="/conf/composum/workflow/everyone/role-request"/>
         <div class="row">
             <div class="col-xs-4">
-                <div class="form-group widget text-field-widget">
+                <div class="form-group widget text-field-widget tenant-id" data-rules="required">
                     <label class="control-label">${model.properties['form/tenantId']}</label>
-                    <input name="tenant.id" class="form-control" type="text"
-                           data-rules="mandatory"/>
+                    <input name="tenant.id" class="form-control" type="text"/>
                 </div>
             </div>
             <div class="col-xs-8">

@@ -36,6 +36,13 @@ public interface TenantManagerService {
     Iterator<Tenant> getTenants(@Nonnull ResourceResolver resolver, @Nullable ResourceFilter filter);
 
     /**
+     * @return an exception object if the requested tenant cannot be created; 'null' is request is valid
+     */
+    @Nullable
+    PersistenceException isTenantAllowed(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                                         @Nullable final Map<String, Object> properties);
+
+    /**
      * will create a new tenant (mustn't be existing)
      */
     @Nonnull

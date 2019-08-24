@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.widget.select.TenantSelect">
-    <div class="form-group widget select-widget" data-rules="mandatory">
+    <div class="form-group widget select-widget" data-rules="required">
         <label class="widget-label"><span
                 class="label-text">${cpn:i18n(slingRequest,'Tenant')}</span><cpn:text
                 tagName="span" class="widget-hint" i18n="true" type="rich"

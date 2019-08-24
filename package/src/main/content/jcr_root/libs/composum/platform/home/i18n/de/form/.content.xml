@@ -4,7 +4,7 @@
         tenantId="Mandanten-ID"
         tenantName="Mandantenname (Titel)"
         description="Beschreibung"
-        btnCreate="Neuen Mandanten Anlegen"
+        btnCreate="Neuen Mandanten Anfordern"
         yourName="Ihr Name"
         message="Ihre Nachricht"
         btnJoinMe="Rollenzuweisung Anfordern"/>

@@ -4,13 +4,12 @@
 <sling:defineObjects/>
 <div class="row">
     <div class="col-xs-4">
-        <div class="form-group widget text-field-widget">
+        <div class="form-group widget text-field-widget tenant-id" data-rules="required">
             <label class="widget-label"><span
                     class="label-text">${cpn:i18n(slingRequest,'Tenant')}</span><cpn:text
                     tagName="span" class="widget-hint" i18n="true" type="rich"
                     value="the tenants id"/></label>
-            <input name="data/tenantId" class="form-control" type="text"
-                   data-rules="mandatory"/>
+            <input name="data/tenantId" class="form-control" type="text"/>
         </div>
     </div>
     <div class="col-xs-8">

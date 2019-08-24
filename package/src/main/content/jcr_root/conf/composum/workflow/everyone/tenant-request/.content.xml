@@ -4,6 +4,7 @@
         sling:resourceType="composum/platform/workflow/task/template"
         category="[tenant,manage]"
         autoRun="{Boolean}true"
+        validation="com.composum.platform.tenant.workflow.tenant.ValidateTenantRequest"
         assignee="platform-tenant-managers"
         title="Tenant Request"
         hint="a user wants to create a new tenant for its own project"

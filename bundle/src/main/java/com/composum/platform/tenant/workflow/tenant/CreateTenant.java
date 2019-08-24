@@ -31,7 +31,7 @@ import java.util.Map;
 @SuppressWarnings("Duplicates")
 @Component(
         property = {
-                Constants.SERVICE_DESCRIPTION + "=Assign Tenant Role Workflow Job",
+                Constants.SERVICE_DESCRIPTION + "=Create a new Tenant Workflow Job",
                 JobConsumer.PROPERTY_TOPICS + "=" + CreateTenant.JOB_TOPIC
         }
 )

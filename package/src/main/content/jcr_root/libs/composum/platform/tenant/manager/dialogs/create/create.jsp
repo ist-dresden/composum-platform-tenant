@@ -21,10 +21,9 @@
                         <input name="_charset_" type="hidden" value="UTF-8"/>
                         <div class="row">
                             <div class="col-xs-4">
-                                <div class="form-group widget text-field-widget">
+                                <div class="form-group widget text-field-widget tenant-id" data-rules="required">
                                     <label class="control-label">Tenant-ID</label>
-                                    <input name="tenant.id" class="form-control"
-                                           type="text" data-rules="mandatory"/>
+                                    <input name="tenant.id" class="form-control" type="text"/>
                                 </div>
                             </div>
                             <div class="col-xs-8">

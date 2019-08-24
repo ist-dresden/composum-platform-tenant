@@ -37,13 +37,20 @@
                 event.preventDefault();
                 var $alert = $('.alert.alert-danger');
                 $alert.addClass('hidden');
-                tenants.memberRequestForm.validationReset();
-                tenants.tenantRequestForm.validationReset();
+                tenants.memberRequestForm.$el.find(".widget").removeClass('has-error');
+                tenants.tenantRequestForm.$el.find(".widget").removeClass('has-error');
                 if (this.isValid()) {
                     this.submitForm(_.bind(function (result) {
                         window.location.reload();
                     }, this), _.bind(function (result) {
-                        $alert.closest('.submission-alert').removeClass('hidden');
+                        var $text = $alert.closest('.submission-alert');
+                        if (result.responseJSON && result.responseJSON.response && result.responseJSON.response.text) {
+                            $text.html(result.responseJSON.response.text);
+                        } else {
+                            $text.html($text.data('msg'));
+                        }
+                        this.$el.find(".tenant-id").addClass('has-error');
+                        $text.removeClass('hidden');
                     }, this));
                 } else {
                     $alert.closest('.validation-alert').removeClass('hidden');

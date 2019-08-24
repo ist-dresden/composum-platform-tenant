@@ -25,9 +25,10 @@
                                 <cpn:text tagName="div" class="validation-alert alert alert-danger hidden"
                                           value="${home.properties.invalidForm}" type="rich"/>
                                 <cpn:text tagName="div" class="submission-alert alert alert-danger hidden"
-                                          value="${home.properties.submitError}" type="rich"/>
-                                <cpn:text tagName="div" class="alert alert-success" value="${home.properties.invitation}"
-                                          type="rich"/>
+                                          value="${home.properties.submitError}" type="rich"
+                                          data-msg="${cpn:rich(slingRequest,home.properties.submitError)}"/>
+                                <cpn:text tagName="div" class="alert alert-success"
+                                          value="${home.properties.invitation}" type="rich"/>
                                 <sling:call script="invitation.jsp"/>
                                 <hr/>
                                 <cpn:text tagName="div" class="alert alert-success" value="${home.properties.creation}"

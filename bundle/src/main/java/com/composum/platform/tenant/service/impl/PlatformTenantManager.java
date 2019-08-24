@@ -375,23 +375,37 @@ public final class PlatformTenantManager extends AbstractTenantService
     }
 
     @Override
+    @Nullable
+    public PersistenceException isTenantAllowed(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                                                @Nullable final Map<String, Object> properties) {
+        return call((resolver1, context) -> {
+            if (StringUtils.isBlank(tenantId) || !tenantId.matches(config.tenant_id_pattern())) {
+                return new PersistenceException("tenant id is not valid");
+            }
+            for (String pattern : config.tenant_id_reserved()) {
+                if (Pattern.compile(pattern).matcher(tenantId).matches()) {
+                    return new PersistenceException("tenant id is reserved");
+                }
+            }
+            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            if (tenantsRoot.getChild(tenantId) != null) {
+                return new PersistenceException("tenant id is in use already");
+            }
+            return null;
+        }, null);
+    }
+
+    @Override
     @Nonnull
     public final PlatformTenant createTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                                              @Nullable final Map<String, Object> properties)
             throws PersistenceException {
         return manage((resolver1, context) -> {
-            if (StringUtils.isBlank(tenantId) || !tenantId.matches(config.tenant_id_pattern())) {
-                throw new PersistenceException("tenant id is not valid");
-            }
-            for (String pattern : config.tenant_id_reserved()) {
-                if (Pattern.compile(pattern).matcher(tenantId).matches()) {
-                    throw new PersistenceException("tenant id is reserved");
-                }
+            PersistenceException checkException = isTenantAllowed(resolver1, tenantId, properties);
+            if (checkException != null) {
+                throw checkException;
             }
             final Resource tenantsRoot = getTenantsRoot(resolver1);
-            if (tenantsRoot.getChild(tenantId) != null) {
-                throw new PersistenceException("tenant id is already in use");
-            }
             String value;
             final Map<String, Object> initialProps = new HashMap<>();
             initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, TENANT_RESOURCE_TYPE);

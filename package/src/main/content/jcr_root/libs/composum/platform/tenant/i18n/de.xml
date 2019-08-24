@@ -18,6 +18,18 @@
                 sling:key="Change" sling:message="Ändern"/>
 
     </general>
+    <tenant jcr:primaryType="sling:Folder">
+
+        <id-not-found jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is not known" sling:message="der Mandantenname ist nicht bekannt"/>
+        <id-not-valid jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is not valid" sling:message="der Mandantenname ist nicht erlaubt"/>
+        <id-is-reserved jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is reserved" sling:message="der Mandantenname ist reserviert"/>
+        <id-is-in-use jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is in use already" sling:message="der Mandant wird bereits verwendet"/>
+
+    </tenant>
     <roles jcr:primaryType="sling:Folder">
 
         <visitor jcr:primaryType="sling:MessageEntry"

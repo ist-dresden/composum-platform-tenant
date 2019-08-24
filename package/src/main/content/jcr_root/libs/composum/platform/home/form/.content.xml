@@ -4,7 +4,7 @@
         tenantId="Tenant ID"
         tenantName="Tenant Name (Title)"
         description="Description"
-        btnCreate="Create a new Tenant"
+        btnCreate="Request a new Tenant"
         yourName="Your Name"
         message="Your Message"
         btnJoinMe="Role Assignment Request"/>
