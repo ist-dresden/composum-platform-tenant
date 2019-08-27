@@ -638,39 +638,6 @@
     ]
   },
   {
-    "path": "/libs/composum/assets",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "composum-platform-tenant-editors",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      },
-      {
-        "principal": "composum-platform-tenant-publishers",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      },
-      {
-        "principal": "composum-platform-tenant-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "path": "/libs/composum/pages",
     "jcr:primaryType": "sling:Folder",
     "acl": [
