@@ -820,6 +820,68 @@
     ]
   },
   {
+    "path": "/var/composum/content/composum",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          },
+          {
+            "allow": true,
+            "privileges": "rep:readProperties"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          },
+          {
+            "allow": true,
+            "privileges": "rep:readProperties"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/content/composum/prototype",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/var/composum/workflow",
     "jcr:primaryType": "sling:Folder",
     "acl": [
