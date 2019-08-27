@@ -382,9 +382,11 @@ public final class PlatformTenantManager extends AbstractTenantService
             if (StringUtils.isBlank(tenantId) || !tenantId.matches(config.tenant_id_pattern())) {
                 return new PersistenceException("tenant id is not valid");
             }
-            for (String pattern : config.tenant_id_reserved()) {
-                if (Pattern.compile(pattern).matcher(tenantId).matches()) {
-                    return new PersistenceException("tenant id is reserved");
+            if (!"admin".equals(resolver.getUserID())) {
+                for (String pattern : config.tenant_id_reserved()) {
+                    if (Pattern.compile(pattern).matcher(tenantId).matches()) {
+                        return new PersistenceException("tenant id is reserved");
+                    }
                 }
             }
             final Resource tenantsRoot = getTenantsRoot(resolver1);
@@ -400,12 +402,12 @@ public final class PlatformTenantManager extends AbstractTenantService
     public final PlatformTenant createTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                                              @Nullable final Map<String, Object> properties)
             throws PersistenceException {
-        return manage((resolver1, context) -> {
-            PersistenceException checkException = isTenantAllowed(resolver1, tenantId, properties);
+        return manage((serviceResolver, context) -> {
+            PersistenceException checkException = isTenantAllowed(context, tenantId, properties);
             if (checkException != null) {
                 throw checkException;
             }
-            final Resource tenantsRoot = getTenantsRoot(resolver1);
+            final Resource tenantsRoot = getTenantsRoot(serviceResolver);
             String value;
             final Map<String, Object> initialProps = new HashMap<>();
             initialProps.put(ResourceUtil.PROP_RESOURCE_TYPE, TENANT_RESOURCE_TYPE);
@@ -418,9 +420,9 @@ public final class PlatformTenantManager extends AbstractTenantService
             initialProps.put(PN_CONTENT_ROOT, config.tenant_content_root() + "/" + tenantId);
             initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
             initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);
-            Resource tenantResource = resolver1.create(tenantsRoot, tenantId, initialProps);
-            PlatformTenant tenant = toTenant(resolver1, tenantResource, false);
-            final ModifiableValueMap tenantProps = getProperties(resolver1, tenantResource);
+            Resource tenantResource = serviceResolver.create(tenantsRoot, tenantId, initialProps);
+            PlatformTenant tenant = toTenant(serviceResolver, tenantResource, false);
+            final ModifiableValueMap tenantProps = getProperties(serviceResolver, tenantResource);
             tenantProps.put(CPM_CREATED + "By", context.getUserID());
             for (TenantManagerHook hook : managerHooks) {
                 Map<String, Object> changes = hook.setup(tenant);
@@ -428,15 +430,15 @@ public final class PlatformTenantManager extends AbstractTenantService
                     updateTenant(tenantProps, changes);
                 }
             }
-            tenant = toTenant(resolver1, tenantResource, false);
+            tenant = toTenant(serviceResolver, tenantResource, false);
             for (PlatformTenantHook hook : platformHooks) {
-                Map<String, Object> changes = hook.setup(resolver1, context, tenant);
+                Map<String, Object> changes = hook.setup(serviceResolver, context, tenant);
                 if (changes != null && changes.size() > 0) {
                     updateTenant(tenantProps, changes);
                 }
             }
             LOG.info("createTenant({}): {}", tenantId, tenant);
-            return toTenant(resolver1, tenantResource, false);
+            return toTenant(serviceResolver, tenantResource, false);
         }, resolver, tenantId);
     }
 

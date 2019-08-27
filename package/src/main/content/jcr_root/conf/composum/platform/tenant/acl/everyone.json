@@ -26,10 +26,7 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:read",
-            "restrictions": {
-              "rep:glob": ""
-            }
+            "privileges": "jcr:read"
           }
         ]
       }
