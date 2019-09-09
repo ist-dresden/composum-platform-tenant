@@ -163,7 +163,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                         Map<String, Object> data = status.data("host");
                         data.put("hostname", host.getHostname());
                         data.put("enabled", host.isEnabled());
-                        data.put("cert", host.isCertAvailable());
+                        data.put("certificate", host.isCertAvailable());
                         data.put("secured", host.isSecured());
                         data.put("address", host.getInetAddress());
                         data.put("valid", host.isValid());

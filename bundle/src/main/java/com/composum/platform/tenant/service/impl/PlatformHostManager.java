@@ -314,7 +314,7 @@ public class PlatformHostManager implements HostManagerService {
         if (StringUtils.isBlank(userId) || (!"admin".equals(userId) &&
                 (StringUtils.isBlank(tenantId) ||
                         !userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) ||
-                        (hostname != null && hostList(resolver, tenantId).contains(hostname))))) {
+                        (hostname != null && !hostList(resolver, tenantId).contains(hostname))))) {
             throw new ProcessException("insufficient permissions");
         }
     }
