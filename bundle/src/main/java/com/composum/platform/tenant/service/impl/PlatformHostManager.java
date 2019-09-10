@@ -43,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class PlatformHostManager implements HostManagerService {
 
     public static final String PN_SITE_REF = "siteRef";
+    public static final String PN_LOCKED = "locked";
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformHostManager.class);
 
@@ -73,25 +74,37 @@ public class PlatformHostManager implements HostManagerService {
     protected class PlatformHost extends Host {
 
         private String siteRef;
+        private boolean locked;
 
         private transient String reversedName;
 
+        protected PlatformHost(@Nonnull final String hostname) {
+            super(hostname, false, false, false, false);
+        }
+
         protected PlatformHost(@Nonnull final String hostname,
+                               final boolean configured,
                                final boolean enabled,
                                final boolean cert,
                                final boolean secured) {
-            super(hostname, enabled, cert, secured);
+            super(hostname, configured, enabled, cert, secured);
         }
 
         @Override
         public void applyResource(@Nonnull final Resource resource) {
             ValueMap values = resource.getValueMap();
             siteRef = values.get(PN_SITE_REF, String.class);
+            locked = values.get(PN_LOCKED, Boolean.FALSE);
         }
 
         @Override
         public boolean isValid() {
             return publicIpAddress != null && publicIpAddress.equals(getInetAddress());
+        }
+
+        @Override
+        public boolean isLocked() {
+            return locked;
         }
 
         @Override
@@ -158,15 +171,12 @@ public class PlatformHostManager implements HostManagerService {
                     Resource hostsRes = tenantRes.getChild("hosts");
                     if (hostsRes != null) {
                         for (Resource hostRes : hostsRes.getChildren()) {
-                            try {
-                                Host host = getStatus(hostRes.getName());
-                                if (host != null) {
-                                    host.applyResource(hostRes);
-                                    result.add(host);
-                                }
-                            } catch (HostManagerService.ProcessException ex) {
-                                LOG.error(ex.getMessage(), ex);
+                            Host host = getStatus(hostRes.getName());
+                            if (host == null) {
+                                host = new PlatformHost(hostRes.getName());
                             }
+                            host.applyResource(hostRes);
+                            result.add(host);
                         }
                     }
                 }
@@ -179,7 +189,7 @@ public class PlatformHostManager implements HostManagerService {
                 while ((line = reader.readLine()) != null) {
                     String[] status = StringUtils.split(line, " ");
                     result.add(new PlatformHost(
-                            status[0],
+                            status[0], true,
                             status[1].equals("enabled"),
                             status[2].equals("cert"),
                             status[3].equals("secured")
@@ -194,21 +204,23 @@ public class PlatformHostManager implements HostManagerService {
         return result;
     }
 
-    private Host getStatus(@Nonnull final String hostname)
-            throws ProcessException {
+    private Host getStatus(@Nonnull final String hostname) {
         List<Host> result = new ArrayList<>();
-        hostManageCmd(reader -> {
-            String line;
-            if ((line = reader.readLine()) != null) {
-                String[] status = StringUtils.split(line, " ");
-                result.add(new PlatformHost(
-                        status[0],
-                        status[1].equals("enabled"),
-                        status[2].equals("cert"),
-                        status[3].equals("secured")
-                ));
-            }
-        }, "status", hostname);
+        try {
+            hostManageCmd(reader -> {
+                String line;
+                if ((line = reader.readLine()) != null) {
+                    String[] status = StringUtils.split(line, " ");
+                    result.add(new PlatformHost(
+                            status[0], true,
+                            status[1].equals("enabled"),
+                            status[2].equals("cert"),
+                            status[3].equals("secured")
+                    ));
+                }
+            }, "status", hostname);
+        } catch (ProcessException ignore) {
+        }
         if (LOG.isDebugEnabled()) {
             LOG.debug("hostStatus({}): {}", hostname, StringUtils.join(result, ", "));
         }
@@ -297,6 +309,18 @@ public class PlatformHostManager implements HostManagerService {
     }
 
     @Override
+    public Host hostUnsecure(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
+                             @Nonnull final String hostname)
+            throws ProcessException {
+        checkPermissions(resolver, tenantId, hostname);
+        int exitValue = hostManageCmd(null, "unsecure", hostname);
+        if (LOG.isInfoEnabled()) {
+            LOG.info("hostUnsecure({}): {}", hostname, exitValue);
+        }
+        return hostStatus(resolver, tenantId, hostname);
+    }
+
+    @Override
     public void hostDelete(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
@@ -308,7 +332,7 @@ public class PlatformHostManager implements HostManagerService {
     }
 
     private void checkPermissions(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
-                                    @Nullable final String hostname)
+                                  @Nullable final String hostname)
             throws ProcessException {
         String userId = resolver.getUserID();
         if (StringUtils.isBlank(userId) || (!"admin".equals(userId) &&

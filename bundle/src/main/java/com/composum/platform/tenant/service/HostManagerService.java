@@ -17,18 +17,21 @@ public interface HostManagerService {
 
     abstract class Host implements Comparable<Host> {
 
-        private String hostname;
-        private boolean enabled;
-        private boolean certAvailable;
-        private boolean secured;
+        private final String hostname;
+        private final boolean configured;
+        private final boolean enabled;
+        private final boolean certAvailable;
+        private final boolean secured;
 
-        private InetAddress inetAddress;
+        private transient InetAddress inetAddress;
 
         public Host(@Nonnull String hostname,
+                    boolean configured,
                     boolean enabled,
                     boolean cert,
                     boolean secured) {
             this.hostname = hostname;
+            this.configured = configured;
             this.enabled = enabled;
             this.certAvailable = cert;
             this.secured = secured;
@@ -38,10 +41,16 @@ public interface HostManagerService {
 
         public abstract boolean isValid();
 
+        public abstract boolean isLocked();
+
         public abstract String getSiteRef();
 
         public String getHostname() {
             return hostname;
+        }
+
+        public boolean isConfigured() {
+            return configured;
         }
 
         public boolean isEnabled() {
@@ -140,6 +149,9 @@ public interface HostManagerService {
             throws ProcessException;
 
     Host hostSecure(@Nonnull ResourceResolver resolver, @Nullable String tenantId, @Nonnull String hostname)
+            throws ProcessException;
+
+    Host hostUnsecure(@Nonnull ResourceResolver resolver, @Nullable String tenantId, @Nonnull String hostname)
             throws ProcessException;
 
     void hostDelete(@Nonnull ResourceResolver resolver, @Nullable String tenantId, @Nonnull String hostname)

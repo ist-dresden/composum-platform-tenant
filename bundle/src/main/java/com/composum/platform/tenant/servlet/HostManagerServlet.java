@@ -45,6 +45,21 @@ public class HostManagerServlet extends AbstractTenantServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(HostManagerServlet.class);
 
+    public static final String PARAM_TENANT = "tenant";
+    public static final String PARAM_HOSTNAME = "hostname";
+
+    public static final String LIST_HOSTS = "hosts";
+    public static final String DATA_HOST = "host";
+
+    public static final String VALUE_HOSTNAME = "hostname";
+    public static final String VALUE_ADDRESS = "address";
+    public static final String VALUE_VALID = "valid"; // dot-circle-o,bullseye,anchor,link / minus,chain-broken
+    public static final String VALUE_CONFIGURED = "configured"; // code,cog / ellipsis-h
+    public static final String VALUE_ENABLED = "enabled"; // check / times,power-off
+    public static final String VALUE_CERTIFICATE = "certificate"; // ticket,sun-o,tag / download,chain-broken
+    public static final String VALUE_SECURED = "secured"; // key
+    public static final String VALUE_LOCKED = "locked"; // lock / unlock
+
     @Reference
     protected HostManagerService hostManager;
 
@@ -65,7 +80,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
     }
 
     public enum Operation {
-        list, status, create, enable, disable, cert, revoke, secure, delete
+        list, status, create, enable, disable, cert, revoke, secure, unsecure, delete
     }
 
     protected HostsOperationSet operations = new HostsOperationSet();
@@ -104,6 +119,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.secure, new SecureHost());
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
+                Operation.unsecure, new UnsecureHost());
+        operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.delete, new DeleteHost());
     }
 
@@ -123,19 +140,20 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 throws IOException {
             Status status = new Status(request, response);
             ResourceResolver resolver = request.getResourceResolver();
-            String tenantId = request.getParameter("tenant");
-            List<Map<String, Object>> result = status.list("hosts");
+            String tenantId = request.getParameter(PARAM_TENANT);
+            List<Map<String, Object>> result = status.list(LIST_HOSTS);
             try {
                 for (Host host : hostManager.hostList(resolver, tenantId)) {
-                    Map<String, Object> item = new HashMap<String, Object>() {{
-                        put("hostname", host.getHostname());
-                        put("enabled", host.isEnabled());
-                        put("certificate", host.isCertAvailable());
-                        put("secured", host.isSecured());
-                        put("address", host.getInetAddress());
-                        put("valid", host.isValid());
-                    }};
-                    result.add(item);
+                    result.add(new HashMap<String, Object>() {{
+                        put(VALUE_HOSTNAME, host.getHostname());
+                        put(VALUE_CONFIGURED, host.isConfigured());
+                        put(VALUE_LOCKED, host.isLocked());
+                        put(VALUE_ENABLED, host.isEnabled());
+                        put(VALUE_CERTIFICATE, host.isCertAvailable());
+                        put(VALUE_SECURED, host.isSecured());
+                        put(VALUE_ADDRESS, host.getInetAddress());
+                        put(VALUE_VALID, host.isValid());
+                    }});
                 }
             } catch (ProcessException ex) {
                 status.withLogging(LOG).error("processing error ({}): {}",
@@ -154,19 +172,21 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 throws IOException {
             Status status = new Status(request, response);
             ResourceResolver resolver = request.getResourceResolver();
-            String tenantId = request.getParameter("tenant");
-            String hostname = request.getParameter("hostname");
+            String tenantId = request.getParameter(PARAM_TENANT);
+            String hostname = request.getParameter(PARAM_HOSTNAME);
             if (StringUtils.isNotBlank(hostname)) {
                 try {
                     Host host = perform(status, resolver, tenantId, hostname);
                     if (host != null) {
-                        Map<String, Object> data = status.data("host");
-                        data.put("hostname", host.getHostname());
-                        data.put("enabled", host.isEnabled());
-                        data.put("certificate", host.isCertAvailable());
-                        data.put("secured", host.isSecured());
-                        data.put("address", host.getInetAddress());
-                        data.put("valid", host.isValid());
+                        Map<String, Object> data = status.data(DATA_HOST);
+                        data.put(VALUE_HOSTNAME, host.getHostname());
+                        data.put(VALUE_CONFIGURED, host.isConfigured());
+                        data.put(VALUE_LOCKED, host.isLocked());
+                        data.put(VALUE_ENABLED, host.isEnabled());
+                        data.put(VALUE_CERTIFICATE, host.isCertAvailable());
+                        data.put(VALUE_SECURED, host.isSecured());
+                        data.put(VALUE_ADDRESS, host.getInetAddress());
+                        data.put(VALUE_VALID, host.isValid());
                     } else {
                         status.withLogging(LOG).warn("host not found - '{}'", hostname);
                     }
@@ -252,6 +272,16 @@ public class HostManagerServlet extends AbstractTenantServlet {
                                @Nullable final String tenantId, @Nonnull final String hostname)
                 throws ProcessException {
             return hostManager.hostSecure(resolver, tenantId, hostname);
+        }
+    }
+
+    public class UnsecureHost extends HostOperation {
+
+        @Override
+        protected Host perform(@Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException {
+            return hostManager.hostUnsecure(resolver, tenantId, hostname);
         }
     }
 
