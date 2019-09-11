@@ -1,0 +1,179 @@
+@charset "UTF-8";
+
+$host-icon-size: 28px;
+
+$host-color-danger: #c00;
+
+$host-icon-fg: #fff;
+$host-icon-bg-on: #9d9;
+$host-icon-bg-off: #d99;
+$host-icon-fg-on: #0b0;
+$host-icon-fg-off: $host-color-danger;
+$host-icon-bg-disabled: #bbb;
+
+$host-action-disabled: #bbb;
+
+.composum-platform-tenant {
+
+    &_hosts-content {
+
+        .tenant-hosts {
+
+            &_content {
+                padding-bottom: 15px;
+
+                .panel-heading {
+                    padding: 4px 15px;
+                }
+            }
+
+            &_host > .panel {
+                margin-bottom: 5px;
+            }
+        }
+
+        .tenant-host {
+
+            &_title {
+                position: relative;
+
+                .tenant-host {
+
+                    &_name,
+                    &_address {
+                        display: inline-block;
+                        margin: 0 10px;
+                    }
+
+                    &_name {
+                        min-width: 180px;
+                    }
+
+                    &_address {
+                        min-width: 170px;
+                        text-align: right;
+                    }
+
+                    &_delete {
+                        cursor: pointer;
+                        position: absolute;
+                        top: 0;
+                        right: -8px;
+                        width: $host-icon-size;
+                        height: $host-icon-size;
+                        padding: 0;
+                        line-height: $host-icon-size;
+                        font-size: $host-icon-size * 8 / 12;
+                        text-align: center;
+                        color: $host-color-danger;
+
+                        &.disabled {
+                            cursor: auto;
+                            color: $host-action-disabled;
+                        }
+                    }
+                }
+            }
+
+            &_title,
+            &_status {
+
+                &_icon {
+                    display: inline-block;
+                    margin: 0 2px;
+                    width: $host-icon-size;
+                    height: $host-icon-size;
+                    line-height: $host-icon-size;
+                    font-size: $host-icon-size * 7 / 12;
+                    text-align: center;
+                    color: $host-icon-fg;
+
+                    &.on {
+                        background-color: $host-icon-bg-on;
+                    }
+
+                    &.off {
+                        background-color: $host-icon-bg-off;
+                    }
+
+                    &.locked {
+                        margin-left: 10px;
+                        background-color: $host-icon-bg-disabled;
+                    }
+                }
+            }
+
+            &_status {
+
+                &_icon {
+                    margin: 1px 2px;
+                }
+
+                &_label {
+                    display: inline-block;
+                    min-width: 180px;
+                    margin: 2px 10px;
+                }
+
+                &_toggle {
+                    cursor: pointer;
+                    width: 36px;
+                    padding: 0 5px;
+                    vertical-align: bottom;
+                    text-align: center;
+                    font-size: $host-icon-size * 9 / 12;
+                    line-height: $host-icon-size;
+
+                    &.fa-toggle-on, &.fa-trash {
+                        color: $host-icon-fg-off;
+                    }
+
+                    &.fa-trash {
+                        font-size: $host-icon-size * 8 / 12;
+                    }
+
+                    &.fa-toggle-off {
+                        color: $host-icon-fg-on;
+                    }
+
+                    &.disabled {
+                        cursor: auto;
+                        color: $host-action-disabled;
+                    }
+                }
+
+                &_static {
+
+                    .tenant-host {
+
+                        &_status {
+
+                            &_label {
+                                display: inline-block;
+                                min-width: auto;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* composum core console */
+
+.console .detail-view .detail-content {
+
+    .composum-platform-tenant {
+
+        &_hosts-view {
+            position: absolute;
+            top: 45px;
+            left: 0;
+            right: 0;
+            bottom: 42px;
+            overflow: auto;
+        }
+    }
+}

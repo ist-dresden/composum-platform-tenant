@@ -1,11 +1,9 @@
 package com.composum.platform.tenant.view;
 
 import com.composum.platform.tenant.service.TenantUserManager;
-import com.composum.sling.core.AbstractServletBean;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.util.RequestUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.tenant.Tenant;
 import org.slf4j.Logger;
@@ -13,11 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import static com.composum.platform.tenant.servlet.AbstractTenantServlet.PARAM_USER_ID;
 
-public class TenantUserBean extends AbstractServletBean {
+public class TenantUserBean extends AbstractTenantBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantUserBean.class);
 
-    private transient Tenant tenant;
     private transient TenantUserManager.TenantUser user;
 
     public TenantUserBean(BeanContext context, Resource resource) {
@@ -34,23 +31,6 @@ public class TenantUserBean extends AbstractServletBean {
 
     public boolean isValid() {
         return getTenant() != null && getUser() != null;
-    }
-
-    public Tenant getTenant() {
-        if (tenant == null) {
-            RequestPathInfo pathInfo = getRequest().getRequestPathInfo();
-            String suffix = pathInfo.getSuffix();
-            if (StringUtils.isNotBlank(suffix)) {
-                Resource resource = getResolver().getResource(suffix);
-                if (resource != null) {
-                    tenant = resource.adaptTo(Tenant.class);
-                }
-            }
-            if (tenant == null) {
-                tenant = getResource().adaptTo(Tenant.class);
-            }
-        }
-        return tenant;
     }
 
     public TenantUserManager.TenantUser getUser() {

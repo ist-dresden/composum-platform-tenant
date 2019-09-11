@@ -3,7 +3,7 @@
 <%@taglib prefix="cpn" uri="http://sling.composum.com/cpnl/1.0" %>
 <sling:defineObjects/>
 <cpn:component id="manager" type="com.composum.platform.tenant.view.TenantManagerBean" scope="request">
-    <div class="detail-view">
+    <div class="detail-view composum-platform-tenant">
         <sling:include resourceType="composum/platform/tenant/manager/tabs/${manager.viewType}"/>
     </div>
 </cpn:component>

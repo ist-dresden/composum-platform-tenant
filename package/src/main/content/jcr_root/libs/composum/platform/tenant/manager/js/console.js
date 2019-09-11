@@ -81,16 +81,27 @@
             }
         });
 
-        tenants.SitesTab = tenants.AbstractManagerTab.extend({
+        tenants.HostsTab = tenants.AbstractManagerTab.extend({
 
             initialize: function (options) {
                 tenants.AbstractManagerTab.prototype.initialize.apply(this, [options]);
-                $(document).off('detail:reload.users').on('detail:reload.users', _.bind(this.reloadTab, this));
             },
 
             initContent: function () {
                 tenants.AbstractManagerTab.prototype.initContent.apply(this);
                 this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            reloadTab: function (event) {
+                if (event) {
+                    event.preventDefault();
+                }
+                tenants.detailView.refreshContent();
+                return false;
+            },
+
+            reload: function () {
+                tenants.onHostsContentLoad();
             }
         });
 

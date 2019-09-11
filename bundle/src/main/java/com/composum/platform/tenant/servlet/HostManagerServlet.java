@@ -32,6 +32,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_ADDRESS;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_CERTIFICATE;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_CONFIGURED;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_ENABLED;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_HOSTNAME;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_LOCKED;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_SECURED;
+import static com.composum.platform.tenant.service.HostManagerService.VALUE_VALID;
+
 /**
  * The servlet to provide changes of the Asset Managers UI.
  */
@@ -39,7 +48,8 @@ import java.util.Map;
         property = {
                 Constants.SERVICE_DESCRIPTION + "=Composum Platform Host Manager Servlet",
                 ServletResolverConstants.SLING_SERVLET_PATHS + "=/bin/cpm/platform/tenants/host",
-                ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET
+                ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
+                ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
 public class HostManagerServlet extends AbstractTenantServlet {
 
@@ -50,15 +60,6 @@ public class HostManagerServlet extends AbstractTenantServlet {
 
     public static final String LIST_HOSTS = "hosts";
     public static final String DATA_HOST = "host";
-
-    public static final String VALUE_HOSTNAME = "hostname";
-    public static final String VALUE_ADDRESS = "address";
-    public static final String VALUE_VALID = "valid"; // dot-circle-o,bullseye,anchor,link / minus,chain-broken
-    public static final String VALUE_CONFIGURED = "configured"; // code,cog / ellipsis-h
-    public static final String VALUE_ENABLED = "enabled"; // check / times,power-off
-    public static final String VALUE_CERTIFICATE = "certificate"; // ticket,sun-o,tag / download,chain-broken
-    public static final String VALUE_SECURED = "secured"; // key
-    public static final String VALUE_LOCKED = "locked"; // lock / unlock
 
     @Reference
     protected HostManagerService hostManager;
@@ -76,11 +77,15 @@ public class HostManagerServlet extends AbstractTenantServlet {
     //
 
     public enum Extension {
-        html, json
+        json
     }
 
     public enum Operation {
-        list, status, create, enable, disable, cert, revoke, secure, unsecure, delete
+        list, status,
+        // tenant related
+        add, remove,
+        // hosts configuration
+        create, enable, disable, cert, revoke, secure, unsecure, delete
     }
 
     protected HostsOperationSet operations = new HostsOperationSet();
@@ -106,6 +111,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 Operation.list, new ListHosts());
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.status, new HostStatus());
+
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.create, new CreateHost());
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
@@ -121,6 +127,24 @@ public class HostManagerServlet extends AbstractTenantServlet {
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.unsecure, new UnsecureHost());
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
+                Operation.delete, new DeleteHost());
+
+        // POST
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.create, new CreateHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.enable, new EnableHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.disable, new DisableHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.cert, new HostCertificate());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.revoke, new RevokeCertificate());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.secure, new SecureHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.unsecure, new UnsecureHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
                 Operation.delete, new DeleteHost());
     }
 
@@ -151,7 +175,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                         put(VALUE_ENABLED, host.isEnabled());
                         put(VALUE_CERTIFICATE, host.isCertAvailable());
                         put(VALUE_SECURED, host.isSecured());
-                        put(VALUE_ADDRESS, host.getInetAddress());
+                        put(VALUE_ADDRESS, host.getAddress());
                         put(VALUE_VALID, host.isValid());
                     }});
                 }
@@ -185,7 +209,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                         data.put(VALUE_ENABLED, host.isEnabled());
                         data.put(VALUE_CERTIFICATE, host.isCertAvailable());
                         data.put(VALUE_SECURED, host.isSecured());
-                        data.put(VALUE_ADDRESS, host.getInetAddress());
+                        data.put(VALUE_ADDRESS, host.getAddress());
                         data.put(VALUE_VALID, host.isValid());
                     } else {
                         status.withLogging(LOG).warn("host not found - '{}'", hostname);
@@ -214,6 +238,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
             return hostManager.hostStatus(resolver, tenantId, hostname);
         }
     }
+
+    // hosts configuration
 
     public class CreateHost extends HostOperation {
 

@@ -276,8 +276,8 @@
             selector: '> .composum-platform-tenant_users-console',
             tabType: tenants.UsersTab
         }, {
-            selector: '> .tenant-sites',
-            tabType: tenants.SitesTab
+            selector: '> .composum-platform-tenant_hosts-console',
+            tabType: tenants.HostsTab
         }, {
             selector: '> .tenant-inbox',
             tabType: tenants.InboxTab

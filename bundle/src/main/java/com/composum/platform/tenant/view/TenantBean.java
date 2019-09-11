@@ -1,9 +1,13 @@
 package com.composum.platform.tenant.view;
 
+import com.composum.platform.tenant.service.HostManagerService;
+import com.composum.platform.tenant.service.HostManagerService.Host;
+import com.composum.platform.tenant.service.HostManagerService.HostList;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
-import com.composum.sling.core.AbstractServletBean;
 import com.composum.sling.core.BeanContext;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.tenant.Tenant;
 import org.slf4j.Logger;
@@ -12,16 +16,23 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.Collection;
 
-public class TenantBean extends AbstractServletBean {
+import static com.composum.platform.tenant.servlet.HostManagerServlet.PARAM_HOSTNAME;
+
+public class TenantBean extends AbstractTenantBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantBean.class);
 
-    private transient Tenant tenant;
+    public static final String ATTR_HOST = "host";
+    public static final String ATTR_HOSTNAME = "hostname";
 
     private transient Collection<TenantUserManager.TenantUser> users;
 
+    private transient HostList hosts;
+    private transient Host host;
+
     private transient TenantManagerService manager;
     private transient TenantUserManager userManager;
+    private transient HostManagerService hostManager;
 
     public TenantBean(BeanContext context, Resource resource) {
         super(context, resource);
@@ -33,13 +44,6 @@ public class TenantBean extends AbstractServletBean {
 
     public TenantBean() {
         super();
-    }
-
-    public Tenant getTenant() {
-        if (tenant == null) {
-            tenant = getManager().getTenant(context.getResolver(), getName());
-        }
-        return tenant;
     }
 
     protected TenantManagerService getManager() {
@@ -67,5 +71,48 @@ public class TenantBean extends AbstractServletBean {
             userManager = context.getService(TenantUserManager.class);
         }
         return userManager;
+    }
+
+    // hosts
+
+    public String getPublicHostname() {
+        return getHostManager().getPublicHostname();
+    }
+
+    public Host getHost() {
+        if (host == null) {
+            SlingHttpServletRequest request = getRequest();
+            host = (Host) request.getAttribute(ATTR_HOST);
+            if (host == null) {
+                String hostname = (String) request.getAttribute(ATTR_HOSTNAME);
+                if (StringUtils.isBlank(hostname)) {
+                    hostname = request.getParameter(PARAM_HOSTNAME);
+                }
+                if (StringUtils.isNotBlank(hostname)) {
+                    host = getHosts().get(hostname);
+                }
+            }
+        }
+        return host;
+    }
+
+    public HostList getHosts() {
+        if (hosts == null) {
+            try {
+                Tenant tenant = getTenant();
+                hosts = getHostManager().hostList(getResolver(), tenant != null ? tenant.getId() : null);
+            } catch (HostManagerService.ProcessException ex) {
+                LOG.error(ex.getMessage(), ex);
+                hosts = new HostList();
+            }
+        }
+        return hosts;
+    }
+
+    protected HostManagerService getHostManager() {
+        if (hostManager == null) {
+            hostManager = context.getService(HostManagerService.class);
+        }
+        return hostManager;
     }
 }

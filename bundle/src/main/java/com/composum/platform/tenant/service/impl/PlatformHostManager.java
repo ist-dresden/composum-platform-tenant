@@ -79,7 +79,7 @@ public class PlatformHostManager implements HostManagerService {
         private transient String reversedName;
 
         protected PlatformHost(@Nonnull final String hostname) {
-            super(hostname, false, false, false, false);
+            this(hostname, false, false, false, false);
         }
 
         protected PlatformHost(@Nonnull final String hostname,
@@ -90,11 +90,15 @@ public class PlatformHostManager implements HostManagerService {
             super(hostname, configured, enabled, cert, secured);
         }
 
-        @Override
         public void applyResource(@Nonnull final Resource resource) {
             ValueMap values = resource.getValueMap();
             siteRef = values.get(PN_SITE_REF, String.class);
             locked = values.get(PN_LOCKED, Boolean.FALSE);
+        }
+
+        @Override
+        public boolean isAvailable() {
+            return isEnabled() && isValid();
         }
 
         @Override
@@ -159,6 +163,11 @@ public class PlatformHostManager implements HostManagerService {
     }
 
     @Override
+    public String getPublicHostname() {
+        return publicHostname;
+    }
+
+    @Override
     public HostList hostList(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId)
             throws ProcessException {
         checkPermissions(resolver, tenantId, null);
@@ -171,7 +180,7 @@ public class PlatformHostManager implements HostManagerService {
                     Resource hostsRes = tenantRes.getChild("hosts");
                     if (hostsRes != null) {
                         for (Resource hostRes : hostsRes.getChildren()) {
-                            Host host = getStatus(hostRes.getName());
+                            PlatformHost host = (PlatformHost) getStatus(hostRes.getName());
                             if (host == null) {
                                 host = new PlatformHost(hostRes.getName());
                             }

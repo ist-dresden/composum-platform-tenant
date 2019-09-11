@@ -5,6 +5,7 @@
         embed="[category:composum.platform.workflow.console,
                 composum/platform/tenant/workflow/dialog/message/clientlib/dialog.js,
                 composum/platform/tenant/manager/components/users/js/users.js,
+                composum/platform/tenant/manager/components/hosts/js/hosts.js,
                 composum/platform/tenant/manager/js/console.js,
                 composum/platform/tenant/manager/js/dialogs.js,
                 composum/platform/tenant/manager/js/manager.js]"/>

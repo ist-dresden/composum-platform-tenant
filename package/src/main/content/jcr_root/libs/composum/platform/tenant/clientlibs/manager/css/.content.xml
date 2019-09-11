@@ -6,5 +6,6 @@
                 composum/platform/tenant/workflow/dialog/message/clientlib/dialog.css,
                 composum/platform/tenant/manager/components/tenant/css/tenant.css,
                 composum/platform/tenant/manager/components/users/css/users.css,
+                composum/platform/tenant/manager/components/hosts/css/hosts.css,
                 composum/platform/tenant/manager/css/dialogs.css,
                 composum/platform/tenant/manager/css/manager.css]"/>

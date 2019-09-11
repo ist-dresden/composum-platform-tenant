@@ -16,9 +16,9 @@
                 <a class="view fa fa-users btn btn-default" href="#users" data-group="users"
                    title="${cpn:i18n(slingRequest,'Users View')}"><cpn:text
                         value="Users" tagName="span" class="label" i18n="true"/></a>
-                <a class="view fa fa-sitemap btn btn-default" href="#sites" data-group="sites"
-                   title="${cpn:i18n(slingRequest,'Sites View')}"><cpn:text
-                        value="Sites" tagName="span" class="label" i18n="true"/></a>
+                <a class="view fa fa-sitemap btn btn-default" href="#hosts" data-group="hosts"
+                   title="${cpn:i18n(slingRequest,'Hosts View')}"><cpn:text
+                        value="Hosts" tagName="span" class="label" i18n="true"/></a>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <span class="tenant-status_label text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</span>

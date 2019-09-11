@@ -4,16 +4,22 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
-    <div class="tenant-sites" data-path="${model.path}">
-        <div class="tenant-toolbar detail-toolbar">
+    <div class="composum-platform-tenant_hosts-console" data-path="${model.path}">
+        <div class="composum-platform-tenant_hosts-toolbar detail-toolbar">
+            <div class="btn-group btn-group-sm" role="group">
+                <button class="add fa fa-plus btn btn-default"
+                        title="${cpn:i18n(slingRequest,'Add Host')}"><cpn:text
+                        value="Add Host" tagName="span" class="label" i18n="true"/></button>
+            </div>
             <div class="btn-group btn-group-sm" role="group">
                 <button class="reload fa fa-refresh btn btn-default"
                         title="${cpn:i18n(slingRequest,'Reload')}"><cpn:text
                         value="Reload" tagName="span" class="label" i18n="true"/></button>
             </div>
         </div>
-        <div class="tenant-detail_content">
-            <sling:include resourceType="composum/platform/tenant/manager/components/sites"/>
+        <div class="composum-platform-tenant_hosts-content detail-content"
+             data-path="${model.path}" data-tenant="${model.tenant.id}">
+            <sling:include resourceType="composum/platform/tenant/manager/components/hosts"/>
         </div>
     </div>
 </cpn:component>
