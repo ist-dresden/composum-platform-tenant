@@ -53,6 +53,11 @@ public class TenantBean extends AbstractTenantBean {
         return manager;
     }
 
+    public String getHintSelector() {
+        String[] selectors = request.getRequestPathInfo().getSelectors();
+        return selectors.length > 1 ? selectors[1] : "";
+    }
+
     // users
 
     public Collection<TenantUserManager.TenantUser> getUsers() {

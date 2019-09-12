@@ -6,7 +6,6 @@
     <sling:call script="hints.jsp"/>
     <div class="form-group widget text-field-widget user-id" data-rules="required">
         <label class="control-label">Hostname</label>
-        <input name="hostname" class="form-control" type="text" value="${cpn:text(model.host.hostname)}"
-               disabled="disabled"/>
+        <input name="hostname" class="form-control" type="text" value="${cpn:text(model.host.hostname)}"/>
     </div>
 </cpn:component>

@@ -3,13 +3,17 @@ package com.composum.platform.tenant.service.impl;
 import com.composum.platform.tenant.service.HostManagerService;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
+import com.composum.sling.core.util.ResourceUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.tenant.Tenant;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Activate;
@@ -24,14 +28,20 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.jcr.query.Query;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Component(
@@ -40,7 +50,7 @@ import java.util.concurrent.TimeUnit;
         }
 )
 @Designate(ocd = PlatformHostManager.Configuration.class)
-public class PlatformHostManager implements HostManagerService {
+public final class PlatformHostManager implements HostManagerService {
 
     public static final String PN_SITE_REF = "siteRef";
     public static final String PN_LOCKED = "locked";
@@ -70,6 +80,14 @@ public class PlatformHostManager implements HostManagerService {
         )
         String host_manage_cmd() default "/etc/httpd/bin/host";
     }
+
+    public final static Map<String, Object> HOSTS_PROPS = new HashMap<String, Object>() {{
+        put(JcrConstants.JCR_PRIMARYTYPE, ResourceUtil.TYPE_SLING_FOLDER);
+    }};
+
+    public final static Map<String, Object> HOST_PROPS = new HashMap<String, Object>() {{
+        put(JcrConstants.JCR_PRIMARYTYPE, JcrConstants.NT_UNSTRUCTURED);
+    }};
 
     protected class PlatformHost extends Host {
 
@@ -103,7 +121,18 @@ public class PlatformHostManager implements HostManagerService {
 
         @Override
         public boolean isValid() {
-            return publicIpAddress != null && publicIpAddress.equals(getInetAddress());
+            if (publicIpAddresses != null && publicIpAddresses.size() > 0) {
+                List<InetAddress> addresses = getInetAddresses();
+                if (addresses != null && addresses.size() > 0) {
+                    for (InetAddress adr : addresses) {
+                        if (!publicIpAddresses.contains(adr)) {
+                            return false; // the whole set must be equal
+                        }
+                    }
+                    return true; // address set is equal
+                }
+            }
+            return false; // at least one address set is empty
         }
 
         @Override
@@ -143,23 +172,23 @@ public class PlatformHostManager implements HostManagerService {
     protected PlatformHostManager.Configuration config;
 
     protected String publicHostname;
-    protected InetAddress publicIpAddress;
+    protected List<InetAddress> publicIpAddresses;
 
     @Activate
     @Modified
     protected void activate(BundleContext bundleContext, PlatformHostManager.Configuration config) {
         this.config = config;
-        publicIpAddress = null;
+        publicIpAddresses = null;
         publicHostname = config.public_system_host();
         if (StringUtils.isBlank(publicHostname)) {
             publicHostname = callCmd(config.hostname_cmd());
         }
         try {
-            publicIpAddress = InetAddress.getByName(publicHostname);
+            publicIpAddresses = Arrays.asList(InetAddress.getAllByName(publicHostname));
         } catch (UnknownHostException ex) {
             LOG.error(ex.getMessage(), ex);
         }
-        LOG.info("activate(): {} / {}", publicHostname, publicIpAddress);
+        LOG.info("activate(): {} / {}", publicHostname, StringUtils.join(publicIpAddresses, ","));
     }
 
     @Override
@@ -170,7 +199,7 @@ public class PlatformHostManager implements HostManagerService {
     @Override
     public HostList hostList(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, null);
+        checkPermissions(resolver, tenantId, null, false);
         HostList result = new HostList();
         if (StringUtils.isNotBlank(tenantId)) {
             try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
@@ -204,7 +233,7 @@ public class PlatformHostManager implements HostManagerService {
                             status[3].equals("secured")
                     ));
                 }
-            }, "list", "status");
+            }, "list", "status", false);
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("hostList({}): {}", tenantId != null ? tenantId : "", StringUtils.join(result, ", "));
@@ -227,7 +256,7 @@ public class PlatformHostManager implements HostManagerService {
                             status[3].equals("secured")
                     ));
                 }
-            }, "status", hostname);
+            }, "status", hostname, false);
         } catch (ProcessException ignore) {
         }
         if (LOG.isDebugEnabled()) {
@@ -241,16 +270,130 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostStatus(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
+        checkPermissions(resolver, tenantId, hostname, false);
         return getStatus(hostname);
     }
+
+    // tenant hosts management
+
+    protected void checkHostname(@Nullable final String hostname) throws ProcessException {
+        if (StringUtils.isBlank(hostname) || !HOSTNAME_PATTERN.matcher(hostname).matches()) {
+            LOG.error("invalid hostname '{}'", hostname);
+            throw new ProcessException("invalid hostname");
+        }
+    }
+
+    @Override
+    public void removeHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                           @Nonnull final String hostname)
+            throws ProcessException, PersistenceException {
+        checkPermissions(resolver, tenantId, hostname, true);
+        Tenant tenant = tenantManager.getTenant(resolver, tenantId);
+        if (tenant == null) {
+            throw new ProcessException("tenant '" + tenantId + "' not available");
+        }
+        checkHostname(hostname);
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            final Resource tenantsRoot = tenantManager.getTenantsRoot(serviceResolver);
+            final Resource tenantResource = Objects.requireNonNull(tenantsRoot.getChild(tenantId));
+            Resource hostsNode = tenantResource.getChild("hosts");
+            if (hostsNode != null) {
+                Resource hostNode = hostsNode.getChild(hostname);
+                if (hostNode != null) {
+                    hostDelete(resolver, tenantId, hostname);
+                    serviceResolver.delete(hostNode);
+                    serviceResolver.commit();
+                }
+            }
+        } catch (LoginException ex) {
+            LOG.error(ex.getMessage());
+            throw new ProcessException("action not allowed");
+        }
+    }
+
+    @Override
+    public Host addHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                        @Nonnull final String hostname)
+            throws ProcessException, PersistenceException {
+        checkPermissions(resolver, tenantId, hostname, false);
+        Tenant tenant = tenantManager.getTenant(resolver, tenantId);
+        if (tenant == null) {
+            throw new ProcessException("tenant '" + tenantId + "' not available");
+        }
+        checkHostname(hostname);
+        String ownerId = getHostsTenant(resolver, hostname);
+        if (ownerId != null) {
+            if (!ownerId.equals(tenantId)) {
+                throw new ProcessException("hostname is already in use by another tenant");
+            } else {
+                return getStatus(hostname);
+            }
+        }
+        String domainOwner = getDomainOwner(resolver, hostname);
+        if (domainOwner != null && !domainOwner.equals(tenantId)) {
+            throw new ProcessException("hostname is reserved by another tenant");
+        }
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            final Resource tenantsRoot = tenantManager.getTenantsRoot(serviceResolver);
+            final Resource tenantResource = Objects.requireNonNull(tenantsRoot.getChild(tenantId));
+            Resource hostsNode = tenantResource.getChild("hosts");
+            if (hostsNode == null) {
+                hostsNode = serviceResolver.create(tenantResource, "hosts", HOSTS_PROPS);
+            }
+            Resource hostNode = serviceResolver.create(hostsNode, hostname, HOST_PROPS);
+            serviceResolver.commit();
+        } catch (LoginException ex) {
+            LOG.error(ex.getMessage());
+            throw new ProcessException("action not allowed");
+        }
+        return getStatus(hostname);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Nullable
+    protected String getHostsTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
+            String query = ("/jcr:root" + tenantsRoot + "/*/hosts/" + hostname);
+            Iterator<Resource> found = serviceResolver.findResources(query, Query.XPATH);
+            if (found.hasNext()) {
+                Resource hostRes = found.next();
+                return Objects.requireNonNull(Objects.requireNonNull(hostRes.getParent()).getParent()).getName();
+            }
+        } catch (LoginException ex) {
+            LOG.error(ex.getMessage());
+        }
+        return null;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Nullable
+    protected String getDomainOwner(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
+            String domain = hostname;
+            while ((domain = StringUtils.substringAfter(domain, ".")).contains(".")) {
+                String query = ("/jcr:root" + tenantsRoot + "/*/hosts[domains='" + domain + "']");
+                Iterator<Resource> found = serviceResolver.findResources(query, Query.XPATH);
+                if (found.hasNext()) {
+                    Resource hostsRes = found.next();
+                    return Objects.requireNonNull(hostsRes.getParent()).getName();
+                }
+            }
+        } catch (LoginException ex) {
+            LOG.error(ex.getMessage());
+        }
+        return null;
+    }
+
+    // server host configuration
 
     @Override
     public Host hostCreate(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "create", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "create", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostCreate({}): {}", hostname, exitValue);
         }
@@ -261,8 +404,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostEnable(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "enable", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "enable", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostEnable({}): {}", hostname, exitValue);
         }
@@ -273,8 +416,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostDisable(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                             @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "disable", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "disable", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostDisable({}): {}", hostname, exitValue);
         }
@@ -285,8 +428,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostCert(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                          @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "cert", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "cert", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostCert({}): {}", hostname, exitValue);
         }
@@ -297,8 +440,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostRevoke(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "revoke", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "revoke", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostRevoke({}): {}", hostname, exitValue);
         }
@@ -309,8 +452,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostSecure(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "secure", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "secure", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostSecure({}): {}", hostname, exitValue);
         }
@@ -321,8 +464,8 @@ public class PlatformHostManager implements HostManagerService {
     public Host hostUnsecure(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                              @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "unsecure", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "unsecure", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostUnsecure({}): {}", hostname, exitValue);
         }
@@ -333,21 +476,24 @@ public class PlatformHostManager implements HostManagerService {
     public void hostDelete(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname);
-        int exitValue = hostManageCmd(null, "delete", hostname);
+        checkPermissions(resolver, tenantId, hostname, true);
+        int exitValue = hostManageCmd(null, "delete", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostDelete({}): {}", hostname, exitValue);
         }
     }
 
     private void checkPermissions(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
-                                  @Nullable final String hostname)
+                                  @Nullable final String hostname, boolean hostMustBeAssigned)
             throws ProcessException {
         String userId = resolver.getUserID();
         if (StringUtils.isBlank(userId) || (!"admin".equals(userId) &&
                 (StringUtils.isBlank(tenantId) ||
                         !userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) ||
-                        (hostname != null && !hostList(resolver, tenantId).contains(hostname))))) {
+                        (hostMustBeAssigned && (hostname == null || !hostList(resolver, tenantId).contains(hostname)))))) {
+            LOG.error("permissions.failue:{},{},{},{}", hostname, userId, tenantId,
+                    StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)
+                            ? userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) : "?");
             throw new ProcessException("insufficient permissions");
         }
     }
@@ -356,12 +502,25 @@ public class PlatformHostManager implements HostManagerService {
         void slurpIt(BufferedReader reader) throws IOException;
     }
 
-    private int hostManageCmd(OutputHandler out, String operation, String hostname)
+    private int hostManageCmd(@Nullable final OutputHandler out, @Nonnull final String operation,
+                              @Nullable final String hostname, boolean checkLocked)
             throws ProcessException {
         int exitValue;
         try {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("hostManageCmd: {} {}", operation, hostname);
+            }
+            if (StringUtils.isNotBlank(hostname) && !"status".equals(hostname)) {
+                if (!HOSTNAME_PATTERN.matcher(hostname).matches()) {
+                    LOG.error("invalid hostname '{}' on executing manage cmd '{}'", hostname, operation);
+                    throw new ProcessException("invalid hostname");
+                }
+            }
+            if (checkLocked && StringUtils.isNotBlank(hostname)) {
+                Host host = getStatus(hostname);
+                if (host != null && host.isLocked()) {
+                    throw new ProcessException("host is locked");
+                }
             }
             Process process = new ProcessBuilder().command(config.host_manage_cmd(), operation, hostname).start();
             if (out != null) {
@@ -411,7 +570,7 @@ public class PlatformHostManager implements HostManagerService {
                 result.append(line);
             }
         } catch (IOException ex) {
-            LOG.error(ex.getMessage(), ex);
+            LOG.warn(ex.getMessage());
         }
         return result.toString();
     }

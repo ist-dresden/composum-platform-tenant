@@ -1,7 +1,9 @@
 package com.composum.platform.tenant.service;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 
 import javax.annotation.Nonnull;
@@ -10,12 +12,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public interface HostManagerService {
 
-    InetAddress NO_ADDRESS = InetAddress.getLoopbackAddress();
+    Pattern HOSTNAME_PATTERN = Pattern.compile(
+            "^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9])(\\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]{0,61}[a-zA-Z0-9]))*$"
+    );
+
+    List<InetAddress> NO_ADDRESS = Collections.emptyList();
 
     String VALUE_HOSTNAME = "hostname";
     String VALUE_ADDRESS = "address";
@@ -34,7 +42,7 @@ public interface HostManagerService {
         private final boolean certAvailable;
         private final boolean secured;
 
-        private transient InetAddress inetAddress;
+        private transient List<InetAddress> inetAddresses;
 
         public Host(@Nonnull String hostname,
                     boolean configured,
@@ -104,26 +112,26 @@ public interface HostManagerService {
 
         @Nullable
         public String getAddress() {
-            InetAddress address = getInetAddress();
-            return inetAddress != null ? inetAddress.getHostAddress() : null;
+            List<InetAddress> addresses = getInetAddresses();
+            return addresses != null && addresses.size() > 0 ? addresses.get(0).getHostAddress() : null;
         }
 
         @Nullable
-        public InetAddress getInetAddress() {
-            if (inetAddress == null) {
+        public List<InetAddress> getInetAddresses() {
+            if (inetAddresses == null) {
                 try {
-                    inetAddress = InetAddress.getByName(getHostname());
+                    inetAddresses = Arrays.asList(InetAddress.getAllByName(getHostname()));
                 } catch (UnknownHostException ignore) {
                 }
-                if (inetAddress == null) {
-                    inetAddress = NO_ADDRESS;
+                if (inetAddresses == null) {
+                    inetAddresses = NO_ADDRESS;
                 }
             }
-            return inetAddress != NO_ADDRESS ? inetAddress : null;
+            return inetAddresses != NO_ADDRESS ? inetAddresses : null;
         }
 
         public String getId() {
-            return getHostname().replace('.','°');
+            return getHostname().replace('.', '°');
         }
 
         /**
@@ -136,10 +144,14 @@ public interface HostManagerService {
 
         public JsonObject toJson() {
             JsonObject object = new JsonObject();
-            InetAddress address = getInetAddress();
+            List<InetAddress> addresses = getInetAddresses();
             object.addProperty(VALUE_HOSTNAME, getHostname());
-            if (address != null) {
-                object.addProperty(VALUE_ADDRESS, address.getHostAddress());
+            if (addresses != null) {
+                JsonArray hostIps = new JsonArray();
+                for (InetAddress adr : addresses) {
+                    hostIps.add(adr.getHostAddress());
+                }
+                object.add(VALUE_ADDRESS, hostIps);
             }
             object.addProperty(VALUE_VALID, isValid());
             object.addProperty(VALUE_ENABLED, isEnabled());
@@ -216,6 +228,24 @@ public interface HostManagerService {
      */
     Host hostStatus(@Nonnull ResourceResolver resolver, @Nullable String tenantId, @Nonnull String hostname)
             throws ProcessException;
+
+    // tenant hosts management
+
+    /**
+     * joins a host to a tenant
+     */
+    Host addHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                 @Nonnull final String hostname)
+            throws ProcessException, PersistenceException;
+
+    /**
+     * removes a host from a tenant and deletes all host configurations including certificates
+     */
+    void removeHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
+                    @Nonnull final String hostname)
+            throws ProcessException, PersistenceException;
+
+    // server host configuration
 
     /**
      * creates the Webserver configuration of a hosts (if not present; the tenant is used to check the permissions)

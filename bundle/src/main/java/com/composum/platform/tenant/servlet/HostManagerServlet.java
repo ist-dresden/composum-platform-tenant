@@ -10,6 +10,7 @@ import com.composum.sling.core.servlet.Status;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.ServletResolverConstants;
@@ -55,7 +56,6 @@ public class HostManagerServlet extends AbstractTenantServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(HostManagerServlet.class);
 
-    public static final String PARAM_TENANT = "tenant";
     public static final String PARAM_HOSTNAME = "hostname";
 
     public static final String LIST_HOSTS = "hosts";
@@ -131,6 +131,11 @@ public class HostManagerServlet extends AbstractTenantServlet {
 
         // POST
         operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.add, new AddHost());
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.remove, new RemoveHost());
+
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
                 Operation.create, new CreateHost());
         operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
                 Operation.enable, new EnableHost());
@@ -164,7 +169,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 throws IOException {
             Status status = new Status(request, response);
             ResourceResolver resolver = request.getResourceResolver();
-            String tenantId = request.getParameter(PARAM_TENANT);
+            String tenantId = getTenantId(request, resource, true);
             List<Map<String, Object>> result = status.list(LIST_HOSTS);
             try {
                 for (Host host : hostManager.hostList(resolver, tenantId)) {
@@ -196,7 +201,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 throws IOException {
             Status status = new Status(request, response);
             ResourceResolver resolver = request.getResourceResolver();
-            String tenantId = request.getParameter(PARAM_TENANT);
+            String tenantId = getTenantId(request, resource, true);
             String hostname = request.getParameter(PARAM_HOSTNAME);
             if (StringUtils.isNotBlank(hostname)) {
                 try {
@@ -211,8 +216,6 @@ public class HostManagerServlet extends AbstractTenantServlet {
                         data.put(VALUE_SECURED, host.isSecured());
                         data.put(VALUE_ADDRESS, host.getAddress());
                         data.put(VALUE_VALID, host.isValid());
-                    } else {
-                        status.withLogging(LOG).warn("host not found - '{}'", hostname);
                     }
                 } catch (ProcessException ex) {
                     status.withLogging(LOG).error("processing error ({}): {}",
@@ -239,7 +242,45 @@ public class HostManagerServlet extends AbstractTenantServlet {
         }
     }
 
-    // hosts configuration
+    // tenant hosts management
+
+    public class AddHost extends HostOperation {
+
+        @Override
+        protected Host perform(@Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException {
+            try {
+                if (StringUtils.isBlank(tenantId)) {
+                    throw new ProcessException("no tenant specified");
+                }
+                return hostManager.addHost(resolver, tenantId, hostname);
+            } catch (PersistenceException ex) {
+                status.withLogging(LOG).error(ex.getMessage(), ex);
+                return null;
+            }
+        }
+    }
+
+    public class RemoveHost extends HostOperation {
+
+        @Override
+        protected Host perform(@Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException {
+            try {
+                if (StringUtils.isBlank(tenantId)) {
+                    throw new ProcessException("no tenant specified");
+                }
+                hostManager.removeHost(resolver, tenantId, hostname);
+            } catch (PersistenceException ex) {
+                status.withLogging(LOG).error(ex.getMessage(), ex);
+            }
+            return null;
+        }
+    }
+
+    // server host configuration
 
     public class CreateHost extends HostOperation {
 

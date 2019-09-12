@@ -96,6 +96,9 @@
                 if (event) {
                     event.preventDefault();
                 }
+                if (tenants.hostsView) {
+                    tenants.hostsView.hostsBusyOn();
+                }
                 tenants.detailView.refreshContent();
                 return false;
             },

@@ -22,4 +22,7 @@
             <sling:include resourceType="composum/platform/tenant/manager/components/hosts"/>
         </div>
     </div>
+    <div class="composum-platform-tenant_hosts-busy">
+        <div class="symbol fa fa-spinner fa-pulse fa-3x fa-fw"></div>
+    </div>
 </cpn:component>

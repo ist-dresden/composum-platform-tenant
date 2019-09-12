@@ -13,6 +13,8 @@ $host-icon-bg-disabled: #bbb;
 
 $host-action-disabled: #bbb;
 
+$busy-symbol-size: 150px;
+
 .composum-platform-tenant {
 
     &_hosts-content {
@@ -157,6 +159,28 @@ $host-action-disabled: #bbb;
                     }
                 }
             }
+        }
+    }
+
+    &_hosts-busy {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+
+        .symbol {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: $busy-symbol-size;
+            height: $busy-symbol-size;
+            margin-top: -$busy-symbol-size / 2;
+            margin-left: -$busy-symbol-size * 6 / 15;
+            line-height: $busy-symbol-size;
+            font-size: $busy-symbol-size;
+            color: rgba(255, 255, 255, 0.7);
         }
     }
 }
