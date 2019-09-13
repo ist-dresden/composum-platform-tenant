@@ -5,7 +5,7 @@
         category="[general,message]"
         assignee="${wf.assignee}|tenant-${tenant.id}-${wf.assignee}s"
         title="Answer"
-        hint="there is an answer for a message or inquiry"
+        hint="${subject}"
         hintAdded="The answer is sent."
         dialog="composum/platform/tenant/workflow/dialog/message/answer"
         initDialog="window.tenants.initConversationDialog">
@@ -14,7 +14,6 @@
         <de
                 jcr:primaryType="nt:unstructured"
                 title="Antwort"
-                hint="eine Antort auf eine Nachricht oder Anfrage liegt vor"
                 hintAdded="Die Antwort ist gesendet."/>
     </i18n>
     <data

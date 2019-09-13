@@ -5,6 +5,7 @@
         category="[general,message]"
         assignee="${wf.assignee}|tenant-${tenant.id}-${wf.assignee}s"
         title="Message"
+        hint="${subject}"
         hintAdded="The message is sent."
         dialog="composum/platform/tenant/workflow/dialog/message/inquiry"
         initDialog="window.tenants.initConversationDialog">

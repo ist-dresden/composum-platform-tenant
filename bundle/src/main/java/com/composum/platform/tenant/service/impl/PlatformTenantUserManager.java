@@ -24,7 +24,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -197,7 +196,7 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
 
     @Override
     @Nonnull
-    public Collection<TenantUser> getTenantUsers(@Nonnull final ResourceResolver resolver,
+    public TenantUsers getTenantUsers(@Nonnull final ResourceResolver resolver,
                                                  @Nonnull final String tenantId)
             throws RepositoryException {
         return call((session, context) -> {
@@ -215,7 +214,7 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
                     }
                 }
             }
-            List<TenantUser> result = new ArrayList<>();
+            TenantUsers result = new TenantUsers();
             for (User user : users) {
                 result.add(loadUser(userManager, tenantId, user));
             }

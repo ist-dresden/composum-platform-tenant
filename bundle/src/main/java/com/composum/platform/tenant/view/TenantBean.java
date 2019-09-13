@@ -5,6 +5,7 @@ import com.composum.platform.tenant.service.HostManagerService.Host;
 import com.composum.platform.tenant.service.HostManagerService.HostList;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
+import com.composum.platform.tenant.service.TenantUserManager.TenantUsers;
 import com.composum.sling.core.BeanContext;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.util.Collection;
 
 import static com.composum.platform.tenant.servlet.HostManagerServlet.PARAM_HOSTNAME;
 
@@ -25,7 +25,7 @@ public class TenantBean extends AbstractTenantBean {
     public static final String ATTR_HOST = "host";
     public static final String ATTR_HOSTNAME = "hostname";
 
-    private transient Collection<TenantUserManager.TenantUser> users;
+    private transient TenantUsers users;
 
     private transient HostList hosts;
     private transient Host host;
@@ -60,7 +60,11 @@ public class TenantBean extends AbstractTenantBean {
 
     // users
 
-    public Collection<TenantUserManager.TenantUser> getUsers() {
+    public int getCountUsers() {
+        return getUsers().size();
+    }
+
+    public TenantUsers getUsers() {
         if (users == null) {
             try {
                 users = getUserManager().getTenantUsers(context.getResolver(), getTenant().getId());

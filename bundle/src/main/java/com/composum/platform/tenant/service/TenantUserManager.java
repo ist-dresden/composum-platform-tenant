@@ -5,7 +5,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface TenantUserManager {
@@ -47,6 +47,13 @@ public interface TenantUserManager {
         List<Role> getRoles();
     }
 
+    class TenantUsers extends ArrayList<TenantUser> {
+
+        public int getCount() {
+            return size();
+        }
+    }
+
     boolean isInRole(@Nonnull String tenantId, @Nonnull Role role, @Nonnull String userId);
 
     /**
@@ -60,7 +67,7 @@ public interface TenantUserManager {
      * @return the set of users joined to the tenant
      */
     @Nonnull
-    Collection<TenantUser> getTenantUsers(@Nonnull ResourceResolver resolver, @Nonnull String tenantId)
+    TenantUsers getTenantUsers(@Nonnull ResourceResolver resolver, @Nonnull String tenantId)
             throws RepositoryException;
 
     /**
