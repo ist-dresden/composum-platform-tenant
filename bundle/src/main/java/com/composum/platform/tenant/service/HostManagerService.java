@@ -198,10 +198,13 @@ public interface HostManagerService {
         private List<String> errorMessages;
 
         public ProcessException(String message) {
-            this(-1, Collections.singletonList(message));
+            super(message);
+            this.exitValue = -1;
+            this.errorMessages = Collections.singletonList(message);
         }
 
         public ProcessException(int exitValue, List<String> messages) {
+            super(messages + " (exit " + exitValue + ")");
             this.exitValue = exitValue;
             this.errorMessages = messages;
         }

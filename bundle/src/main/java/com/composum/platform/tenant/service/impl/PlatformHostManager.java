@@ -491,7 +491,7 @@ public final class PlatformHostManager implements HostManagerService {
                 (StringUtils.isBlank(tenantId) ||
                         !userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) ||
                         (hostMustBeAssigned && (hostname == null || !hostList(resolver, tenantId).contains(hostname)))))) {
-            LOG.error("permissions.failue:{},{},{},{}", hostname, userId, tenantId,
+            LOG.error("permissions.failure:{},{},{},{}", hostname, userId, tenantId,
                     StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)
                             ? userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) : "?");
             throw new ProcessException("insufficient permissions");
