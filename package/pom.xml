@@ -132,6 +132,12 @@
                                 <include>.*/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-tenant.config</include>
                             </includes>
                         </filter>
+                        <filter>
+                            <root>/libs/composum/platform/config/tenants</root>
+                            <includes>
+                                <include>.*/com.composum.sling.core.CoreConfigImpl.config</include>
+                            </includes>
+                        </filter>
                     </filters>
 
                     <embeddeds>
