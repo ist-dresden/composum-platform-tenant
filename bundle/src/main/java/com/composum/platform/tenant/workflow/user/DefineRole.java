@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 @SuppressWarnings("Duplicates")
 @Component(
         property = {
-                Constants.SERVICE_DESCRIPTION + "=Define Tenant Role Workflow Job",
+                Constants.SERVICE_DESCRIPTION + "=Composum Platform Tenant Define Tenant Role Workflow Job",
                 JobConsumer.PROPERTY_TOPICS + "=" + DefineRole.JOB_TOPIC
         }
 )
