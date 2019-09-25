@@ -3,6 +3,9 @@ package com.composum.platform.tenant.service.impl;
 import com.composum.pages.commons.model.Site;
 import com.composum.pages.commons.service.ResourceManager;
 import com.composum.pages.commons.service.SiteManager;
+import com.composum.platform.cache.service.CacheConfiguration;
+import com.composum.platform.cache.service.CacheManager;
+import com.composum.platform.cache.service.impl.CacheServiceImpl;
 import com.composum.platform.tenant.service.HostManagerService;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
@@ -38,6 +41,7 @@ import javax.jcr.query.Query;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.annotation.Annotation;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -56,7 +60,7 @@ import java.util.concurrent.TimeUnit;
         }
 )
 @Designate(ocd = PlatformHostManager.Configuration.class)
-public final class PlatformHostManager implements HostManagerService {
+public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress>> implements HostManagerService {
 
     public static final String PN_SITE_REF = "siteRef";
     public static final String PN_SITE_STAGE = "siteStage";
@@ -194,10 +198,24 @@ public final class PlatformHostManager implements HostManagerService {
             }
             return reversedName;
         }
+
+        @Override
+        @Nonnull
+        protected List<InetAddress> fetchInetAddresses(@Nonnull final String hostname) {
+            List<InetAddress> adresses = get(hostname);
+            if (adresses == null) {
+                adresses = super.fetchInetAddresses(hostname);
+                put(hostname, adresses);
+            }
+            return adresses;
+        }
     }
 
     @Reference
     protected ResourceResolverFactory resolverFactory;
+
+    @Reference
+    protected CacheManager cacheManager;
 
     @Reference
     protected ResourceManager resourceManager;
@@ -217,10 +235,55 @@ public final class PlatformHostManager implements HostManagerService {
     protected List<InetAddress> publicIpAddresses;
     protected String resolverMapLocation;
 
+    @SuppressWarnings("ClassExplicitlyAnnotation")
+    protected class InetAddressCacheConfig implements CacheConfiguration {
+
+        @Override
+        public boolean enabled() {
+            return true;
+        }
+
+        @Override
+        public String name() {
+            return "Templates";
+        }
+
+        @Override
+        public String contentType() {
+            return ResourceManager.Template.class.getName();
+        }
+
+        @Override
+        public int maxElementsInMemory() {
+            return 500;
+        }
+
+        @Override
+        public int timeToLiveSeconds() {
+            return 3600;
+        }
+
+        @Override
+        public int timeToIdleSeconds() {
+            return 3600;
+        }
+
+        @Override
+        public String webconsole_configurationFactory_nameHint() {
+            return "Inet Adresses (heap: 500, time: 3600-3600)";
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return config.annotationType();
+        }
+    }
+
     @Activate
     @Modified
     protected void activate(BundleContext bundleContext, PlatformHostManager.Configuration config) {
         this.config = config;
+        super.activate(cacheManager, new InetAddressCacheConfig());
         publicIpAddresses = null;
         publicHostname = config.public_system_host();
         if (StringUtils.isBlank(publicHostname)) {
@@ -453,6 +516,9 @@ public final class PlatformHostManager implements HostManagerService {
                            @Nonnull final String tenantId, @Nonnull final String hostname,
                            @Nullable final String siteRef, @Nullable final String siteStage)
             throws ProcessException, PersistenceException {
+        if (LOG.isInfoEnabled()) {
+            LOG.info("assignSite '{}' - '{}/{}'", hostname, siteRef, siteStage);
+        }
         ResourceResolver resolver = context.getResolver();
         checkPermissions(resolver, tenantId, hostname, true);
         checkHostname(hostname);
@@ -465,6 +531,9 @@ public final class PlatformHostManager implements HostManagerService {
                 if (siteRes != null && (site = siteManager.createBean(context, siteRes)) != null) {
                     PlatformTenant tenant = (PlatformTenant) tenantManager.getTenant(serviceResolver, tenantId);
                     if (tenant != null) {
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info("createSiteMapping '{}' - '{}/{}'", hostname, siteRef, siteStage);
+                        }
                         createSiteMapping(serviceResolver, tenant, hostNode, site, siteStage);
                     } else {
                         LOG.error("invalid tanant '{}'", tenantId);
@@ -474,6 +543,9 @@ public final class PlatformHostManager implements HostManagerService {
                     if (StringUtils.isNotBlank(siteRef)) {
                         LOG.error("invalid site '{}'", siteRef);
                         throw new ProcessException("invalid site '{" + siteRef + "}'");
+                    }
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info("deleteSiteMapping '{}' - '{}/{}'", hostname, siteRef, siteStage);
                     }
                     deleteSiteMapping(serviceResolver, hostNode);
                 }
@@ -534,19 +606,30 @@ public final class PlatformHostManager implements HostManagerService {
             throws ProcessException {
         Resource mapRoot = getConfigResource(resolver, config.resource_resolver_map_location());
         try {
+            String siteRef = site.getPath();
+            if (StringUtils.isBlank(siteStage)) {
+                siteStage = AccessMode.ACCESS_MODE_PUBLIC.toLowerCase();
+            }
+            String assignedHost = getSiteHost(siteRef, siteStage);
+            if (assignedHost != null && !assignedHost.equals(hostNode.getName())) {
+                throw new ProcessException("site / stage: '" + siteRef + "' / '" + siteStage + "' already assigned to a host");
+            }
             deleteSiteMapping(resolver, hostNode);
             ModifiableValueMap values = hostNode.adaptTo(ModifiableValueMap.class);
             if (values != null) {
-                if (StringUtils.isBlank(siteStage)) {
-                    siteStage = AccessMode.ACCESS_MODE_PUBLIC.toLowerCase();
-                }
                 values.put(PN_SITE_STAGE, siteStage);
-                values.put(PN_SITE_REF, site.getPath());
+                values.put(PN_SITE_REF, siteRef);
                 String hostname = hostNode.getName();
                 Resource template = getConfigResource(resolver, config.resource_resolver_map_template());
                 MappingTemplateContext templateContext = new MappingTemplateContext(resolver, hostname, tenant, site, siteStage);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("createHttpMapping '{}' - '{}/{}'", hostname, siteRef, siteStage);
+                }
                 Resource mapFolder = getMapFolder(resolver, "http");
                 resourceManager.createFromTemplate(templateContext, mapFolder, hostname, template, false);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("createHttpsMapping '{}' - '{}/{}'", hostname, siteRef, siteStage);
+                }
                 mapFolder = getMapFolder(resolver, "https");
                 resourceManager.createFromTemplate(templateContext, mapFolder, hostname, template, false);
             } else {
@@ -581,6 +664,24 @@ public final class PlatformHostManager implements HostManagerService {
             LOG.error(ex.getMessage(), ex);
             throw new ProcessException(ex.getMessage());
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Nullable
+    protected String getSiteHost(@Nonnull final String siteRef, @Nonnull final String siteStage) {
+        try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+            String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
+            String query = ("/jcr:root" + tenantsRoot + "/*/hosts/*"
+                    + "[siteRef='" + siteRef + "' and siteStage='" + siteStage + "']");
+            Iterator<Resource> found = serviceResolver.findResources(query, Query.XPATH);
+            if (found.hasNext()) {
+                Resource hostRes = found.next();
+                return hostRes.getName();
+            }
+        } catch (LoginException ex) {
+            LOG.error(ex.getMessage());
+        }
+        return null;
     }
 
     protected Resource getMapFolder(@Nonnull final ResourceResolver resolver, String name)

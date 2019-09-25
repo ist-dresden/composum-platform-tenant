@@ -125,15 +125,18 @@ public interface HostManagerService {
         @Nullable
         public List<InetAddress> getInetAddresses() {
             if (inetAddresses == null) {
-                try {
-                    inetAddresses = Arrays.asList(InetAddress.getAllByName(getHostname()));
-                } catch (UnknownHostException ignore) {
-                }
-                if (inetAddresses == null) {
-                    inetAddresses = NO_ADDRESS;
-                }
+                inetAddresses = fetchInetAddresses(getHostname());
             }
             return inetAddresses != NO_ADDRESS ? inetAddresses : null;
+        }
+
+        @Nonnull
+        protected List<InetAddress> fetchInetAddresses(@Nonnull final String hostname) {
+            try {
+                return Arrays.asList(InetAddress.getAllByName(hostname));
+            } catch (UnknownHostException ex) {
+                return NO_ADDRESS;
+            }
         }
 
         public String getId() {
