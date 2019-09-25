@@ -3,6 +3,7 @@ package com.composum.platform.tenant.servlet;
 import com.composum.platform.tenant.service.HostManagerService;
 import com.composum.platform.tenant.service.HostManagerService.Host;
 import com.composum.platform.tenant.service.HostManagerService.ProcessException;
+import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.ResourceHandle;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
@@ -57,6 +58,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
     private static final Logger LOG = LoggerFactory.getLogger(HostManagerServlet.class);
 
     public static final String PARAM_HOSTNAME = "hostname";
+    public static final String PARAM_SITE = "site";
+    public static final String PARAM_STAGE = "stage";
 
     public static final String LIST_HOSTS = "hosts";
     public static final String DATA_HOST = "host";
@@ -84,6 +87,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
         list, status,
         // tenant related
         add, remove,
+        // site assignment
+        assign,
         // hosts configuration
         create, enable, disable, cert, revoke, secure, unsecure, delete
     }
@@ -113,6 +118,9 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 Operation.status, new HostStatus());
 
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
+                Operation.assign, new AssignSite());
+
+        operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.create, new CreateHost());
         operations.setOperation(ServletOperationSet.Method.GET, Extension.json,
                 Operation.enable, new EnableHost());
@@ -134,6 +142,9 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 Operation.add, new AddHost());
         operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
                 Operation.remove, new RemoveHost());
+
+        operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
+                Operation.assign, new AssignSite());
 
         operations.setOperation(ServletOperationSet.Method.POST, Extension.json,
                 Operation.create, new CreateHost());
@@ -205,18 +216,10 @@ public class HostManagerServlet extends AbstractTenantServlet {
             String hostname = request.getParameter(PARAM_HOSTNAME);
             if (StringUtils.isNotBlank(hostname)) {
                 try {
-                    Host host = perform(status, resolver, tenantId, hostname);
-                    if (host != null) {
-                        Map<String, Object> data = status.data(DATA_HOST);
-                        data.put(VALUE_HOSTNAME, host.getHostname());
-                        data.put(VALUE_CONFIGURED, host.isConfigured());
-                        data.put(VALUE_LOCKED, host.isLocked());
-                        data.put(VALUE_ENABLED, host.isEnabled());
-                        data.put(VALUE_CERTIFICATE, host.isCertAvailable());
-                        data.put(VALUE_SECURED, host.isSecured());
-                        data.put(VALUE_ADDRESS, host.getAddress());
-                        data.put(VALUE_VALID, host.isValid());
-                    }
+                    Host host = perform(request, response, status, resolver, tenantId, hostname);
+                    hostData(status, host);
+                } catch (PersistenceException ex) {
+                    status.withLogging(LOG).error("processing error: {}", ex.getMessage());
                 } catch (ProcessException ex) {
                     status.withLogging(LOG).error("processing error ({}): {}",
                             ex.getExitValue(), StringUtils.join(ex.getErrorMessages(), ", "));
@@ -227,9 +230,33 @@ public class HostManagerServlet extends AbstractTenantServlet {
             status.sendJson();
         }
 
-        protected abstract Host perform(@Nonnull final Status status, @Nonnull final ResourceResolver resolver,
-                                        @Nullable final String tenantId, @Nonnull final String hostname)
-                throws ProcessException;
+        protected void hostData(Status status, Host host) {
+            if (host != null) {
+                Map<String, Object> data = status.data(DATA_HOST);
+                data.put(VALUE_HOSTNAME, host.getHostname());
+                data.put(VALUE_CONFIGURED, host.isConfigured());
+                data.put(VALUE_LOCKED, host.isLocked());
+                data.put(VALUE_ENABLED, host.isEnabled());
+                data.put(VALUE_CERTIFICATE, host.isCertAvailable());
+                data.put(VALUE_SECURED, host.isSecured());
+                data.put(VALUE_ADDRESS, host.getAddress());
+                data.put(VALUE_VALID, host.isValid());
+            }
+        }
+
+        protected Host perform(@Nonnull final SlingHttpServletRequest request,
+                               @Nonnull final SlingHttpServletResponse response,
+                               @Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException, PersistenceException {
+            return perform(status, resolver, tenantId, hostname);
+        }
+
+        protected Host perform(@Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException {
+            return null;
+        }
     }
 
     public class HostStatus extends HostOperation {
@@ -277,6 +304,26 @@ public class HostManagerServlet extends AbstractTenantServlet {
                 status.withLogging(LOG).error(ex.getMessage(), ex);
             }
             return null;
+        }
+    }
+
+    // site assignment
+
+    public class AssignSite extends HostOperation {
+
+        @Override
+        protected Host perform(@Nonnull final SlingHttpServletRequest request,
+                               @Nonnull final SlingHttpServletResponse response,
+                               @Nonnull final Status status, @Nonnull final ResourceResolver resolver,
+                               @Nullable final String tenantId, @Nonnull final String hostname)
+                throws ProcessException, PersistenceException {
+            if (StringUtils.isBlank(tenantId)) {
+                throw new ProcessException("no tenant specified");
+            }
+            String sitePath = request.getParameter(PARAM_SITE);
+            String siteStage = request.getParameter(PARAM_STAGE);
+            BeanContext context = new BeanContext.Servlet(getServletContext(), bundleContext, request, response);
+            return hostManager.assignSite(context, tenantId, hostname, sitePath, siteStage);
         }
     }
 

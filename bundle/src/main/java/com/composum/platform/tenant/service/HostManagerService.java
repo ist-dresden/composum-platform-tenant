@@ -1,5 +1,6 @@
 package com.composum.platform.tenant.service;
 
+import com.composum.sling.core.BeanContext;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
@@ -27,6 +28,8 @@ public interface HostManagerService {
 
     String VALUE_HOSTNAME = "hostname";
     String VALUE_ADDRESS = "address";
+    String VALUE_SITE = "site";
+    String VALUE_STAGE = "stage";
     String VALUE_VALID = "valid";
     String VALUE_CONFIGURED = "configured";
     String VALUE_ENABLED = "enabled";
@@ -36,11 +39,11 @@ public interface HostManagerService {
 
     abstract class Host implements Comparable<Host> {
 
-        private final String hostname;
-        private final boolean configured;
-        private final boolean enabled;
-        private final boolean certAvailable;
-        private final boolean secured;
+        private String hostname;
+        private boolean configured;
+        private boolean enabled;
+        private boolean certAvailable;
+        private boolean secured;
 
         private transient List<InetAddress> inetAddresses;
 
@@ -76,6 +79,9 @@ public interface HostManagerService {
          */
         @Nullable
         public abstract String getSiteRef();
+
+        @Nullable
+        public abstract String getSiteStage();
 
         @Nonnull
         public String getHostname() {
@@ -153,6 +159,8 @@ public interface HostManagerService {
                 }
                 object.add(VALUE_ADDRESS, hostIps);
             }
+            object.addProperty(VALUE_SITE, getSiteRef());
+            object.addProperty(VALUE_STAGE, getSiteStage());
             object.addProperty(VALUE_VALID, isValid());
             object.addProperty(VALUE_ENABLED, isEnabled());
             object.addProperty(VALUE_CONFIGURED, isConfigured());
@@ -180,11 +188,11 @@ public interface HostManagerService {
 
     class HostList extends ArrayList<Host> {
 
-        public boolean contains(@Nonnull final String hostname) {
+        public boolean contains(@Nonnull String hostname) {
             return get(hostname) != null;
         }
 
-        public Host get(@Nonnull final String hostname) {
+        public Host get(@Nonnull String hostname) {
             for (Host host : this) {
                 if (host.getHostname().equals(hostname)) return host;
             }
@@ -237,15 +245,28 @@ public interface HostManagerService {
     /**
      * joins a host to a tenant
      */
-    Host addHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
-                 @Nonnull final String hostname)
+    Host addHost(@Nonnull ResourceResolver resolver, @Nonnull String tenantId,
+                 @Nonnull String hostname)
             throws ProcessException, PersistenceException;
 
     /**
      * removes a host from a tenant and deletes all host configurations including certificates
      */
-    void removeHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
-                    @Nonnull final String hostname)
+    void removeHost(@Nonnull ResourceResolver resolver, @Nonnull String tenantId,
+                    @Nonnull String hostname)
+            throws ProcessException, PersistenceException;
+
+    // site mapping
+
+    /**
+     * @param context   the context to access the site
+     * @param tenantId  the tenants identifier
+     * @param hostname  the name of the host to assign
+     * @param siteRef   the path of the hosts site; if 'null' each assignment is removed
+     * @param siteStage the key of the stage to map
+     */
+    Host assignSite(@Nonnull BeanContext context, @Nonnull String tenantId, @Nonnull String hostname,
+                    @Nullable String siteRef, @Nullable String siteStage)
             throws ProcessException, PersistenceException;
 
     // server host configuration

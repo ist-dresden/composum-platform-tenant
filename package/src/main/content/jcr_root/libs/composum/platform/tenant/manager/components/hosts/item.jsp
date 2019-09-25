@@ -7,7 +7,7 @@
     <div class="tenant-hosts_item panel panel-${model.host.available?'success':'warning'}"
          data-host="${model.host.encodedData}">
         <div class="panel-heading" role="tab" id="host_title_${model.host.id}">
-            <h4 class="panel-title">
+            <h4 class="panel-title tenant-hosts_item-title">
                 <a role="button" data-toggle="collapse"
                    href="#host_content_${model.host.id}" aria-expanded="true"
                    aria-controls="host_content_${model.host.id}">

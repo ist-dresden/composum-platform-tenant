@@ -22,14 +22,26 @@
                         _certificate: '_certificate',
                         _secured: '_secured',
                         _toggle: '_toggle'
+                    },
+                    site: {
+                        base: 'tenant-host_site',
+                        _assign: '_assign',
+                        _remove: '_remove'
                     }
                 },
                 dlg: {
-                    base: '/libs/composum/platform/tenant/manager/dialogs/host',
-                    _add: '/add.html',
-                    _drop: '/drop.html',
-                    _remove: '/remove.html',
-                    _revoke: '/revoke.html'
+                    host: {
+                        base: '/libs/composum/platform/tenant/manager/dialogs/host',
+                        _add: '/add.html',
+                        _drop: '/drop.html',
+                        _remove: '/remove.html',
+                        _revoke: '/revoke.html'
+                    },
+                    site: {
+                        base: '/libs/composum/platform/tenant/manager/dialogs/site',
+                        _assign: '.html',
+                        _remove: '/remove.html'
+                    }
                 },
                 action: {
                     base: '/bin/cpm/platform/tenants/host',
@@ -79,6 +91,9 @@
                     this.$('.' + c.base + c._certificate + '.certificate .' + c.base + c._toggle).click(_.bind(this.revokeCert, this));
                     this.$('.' + c.base + c._secured + '.unsecure .' + c.base + c._toggle).click(_.bind(this.secureHost, this));
                     this.$('.' + c.base + c._secured + '.secured .' + c.base + c._toggle).click(_.bind(this.unsecureHost, this));
+                    c = tenants.const.hosts.css.site;
+                    this.$('.' + c.base + c._assign + '.enabled').click(_.bind(this.assignSite, this));
+                    this.$('.' + c.base + c._remove + '.enabled').click(_.bind(this.removeSite, this));
                 }
             },
 
@@ -114,7 +129,7 @@
 
             dropHost: function (event) {
                 event.preventDefault();
-                var u = tenants.const.hosts.dlg;
+                var u = tenants.const.hosts.dlg.host;
                 core.getHtml(u.base + u._drop + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
@@ -137,7 +152,7 @@
 
             revokeCert: function (event) {
                 event.preventDefault();
-                var u = tenants.const.hosts.dlg;
+                var u = tenants.const.hosts.dlg.host;
                 core.getHtml(u.base + u._revoke + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
@@ -170,13 +185,37 @@
 
             removeHost: function (event) {
                 event.preventDefault();
-                var u = tenants.const.hosts.dlg;
+                var u = tenants.const.hosts.dlg.host;
                 core.getHtml(u.base + u._remove + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
                             dialog.initAction('remove');
                         }, this), _.bind(this.hosts.onHostsAction, this.hosts));
+                    }, this));
+                return false;
+            },
+
+            assignSite: function (event) {
+                event.preventDefault();
+                var u = tenants.const.hosts.dlg.site;
+                core.getHtml(u.base + u._assign + this.hosts.path
+                    + '?hostname=' + encodeURIComponent(this.data.hostname),
+                    _.bind(function (content) {
+                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        }, this), _.bind(this.reloadHost, this));
+                    }, this));
+                return false;
+            },
+
+            removeSite: function (event) {
+                event.preventDefault();
+                var u = tenants.const.hosts.dlg.site;
+                core.getHtml(u.base + u._remove + this.hosts.path
+                    + '?hostname=' + encodeURIComponent(this.data.hostname),
+                    _.bind(function (content) {
+                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        }, this), _.bind(this.reloadHost, this));
                     }, this));
                 return false;
             },
@@ -216,7 +255,7 @@
                 if (event) {
                     event.preventDefault();
                 }
-                var u = tenants.const.hosts.dlg;
+                var u = tenants.const.hosts.dlg.host;
                 core.getHtml(u.base + u._add + this.path, _.bind(function (content) {
                     core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
                         dialog.initAction('add');

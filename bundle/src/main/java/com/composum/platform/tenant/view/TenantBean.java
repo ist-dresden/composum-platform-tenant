@@ -1,20 +1,27 @@
 package com.composum.platform.tenant.view;
 
+import com.composum.pages.commons.model.Site;
+import com.composum.pages.commons.service.SiteManager;
 import com.composum.platform.tenant.service.HostManagerService;
 import com.composum.platform.tenant.service.HostManagerService.Host;
 import com.composum.platform.tenant.service.HostManagerService.HostList;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.tenant.service.TenantUserManager.TenantUsers;
+import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.sling.core.BeanContext;
+import com.composum.sling.core.filter.ResourceFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.tenant.Tenant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static com.composum.platform.tenant.servlet.HostManagerServlet.PARAM_HOSTNAME;
 
@@ -29,6 +36,8 @@ public class TenantBean extends AbstractTenantBean {
 
     private transient HostList hosts;
     private transient Host host;
+
+    private transient Collection<SiteOption> sites;
 
     private transient TenantManagerService manager;
     private transient TenantUserManager userManager;
@@ -123,5 +132,48 @@ public class TenantBean extends AbstractTenantBean {
             hostManager = context.getService(HostManagerService.class);
         }
         return hostManager;
+    }
+
+    // Sites
+
+    public class SiteOption {
+
+        private final Site site;
+
+        public SiteOption(Site site) {
+            this.site = site;
+        }
+
+        public Site getSite() {
+            return site;
+        }
+
+        public String getPath() {
+            return site.getPath();
+        }
+
+        public String getLabel() {
+            return site.getTitle() + " (" + site.getPath() + ")";
+        }
+
+        public boolean isSelected() {
+            Host host = getHost();
+            if (host != null) {
+                return site.getPath().equals(host.getSiteRef());
+            }
+            return false;
+        }
+    }
+
+    public Collection<SiteOption> getSites() {
+        if (sites == null) {
+            ResourceResolver resolver = context.getResolver();
+            Resource sitesRoot = resolver.getResource(((PlatformTenant) getTenant()).getContentRoot());
+            sites = new ArrayList<>();
+            for (Site site : context.getService(SiteManager.class).getSites(context, sitesRoot, ResourceFilter.ALL)) {
+                sites.add(new SiteOption(site));
+            }
+        }
+        return sites;
     }
 }

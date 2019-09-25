@@ -56,6 +56,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_ACTIVATED;
@@ -495,7 +496,7 @@ public final class PlatformTenantManager extends AbstractTenantService
             throws PersistenceException {
         manage((ResourceResolverTask<Void>) (resolver1, context) -> {
             final Resource tenantsRoot = getTenantsRoot(resolver1);
-            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            final Resource tenantResource = Objects.requireNonNull(tenantsRoot.getChild(tenantId));
             PlatformTenant tenant = toTenant(context, tenantResource, true);
             if (tenant != null && tenant.getStatus() != Status.deactivated) {
                 LOG.info("deactivateTenant({})", tenant);
@@ -512,7 +513,7 @@ public final class PlatformTenantManager extends AbstractTenantService
             throws PersistenceException {
         manage((ResourceResolverTask<Void>) (resolver1, context) -> {
             final Resource tenantsRoot = getTenantsRoot(resolver1);
-            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            final Resource tenantResource = Objects.requireNonNull(tenantsRoot.getChild(tenantId));
             PlatformTenant tenant = toTenant(context, tenantResource, true);
             if (tenant != null && tenant.getStatus() == Status.deactivated) {
                 LOG.info("activateTenant({})", tenant);
@@ -530,7 +531,7 @@ public final class PlatformTenantManager extends AbstractTenantService
             throws PersistenceException {
         manage((ResourceResolverTask<Void>) (resolver1, context) -> {
             final Resource tenantsRoot = getTenantsRoot(resolver1);
-            final Resource tenantResource = tenantsRoot.getChild(tenantId);
+            final Resource tenantResource = Objects.requireNonNull(tenantsRoot.getChild(tenantId));
             PlatformTenant tenant = toTenant(context, tenantResource, false);
             if (tenant != null) {
                 if (tenant.getStatus() == Status.active) {
@@ -706,7 +707,7 @@ public final class PlatformTenantManager extends AbstractTenantService
                         }
 
                         @Override
-                        public void toString(StringBuilder builder) {
+                        public void toString(@Nonnull StringBuilder builder) {
                             builder.append(osgiFilter.toString());
                         }
                     };

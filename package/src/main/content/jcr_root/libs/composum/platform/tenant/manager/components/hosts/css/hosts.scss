@@ -21,6 +21,23 @@ $busy-symbol-size: 150px;
 
         .tenant-hosts {
 
+            &_item {
+
+                &-title {
+                    position: relative;
+
+                    .tenant-host {
+
+                        &_site {
+
+                            &-status {
+                                color: $host-icon-fg-on;
+                            }
+                        }
+                    }
+                }
+            }
+
             &_content {
                 padding-bottom: 15px;
 
@@ -37,14 +54,18 @@ $busy-symbol-size: 150px;
         .tenant-host {
 
             &_title {
-                position: relative;
+                display: flex;
+                flex-wrap: nowrap;
+                margin-right: 20px;
+                overflow: hidden;
 
                 .tenant-host {
 
                     &_name,
                     &_address {
                         display: inline-block;
-                        margin: 0 10px;
+                        margin: 0 6px;
+                        line-height: $host-icon-size;
                     }
 
                     &_name {
@@ -52,7 +73,7 @@ $busy-symbol-size: 150px;
                     }
 
                     &_address {
-                        min-width: 170px;
+                        min-width: 155px;
                         text-align: right;
                     }
 
@@ -60,7 +81,7 @@ $busy-symbol-size: 150px;
                         cursor: pointer;
                         position: absolute;
                         top: 0;
-                        right: -8px;
+                        right: -9px;
                         width: $host-icon-size;
                         height: $host-icon-size;
                         padding: 0;
@@ -84,6 +105,7 @@ $busy-symbol-size: 150px;
                     display: inline-block;
                     margin: 0 2px;
                     width: $host-icon-size;
+                    min-width: $host-icon-size;
                     height: $host-icon-size;
                     line-height: $host-icon-size;
                     font-size: $host-icon-size * 7 / 12;
@@ -159,6 +181,53 @@ $busy-symbol-size: 150px;
                     }
                 }
             }
+
+            &_site {
+
+                &-content, &-status {
+                    display: flex;
+                    flex-wrap: nowrap;
+                }
+
+                &-status {
+                    flex-grow: 9;
+
+                    .tenant-host {
+
+                        &_site {
+
+                            &-label {
+                                display: inline-block;
+                                line-height: $host-icon-size;
+                            }
+
+                            &-stage, &-path {
+                                margin: 0 6px;
+                            }
+
+                            &-at {
+                                margin: 0 -3px;
+                            }
+
+                            &-path {
+                                flex-grow: 9;
+                            }
+                        }
+                    }
+                }
+
+                &-tile {
+                    background: #eee;
+                    margin: 2px 2px 0;
+                }
+
+                &_assign, &_remove {
+
+                    &.enabled {
+                        cursor: pointer;
+                    }
+                }
+            }
         }
     }
 
@@ -197,6 +266,7 @@ $busy-symbol-size: 150px;
             left: 0;
             right: 0;
             bottom: 42px;
+            min-width: 740px;
             overflow: auto;
         }
     }

@@ -5,7 +5,7 @@
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
     <cpn:div test="${model.host!=null}" class="tenant-host row">
-        <div class="tenant-host_status col col-xs-6">
+        <div class="tenant-host_status col col-xs-5">
             <div class="tenant-host_status_enabled ${model.host.enabled?'enabled':'disabled'}">
                 <i class="tenant-host_status_icon enabled ${model.host.enabled?'on':'off'} fa fa-${model.host.enabled?'check':'power-off'}"></i>
                 <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.enabled?'enabled':'disabled')}</span>
@@ -41,7 +41,21 @@
                 </a>
             </div>
         </div>
-        <div class="tenant-host_site col col-xs-6">
+        <div class="tenant-host_site col col-xs-7">
+            <div class="tenant-host_site">
+                <div class="tenant-host_site-content">
+                    <span class="tenant-host_site_assign ${model.host.locked?'locked':'enabled'}"><i
+                            class="tenant-host_status_icon ${empty model.host.siteRef?'off':'on'} fa fa-${model.host.locked?'globe':'pencil'}"></i></span>
+                    <sling:include replaceSelectors="site"/>
+                    <span class="tenant-host_site_remove ${empty model.host.siteRef or model.host.locked?'locked':'enabled'}"><i
+                            class="tenant-host_status_icon ${empty model.host.siteRef or model.host.locked?'locked':'off'} fa fa-times"></i></span>
+
+                </div>
+                <cpn:div test="${not empty model.host.siteRef}" class="tenant-host_site-tile">
+                    <sling:include path="${model.host.siteRef}"
+                                   resourceType="composum/pages/stage/edit/default/site/tile" replaceSelectors="wide"/>
+                </cpn:div>
+            </div>
         </div>
     </cpn:div>
 </cpn:component>

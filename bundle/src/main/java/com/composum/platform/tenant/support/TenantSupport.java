@@ -86,9 +86,9 @@ public class TenantSupport implements PagesTenantSupport {
     public boolean isDevelopModeAllowed(@Nonnull BeanContext context, @Nullable Resource focus) {
         TenantUserManager.TenantUser user = null;
         ResourceResolver resolver = context.getResolver();
+        String userId = resolver.getUserID();
         Tenant tenant = (focus != null ? focus : context.getResource()).adaptTo(Tenant.class);
         if (tenant != null) {
-            String userId = resolver.getUserID();
             if (StringUtils.isNotBlank(userId)) {
                 switch (userId) {
                     case "anonymous":
@@ -100,6 +100,6 @@ public class TenantSupport implements PagesTenantSupport {
                 }
             }
         }
-        return false;
+        return "admin".equals(userId);
     }
 }

@@ -4,8 +4,4 @@
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
     <sling:call script="hints.jsp"/>
-    <div class="form-group widget text-field-widget hostname" data-rules="required">
-        <label class="control-label">Hostname</label>
-        <input name="hostname" class="form-control" type="text" value="${cpn:text(model.host.hostname)}"/>
-    </div>
 </cpn:component>
