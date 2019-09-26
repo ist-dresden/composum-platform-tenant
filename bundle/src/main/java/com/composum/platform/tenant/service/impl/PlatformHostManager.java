@@ -236,7 +236,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     protected String resolverMapLocation;
 
     @SuppressWarnings("ClassExplicitlyAnnotation")
-    protected class InetAddressCacheConfig implements CacheConfiguration {
+    public static class InetAddressCacheConfig implements CacheConfiguration {
 
         @Override
         public boolean enabled() {
@@ -245,12 +245,12 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
         @Override
         public String name() {
-            return "Templates";
+            return "ComposumPlatformHostInetAddresses";
         }
 
         @Override
         public String contentType() {
-            return ResourceManager.Template.class.getName();
+            return List.class.getName();
         }
 
         @Override
@@ -265,17 +265,17 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
         @Override
         public int timeToIdleSeconds() {
-            return 3600;
+            return 1200;
         }
 
         @Override
         public String webconsole_configurationFactory_nameHint() {
-            return "Inet Adresses (heap: 500, time: 3600-3600)";
+            return "Host Inet Adresses (heap: 500, time: 1200-3600)";
         }
 
         @Override
         public Class<? extends Annotation> annotationType() {
-            return config.annotationType();
+            return CacheConfiguration.class;
         }
     }
 
