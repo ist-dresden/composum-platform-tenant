@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.composum.platform.tenant.servlet.HostManagerServlet.PARAM_HOSTNAME;
 
@@ -37,7 +39,7 @@ public class TenantBean extends AbstractTenantBean {
     private transient HostList hosts;
     private transient Host host;
 
-    private transient Collection<SiteOption> sites;
+    private transient List<SiteOption> sites;
 
     private transient TenantManagerService manager;
     private transient TenantUserManager userManager;
@@ -173,6 +175,7 @@ public class TenantBean extends AbstractTenantBean {
             for (Site site : context.getService(SiteManager.class).getSites(context, sitesRoot, ResourceFilter.ALL)) {
                 sites.add(new SiteOption(site));
             }
+            sites.sort(Comparator.comparing(SiteOption::getLabel));
         }
         return sites;
     }
