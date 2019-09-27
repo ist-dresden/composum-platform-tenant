@@ -20,7 +20,7 @@ public class HomePageBean extends SimpleModel {
 
     private static final Logger LOG = LoggerFactory.getLogger(HomePageBean.class);
 
-    public static final String PAGES_HOME_PATH = "/libs/composum/pages/stage/home";
+    public static final String PAGES_HOME_PATH = "/libs/composum/pages/home";
 
     public static final String TENANT_CONSOLE_PATH = "/libs/composum/platform/tenant";
     public static final String TENANT_CONSOLE_URI = "/bin/platform/tenants.html";

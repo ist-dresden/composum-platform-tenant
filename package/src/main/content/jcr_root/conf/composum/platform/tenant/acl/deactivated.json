@@ -6,6 +6,9 @@
         "principal": "tenant-${tenantId}-editors"
       },
       {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
         "principal": "tenant-${tenantId}-publishers"
       },
       {

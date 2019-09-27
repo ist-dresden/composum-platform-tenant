@@ -683,6 +683,110 @@
     ]
   },
   {
+    "path": "/libs/composum/pages/home",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage/home",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage/edit",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage/edit/clientlibs",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage/edit/default",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/libs/composum/pages/stage/edit/site",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/libs/composum/pages",
     "jcr:primaryType": "sling:Folder",
     "acl": [

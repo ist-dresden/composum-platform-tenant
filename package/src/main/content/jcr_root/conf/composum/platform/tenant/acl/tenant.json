@@ -59,6 +59,46 @@
         ]
       },
       {
+        "principal": "tenant-${tenantId}-visitors",
+        "groupPath": "${principalBase}",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "groupPath": "${principalBase}",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:ntNames": "cpp:Site"
+            }
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "groupPath": "${principalBase}",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:ntNames": "cpp:SiteConfiguration",
+              "rep:glob": "*"
+            }
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-publishers",
         "groupPath": "${principalBase}",
         "acl": [
