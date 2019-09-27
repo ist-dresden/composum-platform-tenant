@@ -4,17 +4,17 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "tenant-${tenantId}-members",
-        "groupPath": "${principalBase}",
-        "memberOf": [
-          "composum-platform-tenant-members"
-        ]
-      },
-      {
         "principal": "tenant-${tenantId}-visitors",
         "groupPath": "${principalBase}",
         "memberOf": [
           "composum-platform-tenant-visitors"
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-members",
+        "groupPath": "${principalBase}",
+        "memberOf": [
+          "composum-platform-tenant-members"
         ]
       },
       {
@@ -49,18 +49,7 @@
         ]
       },
       {
-        "principal": "tenant-${tenantId}-assistants",
-        "groupPath": "${principalBase}",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      },
-      {
         "principal": "tenant-${tenantId}-visitors",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
@@ -73,7 +62,6 @@
       },
       {
         "principal": "tenant-${tenantId}-visitors",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
@@ -86,21 +74,30 @@
       },
       {
         "principal": "tenant-${tenantId}-visitors",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
             "privileges": "jcr:read",
             "restrictions": {
-              "rep:ntNames": "cpp:SiteConfiguration",
-              "rep:glob": "*"
+              "rep:glob": "/*/jcr:content"
+            }
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": "/*/jcr:content/*"
             }
           }
         ]
       },
       {
         "principal": "tenant-${tenantId}-publishers",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
@@ -110,11 +107,37 @@
       },
       {
         "principal": "tenant-${tenantId}-editors",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
             "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "${contentRoot}/shared",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
           }
         ]
       }
@@ -124,6 +147,27 @@
     "path": "${publicRoot}",
     "jcr:primaryType": "sling:Folder",
     "acl": [
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
       {
         "principal": "tenant-${tenantId}-members",
         "acl": [
@@ -158,6 +202,27 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-members",
         "acl": [
           {
@@ -172,15 +237,6 @@
           {
             "allow": true,
             "privileges": "jcr:all"
-          }
-        ]
-      },
-      {
-        "principal": "tenant-${tenantId}-visitors",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       },
@@ -200,13 +256,13 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "tenant-${tenantId}-members",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
       },
       {
         "principal": "tenant-${tenantId}-developers",
@@ -217,7 +273,22 @@
         ]
       },
       {
-        "principal": "tenant-${tenantId}-assistants"
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-members",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
       },
       {
         "principal": "tenant-${tenantId}-assistants",
@@ -230,7 +301,6 @@
       },
       {
         "principal": "tenant-${tenantId}-developers",
-        "groupPath": "${principalBase}",
         "acl": [
           {
             "allow": true,
@@ -258,6 +328,24 @@
     "path": "/etc/tenants/${tenantId}",
     "acl": [
       {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-members",
         "acl": [
           {
@@ -282,6 +370,9 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
         "principal": "tenant-${tenantId}-members",
         "acl": [
           {
@@ -298,13 +389,7 @@
     "acl": [
       {
         "principal": "tenant-${tenantId}-editors"
-      }
-    ]
-  },
-  {
-    "path": "/var/composum/content/${tenantId}",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
+      },
       {
         "principal": "tenant-${tenantId}-editors",
         "acl": [
@@ -320,6 +405,12 @@
     "path": "/var/composum/workflow/${tenantId}",
     "jcr:primaryType": "sling:Folder",
     "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
       {
         "principal": "tenant-${tenantId}-members",
         "acl": [

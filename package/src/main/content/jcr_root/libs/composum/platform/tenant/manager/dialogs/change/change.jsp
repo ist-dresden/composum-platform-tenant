@@ -21,14 +21,14 @@
                         <input name="_charset_" type="hidden" value="UTF-8"/>
                         <div class="row">
                             <div class="col-xs-4">
-                                <div class="form-group widget text-field-widget tenant-id" data-rules="required">
+                                <div class="form-group widget text-field-widget tenant-id">
                                     <label class="control-label">Tenant-ID</label>
                                     <input name="tenant.id" class="form-control" type="text"/>
-                                    <div class="hint  text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</div>
+                                    <div class="hint text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</div>
                                 </div>
                             </div>
                             <div class="col-xs-8">
-                                <div class="hint">${cpn:text('This will (re)apply the platform tenant template to the tenant with the given id - useful if platform configuration is changed and should be applied to existing tenants.')}</div>
+                                <div class="hint">${cpn:text('This will (re)apply the platform tenant template to the tenant with the given id or for all tenants - useful if platform configuration is changed and should be applied to existing tenants.')}</div>
                             </div>
                         </div>
                     </div>

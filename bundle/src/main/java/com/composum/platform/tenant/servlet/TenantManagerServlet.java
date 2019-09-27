@@ -30,8 +30,10 @@ import javax.annotation.Nullable;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
@@ -85,7 +87,9 @@ public class TenantManagerServlet extends AbstractTenantServlet {
         return true;
     }
 
-    /** setup of the servlet operation set for this servlet instance */
+    /**
+     * setup of the servlet operation set for this servlet instance
+     */
     @Override
     public void init() throws ServletException {
         super.init();
@@ -300,34 +304,54 @@ public class TenantManagerServlet extends AbstractTenantServlet {
                          @Nonnull final ResourceHandle resource)
                 throws IOException {
             String tenantId = getTenantId(request, resource, true);
-            if (StringUtils.isNotBlank(tenantId)) {
+            Map<String, Object> properties = new HashMap<>();
+            for (Map.Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
+                String key = parameter.getKey();
+                if (key.startsWith("p.")) {
+                    String[] value = parameter.getValue();
+                    properties.put(key.substring(2), value != null && value.length == 1 ? value[0] : value);
+                }
+            }
+            try {
                 ResourceResolver resolver = request.getResourceResolver();
-                Tenant tenant = tenantManager.getTenant(resolver, tenantId);
-                if (tenant != null) {
-                    Map<String, Object> properties = new HashMap<>();
-                    for (Map.Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
-                        String key = parameter.getKey();
-                        if (key.startsWith("p.")) {
-                            String[] value = parameter.getValue();
-                            properties.put(key.substring(2), value != null && value.length == 1 ? value[0] : value);
-                        }
-                    }
-                    try {
+                if (StringUtils.isNotBlank(tenantId)) {
+                    Tenant tenant = tenantManager.getTenant(resolver, tenantId);
+                    if (tenant != null) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("change({}): {}", tenant.getId(), tenant);
                         }
                         tenantManager.changeTenant(resolver, tenantId, properties);
                         answer(response, true, tenantManager.getTenant(resolver, tenantId), tenant);
-                    } catch (PersistenceException ex) {
-                        LOG.error(ex.toString(), ex);
-                        response.sendError(SC_BAD_REQUEST, "can't change tenant '" + tenantId + "': "
-                                + ResponseUtil.getMessage(ex));
+                    } else {
+                        response.sendError(SC_BAD_REQUEST, "no tenant '" + tenantId + "' found");
                     }
                 } else {
-                    response.sendError(SC_BAD_REQUEST, "no tenant '" + tenantId + "' found");
+                    Iterator<Tenant> tenants = tenantManager.getTenants(resolver, null);
+                    List<Tenant> changed = new ArrayList<>();
+                    while (tenants.hasNext()) {
+                        Tenant tenant = tenants.next();
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("change({}): {}", tenant.getId(), tenant);
+                        }
+                        tenantManager.changeTenant(resolver, tenant.getId(), properties);
+                        changed.add(tenant);
+                    }
+                    answer(response, true, writer -> {
+                        writer.name("count").value(changed.size());
+                        writer.name("changed").beginArray();
+                        for (Tenant tenant : changed) {
+                            writer.beginObject();
+                            writer.name("id").value(tenant.getId());
+                            writer.name("name").value(tenant.getName());
+                            writer.endObject();
+                        }
+                        writer.endArray();
+                    });
                 }
-            } else {
-                response.sendError(SC_BAD_REQUEST, "no tenant id available");
+            } catch (PersistenceException ex) {
+                LOG.error(ex.toString(), ex);
+                response.sendError(SC_BAD_REQUEST, "can't change tenant '" + tenantId + "': "
+                        + ResponseUtil.getMessage(ex));
             }
         }
     }
