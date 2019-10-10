@@ -73,6 +73,23 @@
     ]
   },
   {
+    "path": "/conf/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-developers"
+      }
+    ]
+  },
+  {
     "path": "/var/composum/pages/${tenantId}",
     "acl": [
       {
