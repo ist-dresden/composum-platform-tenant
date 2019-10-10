@@ -90,10 +90,19 @@
     ]
   },
   {
-    "path": "/var/composum/pages/${tenantId}",
+    "path": "/var/composum/content/${tenantId}",
     "acl": [
       {
         "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-editors"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
       }
     ]
   },

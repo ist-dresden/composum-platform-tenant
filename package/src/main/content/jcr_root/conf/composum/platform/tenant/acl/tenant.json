@@ -101,7 +101,10 @@
         "acl": [
           {
             "allow": true,
-            "privileges": "jcr:read"
+            "privileges": [
+              "jcr:read",
+              "jcr:versionManagement"
+            ]
           }
         ]
       },
@@ -112,7 +115,8 @@
             "allow": true,
             "privileges":  [
               "jcr:read",
-              "rep:write"
+              "rep:write",
+              "jcr:versionManagement"
             ]
           }
         ]
@@ -442,6 +446,15 @@
         "principal": "tenant-${tenantId}-members"
       },
       {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-editors"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
         "principal": "tenant-${tenantId}-members",
         "acl": [
           {
@@ -449,15 +462,15 @@
             "privileges": "jcr:read"
           }
         ]
-      }
-    ]
-  },
-  {
-    "path": "/var/composum/content/${tenantId}",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
+      },
       {
-        "principal": "tenant-${tenantId}-editors"
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
       },
       {
         "principal": "tenant-${tenantId}-editors",
@@ -466,7 +479,27 @@
             "allow": true,
             "privileges": [
               "jcr:read",
-              "rep:write"
+              "jcr:versionManagement"
+            ]
+          },
+          {
+            "allow": true,
+            "privileges": "rep:write",
+            "restrictions": {
+              "rep:glob": "*/cpl:releases/current/*"
+            }
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": [
+              "jcr:read",
+              "rep:write",
+              "jcr:versionManagement"
             ]
           }
         ]
