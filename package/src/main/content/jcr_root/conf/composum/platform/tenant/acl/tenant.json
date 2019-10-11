@@ -97,6 +97,15 @@
         ]
       },
       {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-publishers",
         "acl": [
           {
@@ -118,15 +127,6 @@
               "rep:write",
               "jcr:versionManagement"
             ]
-          }
-        ]
-      },
-      {
-        "principal": "tenant-${tenantId}-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       }
@@ -185,23 +185,24 @@
         ]
       },
       {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-publishers",
         "acl": [
           {
             "allow": true,
             "privileges":  [
               "jcr:read",
-              "rep:write"
+              "rep:write",
+              "jcr:versionManagement"
             ]
-          }
-        ]
-      },
-      {
-        "principal": "tenant-${tenantId}-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       }
@@ -242,23 +243,24 @@
         ]
       },
       {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
         "principal": "tenant-${tenantId}-publishers",
         "acl": [
           {
             "allow": true,
             "privileges":  [
               "jcr:read",
-              "rep:write"
+              "rep:write",
+              "jcr:versionManagement"
             ]
-          }
-        ]
-      },
-      {
-        "principal": "tenant-${tenantId}-assistants",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
           }
         ]
       }
