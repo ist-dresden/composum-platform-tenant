@@ -17,8 +17,8 @@
 
 	<properties>
 		<composum.workflow.version>1.0.0-SNAPSHOT</composum.workflow.version>
-		<composum.pages.version>1.0.3-SNAPSHOT</composum.pages.version>
-		<composum.platform.version>1.0.6-SNAPSHOT</composum.platform.version>
+		<composum.pages.version>1.1.0</composum.pages.version>
+		<composum.platform.version>1.1.0</composum.platform.version>
 	</properties>
 
 	<modules>
