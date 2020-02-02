@@ -133,7 +133,7 @@
                 core.getHtml(u.base + u._drop + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
-                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                             dialog.initAction('delete');
                         }, this), _.bind(this.reloadHost, this));
                     }, this));
@@ -156,7 +156,7 @@
                 core.getHtml(u.base + u._revoke + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
-                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                             dialog.initAction('revoke');
                         }, this), _.bind(this.hosts.onHostsAction, this.hosts));
                     }, this));
@@ -189,7 +189,7 @@
                 core.getHtml(u.base + u._remove + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
-                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                             dialog.initAction('remove');
                         }, this), _.bind(this.hosts.onHostsAction, this.hosts));
                     }, this));
@@ -202,7 +202,7 @@
                 core.getHtml(u.base + u._assign + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
-                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                         }, this), _.bind(this.reloadHost, this));
                     }, this));
                 return false;
@@ -214,7 +214,7 @@
                 core.getHtml(u.base + u._remove + this.hosts.path
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
-                        core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                        core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                         }, this), _.bind(this.reloadHost, this));
                     }, this));
                 return false;
@@ -257,7 +257,7 @@
                 }
                 var u = tenants.const.hosts.dlg.host;
                 core.getHtml(u.base + u._add + this.path, _.bind(function (content) {
-                    core.showFormDialog(tenants.HostDialog, content, _.bind(function (dialog) {
+                    core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                         dialog.initAction('add');
                     }, this), _.bind(this.onHostsAction, this));
                 }, this));
