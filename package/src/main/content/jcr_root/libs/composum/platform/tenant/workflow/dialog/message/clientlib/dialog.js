@@ -1,10 +1,9 @@
 /**
  * the workflow dialog extension for conversations
  */
-(function (window) {
+(function () {
     'use strict';
-
-    window.tenants = window.tenants || {};
+    CPM.namespace('platform.tenants');
 
     (function (tenants, core) {
 
@@ -38,6 +37,6 @@
             core.getView(this.$('.conversation'), tenants.Conversation);
         };
 
-    })(window.tenants, window.core);
+    })(CPM.platform.tenants, CPM.core);
 
-})(window);
+})();

@@ -2,10 +2,9 @@
  *
  *
  */
-(function (window) {
+(function () {
     'use strict';
-
-    window.tenants = window.tenants || {};
+    CPM.namespace('platform.tenants');
 
     (function (tenants, core) {
 
@@ -29,7 +28,7 @@
 
             initialize: function (options) {
                 core.components.FormWidget.prototype.initialize.apply(this, [options]);
-                window.widgets.setUp(this.$el);
+                CPM.widgets.setUp(this.$el);
                 this.$el.on('submit', _.bind(this.sendMemberRequest, this));
             },
 
@@ -65,6 +64,6 @@
         tenants.tenantRequestForm = core.getView('.'
             + tenants.const.home.css.base + tenants.const.home.css._tenantForm, tenants.PageRequestForm);
 
-    })(window.tenants, window.core);
+    })(CPM.platform.tenants, CPM.core);
 
-})(window);
+})();

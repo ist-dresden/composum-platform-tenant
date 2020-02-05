@@ -2,10 +2,9 @@
  *
  *
  */
-(function (window) {
+(function () {
     'use strict';
-
-    window.tenants = window.tenants || {};
+    CPM.namespace('platform.tenants');
 
     (function (tenants, core) {
 
@@ -44,8 +43,8 @@
                                 id: path.length > 13 ? path.substring(13) : '',
                                 path: path,
                                 node: result.responseJSON,
-                                viewUrl: core.getContextUrl(l.base + l._view + window.core.encodePath(path)),
-                                nodeUrl: core.getContextUrl(l.base + '.html' + window.core.encodePath(path))
+                                viewUrl: core.getContextUrl(l.base + l._view + core.encodePath(path)),
+                                nodeUrl: core.getContextUrl(l.base + '.html' + core.encodePath(path))
                             };
                             core.console.getProfile().set('tenants', 'current', path);
                             if (history.replaceState) {
@@ -63,10 +62,10 @@
             }
         };
 
-        tenants.Manager = core.components.SplitView.extend({
+        tenants.Manager = CPM.console.components.SplitView.extend({
 
             initialize: function (options) {
-                core.components.SplitView.prototype.initialize.apply(this, [options]);
+                CPM.console.components.SplitView.prototype.initialize.apply(this, [options]);
                 $(document).on('path:select', _.bind(this.onPathSelect, this));
                 $(document).on('path:selected', _.bind(this.onPathSelected, this));
                 $(document).on('path:changed', _.bind(this.onPathChanged, this));
@@ -325,6 +324,6 @@
 
         tenants.detailView = core.getView('#tenants-view', tenants.DetailView);
 
-    })(window.tenants, window.core);
+    })(CPM.platform.tenants, CPM.core);
 
-})(window);
+})();

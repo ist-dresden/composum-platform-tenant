@@ -2,10 +2,9 @@
  *
  *
  */
-(function (window) {
+(function () {
     'use strict';
-
-    window.tenants = window.tenants || {};
+    CPM.namespace('platform.tenants');
 
     (function (tenants, core) {
 
@@ -294,6 +293,6 @@
             tenants.hostsView.hostsBusyOff();
         };
 
-    })(window.tenants, window.core);
+    })(CPM.platform.tenants, CPM.core);
 
-})(window);
+})();

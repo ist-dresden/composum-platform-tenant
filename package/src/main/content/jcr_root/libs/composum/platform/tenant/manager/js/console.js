@@ -2,10 +2,9 @@
  *
  *
  */
-(function (window) {
+(function () {
     'use strict';
-
-    window.tenants = window.tenants || {};
+    CPM.namespace('platform.tenants');
 
     (function (tenants, core) {
 
@@ -108,16 +107,16 @@
             }
         });
 
-        tenants.InboxTab = window.workflow.InboxConsoleTab.extend({
+        tenants.InboxTab = CPM.platform.workflow.InboxConsoleTab.extend({
 
             initialize: function (options) {
-                window.workflow.InboxConsoleTab.prototype.initialize.apply(this, [options]);
+                CPM.platform.workflow.InboxConsoleTab.prototype.initialize.apply(this, [options]);
                 $(document).off('scope:changed.inbox').on('scope:changed.inbox', _.bind(this.reloadTab, this));
                 $(document).off('detail:reload.inbox').on('detail:reload.inbox', _.bind(this.reloadTab, this));
             },
 
             initContent: function () {
-                window.workflow.InboxConsoleTab.prototype.initContent.apply(this);
+                CPM.platform.workflow.InboxConsoleTab.prototype.initContent.apply(this);
                 this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
             },
 
@@ -130,10 +129,10 @@
             },
 
             reload: function () {
-                window.workflow.onTableLoad();
+                CPM.platform.workflow.onTableLoad();
             }
         });
 
-    })(window.tenants, window.core);
+    })(CPM.platform.tenants, CPM.core);
 
-})(window);
+})();
