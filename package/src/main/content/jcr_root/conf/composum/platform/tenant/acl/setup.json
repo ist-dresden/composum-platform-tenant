@@ -883,7 +883,7 @@
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
-        "principal": "composum-platform-tenant-members",
+        "principal": "composum-platform-tenant-developers",
         "acl": [
           {
             "allow": true,
