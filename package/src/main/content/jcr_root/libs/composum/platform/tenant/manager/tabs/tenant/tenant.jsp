@@ -21,7 +21,7 @@
                         value="Hosts" tagName="span" class="label" i18n="true"/></a>
             </div>
             <div class="btn-group btn-group-sm" role="group">
-                <span class="tenant-status_label text-${model.tenant.active?'success':'danger'}">${model.tenant.status}</span>
+                <span class="tenant-status_label text-${model.tenant.active?'success':'danger'}">${cpn:text(model.tenant.status)}</span>
             </div>
         </div>
         <div class="detail-content">

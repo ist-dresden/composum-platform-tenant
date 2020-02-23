@@ -1,6 +1,7 @@
 package com.composum.platform.tenant.service;
 
 import com.composum.sling.core.BeanContext;
+import com.composum.sling.core.util.XSS;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
@@ -140,7 +141,7 @@ public interface HostManagerService {
         }
 
         public String getId() {
-            return getHostname().replace('.', '°');
+            return XSS.filter(getHostname().replace('.', '°'));
         }
 
         /**

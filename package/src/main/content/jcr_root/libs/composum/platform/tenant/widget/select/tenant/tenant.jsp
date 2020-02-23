@@ -11,7 +11,7 @@
                 value="the tenants id"/></label>
         <select name="tenant.id" class="form-control">
             <c:forEach items="${model.options}" var="option">
-                <option value="${option.value}"${option.selected?' selected="true"':''}>${option.label}</option>
+                <option value="${option.value}"${option.selected?' selected="true"':''}>${cpn:text(option.label)}</option>
             </c:forEach>
         </select>
     </div>

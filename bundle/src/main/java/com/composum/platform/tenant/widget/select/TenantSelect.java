@@ -2,6 +2,7 @@ package com.composum.platform.tenant.widget.select;
 
 import com.composum.pages.commons.widget.Select;
 import com.composum.platform.tenant.service.TenantManagerService;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
@@ -35,7 +36,7 @@ public class TenantSelect extends Select {
             SlingHttpServletRequest request = context.getRequest();
             if (request != null) {
                 RequestPathInfo pathInfo = request.getRequestPathInfo();
-                String suffix = pathInfo.getSuffix();
+                String suffix = XSS.filter(pathInfo.getSuffix());
                 if (StringUtils.isNotBlank(suffix)) {
                     resource = context.getResolver().getResource(suffix);
                     if (resource != null) {

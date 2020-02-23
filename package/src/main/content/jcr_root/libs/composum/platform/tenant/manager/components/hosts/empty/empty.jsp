@@ -17,7 +17,7 @@
                 ${cpn:i18n(slingRequest,'Each added host should point to this platform.')}</p>
         <p>${cpn:i18n(slingRequest,'Configure the DNS service of your domain to support this; a DNS configuration for a host should look like')}</p>
         <div class="panel panel-default" style="margin: 1em 2em; padding: 0.5em;">
-            <code style="background: transparent;">[hostname] IN CNAME ${model.publicHostname}.</code>
+            <code style="background: transparent;">[hostname] IN CNAME ${cpn:text(model.publicHostname)}.</code>
         </div>
         <p>${cpn:i18n(slingRequest,'to point to this system (the closing \'.\' is important).')}</p>
     </div>

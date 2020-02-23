@@ -2,6 +2,7 @@ package com.composum.platform.tenant.view;
 
 import com.composum.sling.core.AbstractServletBean;
 import com.composum.sling.core.BeanContext;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.Resource;
@@ -30,7 +31,7 @@ public abstract class AbstractTenantBean extends AbstractServletBean {
     public Tenant getTenant() {
         if (tenant == null) {
             RequestPathInfo pathInfo = getRequest().getRequestPathInfo();
-            String suffix = pathInfo.getSuffix();
+            String suffix = XSS.filter(pathInfo.getSuffix());
             if (StringUtils.isNotBlank(suffix)) {
                 Resource resource = getResolver().getResource(suffix);
                 if (resource != null) {

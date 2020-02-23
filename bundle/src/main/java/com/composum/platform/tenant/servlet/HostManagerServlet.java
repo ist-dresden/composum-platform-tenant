@@ -8,6 +8,7 @@ import com.composum.sling.core.ResourceHandle;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.servlet.Status;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -213,7 +214,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
             Status status = new Status(request, response);
             ResourceResolver resolver = request.getResourceResolver();
             String tenantId = getTenantId(request, resource, true);
-            String hostname = request.getParameter(PARAM_HOSTNAME);
+            String hostname = XSS.filter(request.getParameter(PARAM_HOSTNAME));
             if (StringUtils.isNotBlank(hostname)) {
                 try {
                     Host host = perform(request, response, status, resolver, tenantId, hostname);
@@ -320,8 +321,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
             if (StringUtils.isBlank(tenantId)) {
                 throw new ProcessException("no tenant specified");
             }
-            String sitePath = request.getParameter(PARAM_SITE);
-            String siteStage = request.getParameter(PARAM_STAGE);
+            String sitePath = XSS.filter(request.getParameter(PARAM_SITE));
+            String siteStage = XSS.filter(request.getParameter(PARAM_STAGE));
             BeanContext context = new BeanContext.Servlet(getServletContext(), bundleContext, request, response);
             return hostManager.assignSite(context, tenantId, hostname, sitePath, siteStage);
         }

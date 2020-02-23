@@ -4,6 +4,7 @@ import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.sling.core.servlet.AbstractServiceServlet;
 import com.composum.sling.core.util.ResourceUtil;
+import com.composum.sling.core.util.XSS;
 import com.google.gson.stream.JsonWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -33,7 +34,7 @@ public abstract class AbstractTenantServlet extends AbstractServiceServlet {
     // request utilities
 
     protected String getTenantId(SlingHttpServletRequest request, Resource resource, boolean mustExist) {
-        String tenantId = request.getParameter(PARAM_TENANT_ID);
+        String tenantId = XSS.filter(request.getParameter(PARAM_TENANT_ID));
         if (StringUtils.isBlank(tenantId)) {
             if (mustExist != ResourceUtil.isSyntheticResource(resource)) {
                 tenantId = resource.getName();

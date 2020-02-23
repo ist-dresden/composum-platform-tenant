@@ -5,6 +5,7 @@ import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.workflow.model.WorkflowTaskInstance;
 import com.composum.platform.workflow.service.WorkflowService;
 import com.composum.sling.core.util.I18N;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.request.RequestPathInfo;
@@ -55,7 +56,7 @@ public class Assignee extends ComboBox {
             SlingHttpServletRequest request = context.getRequest();
             if (request != null) {
                 RequestPathInfo pathInfo = request.getRequestPathInfo();
-                String suffix = pathInfo.getSuffix();
+                String suffix = XSS.filter(pathInfo.getSuffix());
                 if (StringUtils.isNotBlank(suffix)) {
                     resource = context.getResolver().getResource(suffix);
                     if (resource != null) {

@@ -6,6 +6,7 @@ import com.composum.sling.core.ResourceHandle;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.util.ResponseUtil;
+import com.composum.sling.core.util.XSS;
 import com.google.gson.stream.JsonWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -273,10 +274,10 @@ public class TenantManagerServlet extends AbstractTenantServlet {
                 ResourceResolver resolver = request.getResourceResolver();
                 Map<String, Object> properties = new HashMap<>();
                 String value;
-                if (StringUtils.isNotBlank(value = request.getParameter(PARAM_TENANT_NAME))) {
+                if (StringUtils.isNotBlank(value = XSS.filter(request.getParameter(PARAM_TENANT_NAME)))) {
                     properties.put(PARAM_TENANT_NAME, value);
                 }
-                if (StringUtils.isNotBlank(value = request.getParameter(PARAM_TENANT_DESCRIPTION))) {
+                if (StringUtils.isNotBlank(value = XSS.filter(request.getParameter(PARAM_TENANT_DESCRIPTION)))) {
                     properties.put(PARAM_TENANT_DESCRIPTION, value);
                 }
                 try {
@@ -308,7 +309,7 @@ public class TenantManagerServlet extends AbstractTenantServlet {
             for (Map.Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
                 String key = parameter.getKey();
                 if (key.startsWith("p.")) {
-                    String[] value = parameter.getValue();
+                    String[] value = XSS.filter(parameter.getValue());
                     properties.put(key.substring(2), value != null && value.length == 1 ? value[0] : value);
                 }
             }

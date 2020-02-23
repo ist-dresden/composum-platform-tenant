@@ -6,6 +6,7 @@ import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.util.RequestUtil;
 import com.composum.sling.core.util.ResponseUtil;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -110,7 +111,7 @@ public class TenantUserServlet extends AbstractTenantServlet {
                 String userId = RequestUtil.getParameter(request, PARAM_USER_ID, "");
                 if (StringUtils.isNotBlank(userId)) {
                     try {
-                        String[] roles = request.getParameterValues(PARAM_ROLE);
+                        String[] roles = XSS.filter(request.getParameterValues(PARAM_ROLE));
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("change({},{}): {}", tenantId, userId, StringUtils.join(roles, ", "));
                         }

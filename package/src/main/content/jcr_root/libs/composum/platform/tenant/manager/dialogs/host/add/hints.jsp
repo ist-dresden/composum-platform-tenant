@@ -10,7 +10,7 @@
         <cpn:text>You should be the owner of the hosts domain and be able to configure the DNS configuration of this domain. This configuration should contain an entry like</cpn:text>
     </div>
     <div class="form-group">
-        <code class="panel panel-default">[your hostname] IN CNAME ${model.publicHostname}.</code>
+        <code class="panel panel-default">[your hostname] IN CNAME ${cpn:text(model.publicHostname)}.</code>
     </div>
     <div class="form-group">
         <cpn:text>to point to this system (the closing '.' is important).</cpn:text>

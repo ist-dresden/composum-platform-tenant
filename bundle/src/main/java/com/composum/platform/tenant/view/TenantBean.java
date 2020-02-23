@@ -11,6 +11,7 @@ import com.composum.platform.tenant.service.TenantUserManager.TenantUsers;
 import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.filter.ResourceFilter;
+import com.composum.sling.core.util.XSS;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -106,7 +107,7 @@ public class TenantBean extends AbstractTenantBean {
             if (host == null) {
                 String hostname = (String) request.getAttribute(ATTR_HOSTNAME);
                 if (StringUtils.isBlank(hostname)) {
-                    hostname = request.getParameter(PARAM_HOSTNAME);
+                    hostname = XSS.filter(request.getParameter(PARAM_HOSTNAME));
                 }
                 if (StringUtils.isNotBlank(hostname)) {
                     host = getHosts().get(hostname);

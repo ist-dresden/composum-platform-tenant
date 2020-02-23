@@ -13,25 +13,25 @@
         <div class="row">
             <div class="col-xs-4">
                 <div class="form-group widget text-field-widget tenant-id" data-rules="required">
-                    <label class="control-label">${model.properties['form/tenantId']}</label>
+                    <label class="control-label">${cpn:text(model.properties['form/tenantId'])}</label>
                     <input name="tenant.id" class="form-control" type="text"/>
                 </div>
             </div>
             <div class="col-xs-8">
                 <div class="form-group widget text-field-widget">
-                    <label class="control-label">${model.properties['form/yourName']}</label>
+                    <label class="control-label">${cpn:text(model.properties['form/yourName'])}</label>
                     <input name="data/name" class="form-control" type="text"/>
                 </div>
             </div>
         </div>
         <div class="form-group widget text-area-widget">
-            <label class="control-label">${model.properties['form/message']}</label>
+            <label class="control-label">${cpn:rich(slingRequest,model.properties['form/message'])}</label>
             <input name="data/message" class="form-control" type="text"/>
         </div>
 
         <div class="buttons">
             <button type="submit"
-                    class="btn btn-primary assign">${model.properties['form/btnJoinMe']}</button>
+                    class="btn btn-primary assign">${cpn:text(model.properties['form/btnJoinMe'])}</button>
         </div>
 
     </cpn:form>
