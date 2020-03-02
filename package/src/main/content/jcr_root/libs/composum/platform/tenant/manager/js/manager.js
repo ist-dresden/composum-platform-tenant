@@ -281,6 +281,9 @@
             selector: '> .tenant-inbox',
             tabType: tenants.InboxTab
         }, {
+            selector: '> .tenant-replication',
+            tabType: tenants.ReplicationTab
+        }, {
             // the fallback to the basic implementation as a default rule
             selector: '> div',
             tabType: core.console.DetailTab

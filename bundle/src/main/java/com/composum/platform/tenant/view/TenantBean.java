@@ -40,7 +40,7 @@ public class TenantBean extends AbstractTenantBean {
     private transient HostList hosts;
     private transient Host host;
 
-    private transient List<SiteOption> sites;
+    private transient List<TenantSite> sites;
 
     private transient TenantManagerService manager;
     private transient TenantUserManager userManager;
@@ -139,11 +139,11 @@ public class TenantBean extends AbstractTenantBean {
 
     // Sites
 
-    public class SiteOption {
+    public class TenantSite {
 
         private final Site site;
 
-        public SiteOption(Site site) {
+        public TenantSite(Site site) {
             this.site = site;
         }
 
@@ -155,8 +155,16 @@ public class TenantBean extends AbstractTenantBean {
             return site.getPath();
         }
 
+        public String getTitle() {
+            return site.getTitle();
+        }
+
         public String getLabel() {
             return site.getTitle() + " (" + site.getPath() + ")";
+        }
+
+        public String getReplicationConfig() {
+            return "/conf" + getPath() + "/replication";
         }
 
         public boolean isSelected() {
@@ -168,15 +176,15 @@ public class TenantBean extends AbstractTenantBean {
         }
     }
 
-    public Collection<SiteOption> getSites() {
+    public Collection<TenantSite> getSites() {
         if (sites == null) {
             ResourceResolver resolver = context.getResolver();
             Resource sitesRoot = resolver.getResource(((PlatformTenant) getTenant()).getContentRoot());
             sites = new ArrayList<>();
             for (Site site : context.getService(SiteManager.class).getSites(context, sitesRoot, ResourceFilter.ALL)) {
-                sites.add(new SiteOption(site));
+                sites.add(new TenantSite(site));
             }
-            sites.sort(Comparator.comparing(SiteOption::getLabel));
+            sites.sort(Comparator.comparing(TenantSite::getLabel));
         }
         return sites;
     }

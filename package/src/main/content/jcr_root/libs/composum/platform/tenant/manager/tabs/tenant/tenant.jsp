@@ -10,15 +10,18 @@
                 <a class="general fa fa-university btn btn-default" href="#general" data-group="general"
                    title="${cpn:i18n(slingRequest,'Tenant Summary')}"><cpn:text
                         value="Tenant" tagName="span" class="label" i18n="true"/></a>
-                <a class="view fa fa-inbox btn btn-default" href="#inbox" data-group="inbox"
+                <a class="inbox fa fa-inbox btn btn-default" href="#inbox" data-group="inbox"
                    title="${cpn:i18n(slingRequest,'Task Inbox')}"><cpn:text
                         value="Inbox" tagName="span" class="label" i18n="true"/></a>
-                <a class="view fa fa-users btn btn-default" href="#users" data-group="users"
+                <a class="users fa fa-users btn btn-default" href="#users" data-group="users"
                    title="${cpn:i18n(slingRequest,'Users View')}"><cpn:text
                         value="Users" tagName="span" class="label" i18n="true"/></a>
-                <a class="view fa fa-sitemap btn btn-default" href="#hosts" data-group="hosts"
+                <a class="hosts fa fa-sitemap btn btn-default" href="#hosts" data-group="hosts"
                    title="${cpn:i18n(slingRequest,'Hosts View')}"><cpn:text
                         value="Hosts" tagName="span" class="label" i18n="true"/></a>
+                <a class="replication fa fa-exchange btn btn-default" href="#replication" data-group="replication"
+                   title="${cpn:i18n(slingRequest,'Replication Setup')}"><cpn:text
+                        value="Replication Setup" tagName="span" class="label" i18n="true"/></a>
             </div>
             <div class="btn-group btn-group-sm" role="group">
                 <span class="tenant-status_label text-${model.tenant.active?'success':'danger'}">${cpn:text(model.tenant.status)}</span>

@@ -133,6 +133,30 @@
             }
         });
 
+        tenants.ReplicationTab = tenants.AbstractManagerTab.extend({
+
+            initialize: function (options) {
+                tenants.AbstractManagerTab.prototype.initialize.apply(this, [options]);
+            },
+
+            initContent: function () {
+                tenants.AbstractManagerTab.prototype.initContent.apply(this);
+                this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            reloadTab: function (event) {
+                if (event) {
+                    event.preventDefault();
+                }
+                tenants.detailView.refreshContent();
+                return false;
+            },
+
+            reload: function () {
+                tenants.onReplicationContentLoad();
+            }
+        });
+
     })(CPM.platform.tenants, CPM.core);
 
 })();

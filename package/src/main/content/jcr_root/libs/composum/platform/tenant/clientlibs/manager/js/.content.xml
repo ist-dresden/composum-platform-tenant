@@ -3,9 +3,11 @@
         jcr:primaryType="sling:OrderedFolder"
         depends="[category:composum.nodes.console.default]"
         embed="[category:composum.platform.workflow.console,
+                category:composum.platform.replication,
                 composum/platform/tenant/workflow/dialog/message/clientlib/dialog.js,
                 composum/platform/tenant/manager/components/users/js/users.js,
                 composum/platform/tenant/manager/components/hosts/js/hosts.js,
+                composum/platform/tenant/manager/components/replication/js/replication.js,
                 composum/platform/tenant/manager/js/console.js,
                 composum/platform/tenant/manager/js/dialogs.js,
                 composum/platform/tenant/manager/js/manager.js]"/>
