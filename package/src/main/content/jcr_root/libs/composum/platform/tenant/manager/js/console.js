@@ -17,7 +17,7 @@
             },
 
             initContent: function () {
-                window.widgets.setUp(this.el);
+                CPM.widgets.setUp(this.el);
             },
 
             reloadTab: function (event) {
