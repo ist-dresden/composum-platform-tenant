@@ -8,7 +8,7 @@
         hint="${subject}"
         hintAdded="The message is sent."
         dialog="composum/platform/tenant/workflow/dialog/message/inquiry"
-        initDialog="window.tenants.initConversationDialog">
+        initDialog="CPM.platform.tenants.initConversationDialog">
     <i18n
             jcr:primaryType="nt:unstructured">
         <de
