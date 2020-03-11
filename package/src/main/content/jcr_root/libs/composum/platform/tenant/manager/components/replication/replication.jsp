@@ -9,7 +9,7 @@
             <div class="tenant-replication_tabs-hint">${cpn:i18n(slingRequest,'the replication configuration for each site of the tenant')}</div>
             <div class="tenant-replication_tabs-panel">
                 <ul class="nav nav-tabs tabs-left">
-                    <c:forEach items="${model.sites}" var="site">
+                    <c:forEach items="${model.siteOptions}" var="site">
                         <li data-config="${site.replicationConfig}"><a href="#">
                             <div class="title">${cpn:text(site.title)}</div>
                             <div class="path">${cpn:text(site.path)}</div>

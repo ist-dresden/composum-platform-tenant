@@ -31,4 +31,21 @@
             }
         }
     }
+
+    .composum-platform-tenant {
+
+        &_dashboard {
+
+            &-content {
+                position: absolute;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 42px;
+                overflow: auto;
+                padding: 0 6px;
+            }
+        }
+    }
 }
+

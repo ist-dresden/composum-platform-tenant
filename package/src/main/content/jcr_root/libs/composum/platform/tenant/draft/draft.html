@@ -1,0 +1,233 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+          crossorigin="anonymous"/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin: 10px;
+        }
+
+        .composum-platform-tenant-component_heading {
+            display: flex;
+            width: 100%;
+        }
+
+        .composum-platform-tenant-component_heading .title {
+            flex-grow: 1;
+        }
+
+        .composum-platform-tenant-component_heading.collapsible-heading {
+            padding: 0;
+        }
+
+        .composum-platform-tenant-component_heading.collapsible-heading a {
+            display: flex;
+            width: 100%;
+            padding: 10px 15px;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item {
+            display: flex;
+            padding: 0;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item ul {
+            padding: 8px 15px;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item li {
+            list-style: none;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item li .fa {
+            min-width: 45px;
+            padding: 2px 20px 2px 0;
+            text-align: right;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item .number {
+            display: inline-block;
+            min-width: 50px;
+            padding: 8px 10px 8px 15px;
+            text-align: right;
+            background-color: #eee;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item .aspect {
+            display: inline-block;
+            flex-grow: 1;
+            padding: 8px 10px;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item .right {
+            display: inline-block;
+            padding: 8px 5px;
+            text-align: right;
+        }
+
+        .composum-platform-tenant-component_data .list-group-item .time {
+            display: inline-block;
+            min-width: 135px;
+            padding: 8px 10px;
+        }
+
+        .composum-platform-tenant-sites_site,
+        .composum-platform-tenant-sites_host {
+            width: 50%;
+        }
+    </style>
+</head>
+<body>
+<div class="composum-platform-tenant-component panel panel-default">
+    <div id="composum-platform-tenant-component_mytenant_heading"
+         class="composum-platform-tenant-component_heading panel-heading collapsible-heading">
+        <a href="#composum-platform-tenant-component_mytenant_data" role="button" aria-expanded="true"
+           data-toggle="collapse" aria-controls="composum-platform-tenant-component_mytenant_data"
+           class="composum-platform-tenant-component_toggle">
+            <div class="title">My Tenant</div>
+            <div class="name">mytenant</div>
+        </a>
+    </div>
+    <div id="composum-platform-tenant-component_mytenant_data" role="tabpanel"
+         aria-labelledby="composum-platform-tenant-component_mytenant_heading"
+         class="composum-platform-tenant-component_data panel-collapse collapse in">
+        <ul class="composum-platform-tenant-component_data-list list-group">
+            <li class="composum-platform-tenant-component_paths list-group-item">
+                <ul>
+                    <li class="content"><i class="fa fa-globe"></i>/content/tenants/mytenant</li>
+                    <li class="apps"><i class="fa fa-code"></i>/apps/tenants/mytenant</li>
+                    <li class="conf"><i class="fa fa-sliders"></i>/conf/tenants/mytenant</li>
+                </ul>
+            </li>
+            <li class="composum-platform-tenant-component_sites list-group-item">
+                <div class="number">3</div>
+                <div class="aspect">sites</div>
+                <div class="right">last publishing</div>
+                <div class="time">2020-02-02 17:53</div>
+            </li>
+            <li class="composum-platform-tenant-component_hosts list-group-item">
+                <div class="number">5</div>
+                <div class="aspect">hosts</div>
+                <div class="right">last access</div>
+                <div class="time">2020-02-02 17:53</div>
+            </li>
+            <li class="composum-platform-tenant-component_users list-group-item">
+                <div class="number">99</div>
+                <div class="aspect">users</div>
+                <div class="right">last login</div>
+                <div class="time">2020-02-02 17:53</div>
+            </li>
+            <li class="composum-platform-tenant-component_workflows list-group-item">
+                <div class="number">44</div>
+                <div class="aspect">running workflows</div>
+                <div class="right">last activity</div>
+                <div class="time">2020-02-02 17:53</div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="composum-platform-tenant-component panel panel-default">
+    <div class="composum-platform-tenant-component_heading panel-heading">
+        <div class="title">My Tenant</div>
+        <div class="name">mytenant</div>
+    </div>
+    <ul class="composum-platform-tenant-component_data list-group ">
+        <li class="composum-platform-tenant-component_dashboard list-group-item"
+        style="align-items: stretch;">
+            <ul class="composum-platform-tenant-component_paths">
+                <li class="content" style="white-space: nowrap;"><i class="fa fa-globe"></i>/content/tenants/mytenant</li>
+                <li class="apps" style="white-space: nowrap;"><i class="fa fa-code"></i>/apps/tenants/mytenant</li>
+                <li class="conf" style="white-space: nowrap;"><i class="fa fa-sliders"></i>/conf/tenants/mytenant</li>
+            </ul>
+            <div class="composum-platform-tenant-component_aspects" style="flex-grow: 1; display: flex; flex-direction: column;">
+                <div class="composum-platform-tenant-component_users">
+                    <div class="number">99</div>
+                    <div class="aspect">users</div>
+                    <div class="right">last login</div>
+                    <div class="time">2020-02-02 17:53</div>
+                </div>
+                <div class="composum-platform-tenant-component_workflows"
+                     style="flex-grow: 1; display: flex; align-items: stretch; width: 100%;">
+                    <div class="number">44</div>
+                    <div class="aspect" style="flex-grow: 1; display: flex; align-items: flex-start; flex-wrap: wrap; width: 100%;">
+                        <div style="white-space: nowrap;">running workflows</div>
+                            <div style="flex-grow: 1; margin-left: 15px; text-align: right; white-space: nowrap;">last activity&nbsp;&nbsp;2020-02-02 17:53</div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="composum-platform-tenant-component panel panel-default">
+    <div id="composum-platform-tenant-sites_mytenant_heading"
+         class="composum-platform-tenant-component_heading panel-heading collapsible-heading">
+        <a href="#composum-platform-tenant-sites_mytenant_data" role="button" aria-expanded="true"
+           data-toggle="collapse" aria-controls="composum-platform-tenant-sites_mytenant_data"
+           class="composum-platform-tenant-component_toggle">
+            <div class="title">Sites</div>
+            <div class="right">Hosts</div>
+        </a>
+    </div>
+    <div id="composum-platform-tenant-sites_mytenant_data" role="tabpanel"
+         aria-labelledby="composum-platform-tenant-component_mytenant_heading"
+         class="composum-platform-tenant-component_data panel-collapse collapse in">
+        <ul class="composum-platform-tenant-component_data-list list-group">
+            <li class="composum-platform-tenant-sites_item list-group-item">
+                <div class="composum-platform-tenant-sites_site">
+                    <div class="composum-pages-stage-site_tile">
+                        <div class="composum-pages-stage-site_thumbnail">
+                            <div class="composum-pages-stage-site_thumbnail_wrapper">
+                                <picture class="composum-pages-stage-site_thumbnail_picture">
+                                </picture>
+                            </div>
+                        </div>
+                        <div class="composum-pages-stage-site_tile_text">
+                            <h3 class="composum-pages-stage-site_tile_title">My first Site</h3>
+                            <div class="composum-pages-stage-site_tile_description"><p>a site for my first Composum
+                                project</p></div>
+                            <h4 class="composum-pages-stage-site_tile_path">/content/tenant/site</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="composum-platform-tenant-sites_host">
+
+                </div>
+            </li>
+            <li class="composum-platform-tenant-sites_item list-group-item">
+                <div class="composum-platform-tenant-sites_site">
+                    <div class="composum-pages-stage-site_tile">
+                        <div class="composum-pages-stage-site_thumbnail">
+                            <div class="composum-pages-stage-site_thumbnail_wrapper">
+                                <picture class="composum-pages-stage-site_thumbnail_picture">
+                                </picture>
+                            </div>
+                        </div>
+                        <div class="composum-pages-stage-site_tile_text">
+                            <h3 class="composum-pages-stage-site_tile_title">My first Site</h3>
+                            <div class="composum-pages-stage-site_tile_description"><p>a site for my first Composum
+                                project</p></div>
+                            <h4 class="composum-pages-stage-site_tile_path">/content/tenant/site</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="composum-platform-tenant-sites_host">
+
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

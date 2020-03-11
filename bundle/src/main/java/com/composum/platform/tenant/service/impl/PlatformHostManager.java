@@ -209,6 +209,21 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
             }
             return adresses;
         }
+
+        @Override
+        public String toString() {
+            return getHostname();
+        }
+
+        @Override
+        public int hashCode() {
+            return getHostname().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object object) {
+            return object instanceof Host && getHostname().equals(((Host) object).getHostname());
+        }
     }
 
     @Reference
@@ -882,7 +897,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
                 throw new ProcessException(exitValue, errorLines);
             }
         } catch (IOException | InterruptedException ex) {
-            LOG.error(ex.getMessage(), ex);
+            LOG.error(ex.toString());
             throw new ProcessException(ex.getMessage());
         }
         return exitValue;

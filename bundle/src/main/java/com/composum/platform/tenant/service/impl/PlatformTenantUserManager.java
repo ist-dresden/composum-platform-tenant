@@ -22,8 +22,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -38,6 +40,8 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
 
     private static final Logger LOG = LoggerFactory.getLogger(PlatformTenantUserManager.class);
 
+    public static final String PN_LAST_LOGIN = "lastLogin";
+
     private static final String TENANT_GROUP_PREFIX = "tenant-";
 
     private static final Role[] TENANT_USER_ROLES =
@@ -48,13 +52,17 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
         private String userId;
         private String name;
         private String email;
+        private Calendar lastLogin;
         private List<Role> roles;
 
-        public PlatformTenantUser(@Nonnull final String userId, @Nullable final String name,
-                                  @Nonnull final String email, @Nonnull final Role... roles) {
+        public PlatformTenantUser(@Nonnull final String userId,
+                                  @Nullable final String name, @Nonnull final String email,
+                                  @Nullable final Calendar lastLogin,
+                                  @Nonnull final Role... roles) {
             this.userId = userId;
             this.name = name;
             this.email = email;
+            this.lastLogin = lastLogin;
             this.roles = Arrays.asList(roles);
         }
 
@@ -72,6 +80,12 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
         @Override
         public String getEmail() {
             return email;
+        }
+
+        @Override
+        @Nullable
+        public Calendar getLastLogin() {
+            return lastLogin;
         }
 
         @Override
@@ -197,7 +211,7 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
     @Override
     @Nonnull
     public TenantUsers getTenantUsers(@Nonnull final ResourceResolver resolver,
-                                                 @Nonnull final String tenantId)
+                                      @Nonnull final String tenantId)
             throws RepositoryException {
         return call((session, context) -> {
             List<User> users = new ArrayList<>();
@@ -286,7 +300,10 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
                 roles.add(role);
             }
         }
-        return new PlatformTenantUser(user.getID(), "", "", roles.toArray(new Role[0]));
+        Value[] lastLogin = user.getProperty(PN_LAST_LOGIN);
+        return new PlatformTenantUser(user.getID(), "", "",
+                lastLogin != null && lastLogin.length > 0 ? lastLogin[0].getDate() : null,
+                roles.toArray(new Role[0]));
     }
 
     protected boolean isMember(@Nonnull final UserManager userManager, @Nonnull final String tenantId,

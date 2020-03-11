@@ -1,0 +1,191 @@
+@charset "UTF-8";
+
+.composum-platform-tenant-component {
+
+    &_heading {
+        display: flex;
+        width: 100%;
+
+        .title {
+            flex-grow: 1;
+        }
+
+        &.collapsible-heading {
+            padding: 0;
+
+            .composum-platform-tenant-component {
+
+                &_open {
+                    width: 31px;
+                    height: 29px;
+                    margin: 5px 10px 0 5px;
+                    padding: 0;
+                    text-align: center;
+
+                    .fa {
+                        line-height: 29px;
+                    }
+                }
+
+                &_toggle {
+                    flex-grow: 1;
+                    display: flex;
+                    width: 100%;
+                    padding: 10px 15px;
+                }
+            }
+        }
+    }
+
+    .list-group-item {
+        display: flex;
+        padding: 0;
+
+        ul {
+            padding: 8px 15px;
+
+            li {
+                list-style: none;
+                white-space: nowrap;
+
+                .fa {
+                    min-width: 45px;
+                    padding: 2px 20px 2px 0;
+                    text-align: right;
+                }
+            }
+        }
+
+        .number {
+            display: inline-block;
+            min-width: 50px;
+            padding: 8px 10px 8px 15px;
+            text-align: right;
+            background-color: #eee;
+        }
+
+        .aspect {
+            display: inline-block;
+            flex-grow: 1;
+            padding: 8px 10px;
+        }
+    }
+
+    &_summary, &_header, &_sites {
+        margin: 10px 0;
+    }
+
+    &_summary {
+
+        .list-group-item {
+
+            .aspect {
+                white-space: nowrap;
+            }
+
+            .right {
+                display: inline-block;
+                padding: 8px 5px;
+                text-align: right;
+                white-space: nowrap;
+            }
+
+            .time {
+                display: inline-block;
+                min-width: 135px;
+                padding: 8px 10px;
+                white-space: nowrap;
+            }
+        }
+    }
+
+    &_header-item {
+        align-items: stretch;
+
+        .composum-platform-tenant-component {
+
+            &_paths, &_aspects {
+                flex-grow: 1;
+            }
+
+            &_aspects {
+                display: flex;
+                flex-direction: column;
+            }
+
+            &_entry {
+                flex-grow: 1;
+                display: flex;
+                align-items: stretch;
+                width: 100%;
+                border-top: 1px solid #ddd;
+
+                &:first-child {
+                    border-top: none;
+                }
+
+                .aspect {
+                    flex-grow: 1;
+                    display: flex;
+                    align-items: flex-start;
+                    flex-wrap: wrap;
+                    width: 100%;
+
+                    .left {
+                        white-space: nowrap;
+                    }
+
+                    .right {
+                        flex-grow: 1;
+                        margin-left: 15px;
+                        text-align: right;
+                        white-space: nowrap;
+                    }
+                }
+            }
+        }
+    }
+
+    &_sites {
+
+        &_site, &_site-host {
+            padding: 8px 15px;
+        }
+
+        &_site {
+            width: 60%;
+            padding: 8px 25px 8px 15px;
+
+            &-title, &-path {
+                white-space: nowrap;
+            }
+
+            &-description {
+                font-style: italic;
+            }
+        }
+
+        &_site-host {
+            width: 40%;
+            padding: 8px 15px 8px 25px;
+        }
+
+        &_host {
+            position: relative;
+
+            &-stage {
+                position: absolute;
+                top: 3px;
+                left: -50px;
+                width: 50px;
+                padding: 0 0 0 5px;
+                text-align: center;
+            }
+
+            &-title {
+                line-height: 20px;
+                white-space: nowrap;
+            }
+        }
+    }
+}

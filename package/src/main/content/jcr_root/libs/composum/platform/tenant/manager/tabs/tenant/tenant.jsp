@@ -7,7 +7,7 @@
     <div class="detail-panel tenant tenant-status_${model.tenant.status}" data-path="${model.path}">
         <div class="detail-tabs action-bar btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-sm" role="group">
-                <a class="general fa fa-university btn btn-default" href="#general" data-group="general"
+                <a class="general fa fa-dashboard btn btn-default" href="#general" data-group="general"
                    title="${cpn:i18n(slingRequest,'Tenant Summary')}"><cpn:text
                         value="Tenant" tagName="span" class="label" i18n="true"/></a>
                 <a class="inbox fa fa-inbox btn btn-default" href="#inbox" data-group="inbox"

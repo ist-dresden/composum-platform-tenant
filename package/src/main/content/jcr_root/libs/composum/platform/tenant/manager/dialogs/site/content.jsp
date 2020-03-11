@@ -10,7 +10,7 @@
             <div class="form-group widget select-widget site" data-rules="required">
                 <label class="control-label">${cpn:i18n(slingRequest,'Site')}</label>
                 <select name="site" class="form-control">
-                    <c:forEach items="${model.sites}" var="option">
+                    <c:forEach items="${model.siteOptions}" var="option">
                         <option value="${option.path}"${option.selected?' selected="true"':''}>${option.label}</option>
                     </c:forEach>
                 </select>

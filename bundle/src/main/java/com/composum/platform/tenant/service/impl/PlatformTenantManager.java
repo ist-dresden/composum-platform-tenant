@@ -63,6 +63,7 @@ import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_ACTIV
 import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_CREATED;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.CPM_DEACTIVATED;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_APPLICATION_ROOT;
+import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_CONFIGURATION_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_CONTENT_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_PREVIEW_ROOT;
 import static com.composum.platform.tenant.service.impl.PlatformTenant.PN_PRINCIPAL_BASE;
@@ -103,6 +104,8 @@ public final class PlatformTenantManager extends AbstractTenantService
                 "^/public/([^/]+)(/.*)?",
                 "^/apps/([^/]+)(/.*)?",
                 "^/etc/tenants/([^/]+)(/.*)?",
+                "^/conf/tenants/([^/]+)(/.*)?",
+                "^/var/composum/content/([^/]+)(/.*)?",
                 "^/var/composum/workflow/([^/]+)(/.*)?"
         };
 
@@ -126,9 +129,15 @@ public final class PlatformTenantManager extends AbstractTenantService
 
         @AttributeDefinition(
                 name = "Tenant Application Root",
-                description = "the tenants content root path; default: '/apps'"
+                description = "the tenants application (implementation) root path; default: '/apps'"
         )
         String tenant_application_root() default "/apps";
+
+        @AttributeDefinition(
+                name = "Tenant Configuration Root",
+                description = "the tenants configuration root path; default: '/conf/tenants'"
+        )
+        String tenant_configuration_root() default "/conf/tenants";
 
         @AttributeDefinition(
                 name = "Tenant Principal Base",
@@ -321,7 +330,8 @@ public final class PlatformTenantManager extends AbstractTenantService
                     properties.put(key, entry.getValue());
                 }
             }
-            tenant = new PlatformTenant(tenantResource.getName(), status, new ValueMapDecorator(properties));
+            tenant = new PlatformTenant(tenantResource.getPath(), tenantResource.getName(),
+                    status, new ValueMapDecorator(properties));
         }
         if (LOG.isDebugEnabled()) {
             LOG.debug("toTenant({}): {}", tenantResource != null ? tenantResource.getPath() : "NULL", tenant);
@@ -420,6 +430,7 @@ public final class PlatformTenantManager extends AbstractTenantService
             initialProps.put(PN_PREVIEW_ROOT, config.tenant_preview_root() + "/" + tenantId);
             initialProps.put(PN_CONTENT_ROOT, config.tenant_content_root() + "/" + tenantId);
             initialProps.put(PN_APPLICATION_ROOT, config.tenant_application_root() + "/" + tenantId);
+            initialProps.put(PN_CONFIGURATION_ROOT, config.tenant_configuration_root() + "/" + tenantId);
             initialProps.put(PN_PRINCIPAL_BASE, config.tenant_principal_base() + "/" + tenantId);
             Resource tenantResource = serviceResolver.create(tenantsRoot, tenantId, initialProps);
             PlatformTenant tenant = toTenant(serviceResolver, tenantResource, false);
