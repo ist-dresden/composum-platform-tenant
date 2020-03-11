@@ -4,8 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
-    <div class="tenant-component" data-path="${model.path}">
+    <div class="composum-platform-tenant-component" data-path="${model.path}">
         <sling:call script="header.jsp"/>
-        <sling:call script="content.jsp"/>
+        <sling:call script="sites.jsp"/>
     </div>
 </cpn:component>

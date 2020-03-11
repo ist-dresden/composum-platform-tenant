@@ -266,10 +266,10 @@
         //
 
         tenants.detailViewTabTypes = [{
-            selector: '> .root-detail',
+            selector: '> .composum-platform-tenant_root-dashboard',
             tabType: tenants.RootTab
         }, {
-            selector: '> .tenant-detail',
+            selector: '> .composum-platform-tenant_tenant-dashboard',
             tabType: tenants.TenantTab
         }, {
             selector: '> .composum-platform-tenant_users-console',

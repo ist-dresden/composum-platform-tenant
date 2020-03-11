@@ -4,7 +4,8 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="tenant" type="com.composum.platform.tenant.view.TenantBean">
-    <div class="tenant-detail" data-path="${tenant.path}">
+    <div class="composum-platform-tenant_dashboard composum-platform-tenant_tenant-dashboard"
+         data-path="${tenant.path}">
         <div class="tenant-toolbar detail-toolbar">
             <div class="btn-group btn-group-sm" role="group">
                 <button class="delete fa fa-trash btn btn-default"
@@ -17,8 +18,8 @@
                         value="Reload" tagName="span" class="label" i18n="true"/></button>
             </div>
         </div>
-        <div class="tenant-detail_content">
-            <sling:include resourceType="composum/platform/tenant/manager/components/tenant"/>
+        <div class="composum-platform-tenant_dashboard-content">
+            <sling:include resourceType="composum/platform/tenant/component"/>
         </div>
     </div>
 </cpn:component>

@@ -1,5 +1,6 @@
 package com.composum.platform.tenant.view;
 
+import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.sling.core.AbstractServletBean;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.util.XSS;
@@ -14,7 +15,7 @@ public abstract class AbstractTenantBean extends AbstractServletBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTenantBean.class);
 
-    private transient Tenant tenant;
+    private transient PlatformTenant tenant;
 
     public AbstractTenantBean(BeanContext context, Resource resource) {
         super(context, resource);
@@ -28,18 +29,18 @@ public abstract class AbstractTenantBean extends AbstractServletBean {
         super();
     }
 
-    public Tenant getTenant() {
+    public PlatformTenant getTenant() {
         if (tenant == null) {
             RequestPathInfo pathInfo = getRequest().getRequestPathInfo();
             String suffix = XSS.filter(pathInfo.getSuffix());
             if (StringUtils.isNotBlank(suffix)) {
                 Resource resource = getResolver().getResource(suffix);
                 if (resource != null) {
-                    tenant = resource.adaptTo(Tenant.class);
+                    tenant = (PlatformTenant) resource.adaptTo(Tenant.class);
                 }
             }
             if (tenant == null) {
-                tenant = getResource().adaptTo(Tenant.class);
+                tenant = (PlatformTenant) getResource().adaptTo(Tenant.class);
             }
         }
         return tenant;

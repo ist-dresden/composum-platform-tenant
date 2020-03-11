@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public interface TenantUserManager {
@@ -28,6 +29,9 @@ public interface TenantUserManager {
         String getName();
 
         String getEmail();
+
+        @Nullable
+        Calendar getLastLogin();
 
         boolean isVisitor();
 

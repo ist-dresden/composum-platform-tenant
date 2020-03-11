@@ -18,6 +18,7 @@ public class PlatformTenant implements Tenant, Serializable {
     public static final String PN_PREVIEW_ROOT = "tenant.preview_root";
     public static final String PN_CONTENT_ROOT = "tenant.content_root";
     public static final String PN_APPLICATION_ROOT = "tenant.application_root";
+    public static final String PN_CONFIGURATION_ROOT = "tenant.configuration_root";
     public static final String PN_PRINCIPAL_BASE = "tenant.princpal_base";
 
     public static final String CPM_CREATED = "cpm.created";
@@ -26,11 +27,14 @@ public class PlatformTenant implements Tenant, Serializable {
 
     public enum Status {active, deactivated}
 
+    final private String path;
     final private String id;
     final private Status status;
     final private ValueMap properties;
 
-    public PlatformTenant(String id, Status status, ValueMap properties) {
+    public PlatformTenant(@Nonnull final String path, @Nonnull final String id,
+                          @Nonnull final Status status, @Nonnull final ValueMap properties) {
+        this.path = path;
         this.id = id;
         this.properties = properties;
         this.status = status;
@@ -56,6 +60,11 @@ public class PlatformTenant implements Tenant, Serializable {
         return (String) getProperty(PROP_NAME);
     }
 
+    @Nonnull
+    public String getPath() {
+        return path;
+    }
+
     @Override
     @Nullable
     public String getDescription() {
@@ -68,7 +77,7 @@ public class PlatformTenant implements Tenant, Serializable {
     }
 
     @Override
-    public <Type> Type getProperty(String name, Type defaultValue) {
+    public <Type> Type getProperty(@Nonnull final String name, @Nonnull final Type defaultValue) {
         return properties.get(name, defaultValue);
     }
 
@@ -108,6 +117,14 @@ public class PlatformTenant implements Tenant, Serializable {
     @Nonnull
     public String getApplicationRoot() {
         return getProperty(PN_APPLICATION_ROOT, "/apps/" + getId());
+    }
+
+    /**
+     * normally: '/conf/tenants/{id}'
+     */
+    @Nonnull
+    public String getConfigurationRoot() {
+        return getProperty(PN_CONFIGURATION_ROOT, "/conf/tenants/" + getId());
     }
 
     /**
