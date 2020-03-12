@@ -384,6 +384,36 @@
     ]
   },
   {
+    "path": "/etc/packages/tenants/${tenantId}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-managers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/conf/content/${tenantId}",
     "jcr:primaryType": "sling:Folder",
     "acl": [

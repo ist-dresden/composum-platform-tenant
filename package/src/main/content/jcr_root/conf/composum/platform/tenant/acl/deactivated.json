@@ -73,6 +73,17 @@
     ]
   },
   {
+    "path": "/etc/packages/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-managers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
     "path": "/conf/content/${tenantId}",
     "acl": [
       {

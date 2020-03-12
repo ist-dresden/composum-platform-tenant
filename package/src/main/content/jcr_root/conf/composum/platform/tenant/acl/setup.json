@@ -704,6 +704,87 @@
     ]
   },
   {
+    "path": "/etc/packages",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/etc/packages/tenants",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-managers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      },
+      {
+        "principal": "composum-platform-tenant-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read",
+            "restrictions": {
+              "rep:glob": ""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/conf/content",
     "jcr:primaryType": "sling:Folder",
     "acl": [
