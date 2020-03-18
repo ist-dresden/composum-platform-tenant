@@ -8,6 +8,7 @@ import com.composum.platform.tenant.service.HostManagerService.HostList;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.platform.tenant.service.TenantUserManager.TenantUsers;
+import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.platform.workflow.model.WorkflowTaskInstance;
 import com.composum.platform.workflow.service.WorkflowService;
 import com.composum.sling.core.BeanContext;
@@ -37,6 +38,8 @@ import static com.composum.platform.tenant.servlet.HostManagerServlet.PARAM_HOST
 public class TenantBean extends AbstractTenantBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantBean.class);
+
+    public static final String STATUS_INACTIVE = "inactive";
 
     public static final String ATTR_HOST = "host";
     public static final String ATTR_HOSTNAME = "hostname";
@@ -91,6 +94,28 @@ public class TenantBean extends AbstractTenantBean {
 
     public String getTitle() {
         return getTenant().getName();
+    }
+
+    public String getStatus() {
+        String result = "";
+        PlatformTenant.Status status = getTenant().getStatus();
+        if (status != null) {
+            result = status.name();
+            if (status == PlatformTenant.Status.active) {
+                int siteCount = getTenantSites().size();
+                if (siteCount == 0) {
+                    result = STATUS_INACTIVE;
+                } else {
+                    Calendar lastLogin = getLastLogin();
+                    Calendar toCompare = Calendar.getInstance();
+                    toCompare.add(Calendar.MONTH, -3);
+                    if (lastLogin == null || lastLogin.before(toCompare)) {
+                        result = STATUS_INACTIVE;
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     // users

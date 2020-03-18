@@ -2,6 +2,26 @@
 
 .composum-platform-tenant-component {
 
+    &.status-deactivated {
+
+        .composum-platform-tenant-component {
+
+            &_heading {
+                background-image: linear-gradient(to bottom, #e4c9c9 0%, #e4b9b9 100%);
+            }
+        }
+    }
+
+    &.status-active {
+
+        .composum-platform-tenant-component {
+
+            &_heading {
+                background-image: linear-gradient(to bottom, #dff0df 0%, #dff0c0 100%);
+            }
+        }
+    }
+
     &_heading {
         display: flex;
         width: 100%;
