@@ -107,9 +107,31 @@
     </conversation>
     <replication jcr:primaryType="sling:Folder">
 
+        <replication-config jcr:primaryType="sling:MessageEntry"
+                sling:key="Replication Configuration"
+                sling:message="Replikationskonfiguration"/>
         <replication-tabs-hint jcr:primaryType="sling:MessageEntry"
                 sling:key="the replication configuration for each site of the tenant"
                 sling:message="die Replikationskonfiguration für jede 'Site' des Mandanten"/>
+
+        <replication-no-sites jcr:primaryType="sling:MessageEntry"
+                sling:key="There are no sites available for the tenant."
+                sling:message="Es sind keine 'Sites' für diesen Mandanten verfügbar."/>
+        <replication-create-site jcr:primaryType="sling:MessageEntry"
+                sling:key="Create your first site"
+                sling:message="Erzeugen Sie Ihre erste 'Site'"/>
+        <replication-view-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the tenant management console view to configure the replication of all sites of a tenant"
+                sling:message="die Mandaten-Management-Console zur Konfiguration der Replikation aller 'Sites' eines Mandanten"/>
+        <replication-several-types jcr:primaryType="sling:MessageEntry"
+                sling:key="Several replication strategies can be implemented and than configured here."
+                sling:message="Es können alle Implementierungen zur Content-Replikation hier konfiguriert werden."/>
+        <replication-default-types jcr:primaryType="sling:MessageEntry"
+                sling:key="By default the 'in-place' an the 'remote' replication types are available."
+                sling:message="Standardmäßig stehen die Replikationstypen 'in-place' und 'remote' zu Verfügung."/>
+        <replication-various-settings jcr:primaryType="sling:MessageEntry"
+                sling:key="Some replication settings can be added for the available stages and various paths of a site."
+                sling:message="Für die verfügbaren 'Stages' können beliebige Konfigurationen zu verschiedenen Pfaden einer 'Site' angelegt werden."/>
 
     </replication>
 </jcr:root>

@@ -20,5 +20,8 @@
         </div>
         <div class="tenant-replication_panel tab-content">
         </div>
+        <cpn:div test="${empty model.tenantSites}" class="tenant-replication_panel-empty">
+            <sling:include resourceType="composum/platform/tenant/manager/components/replication/empty"/>
+        </cpn:div>
     </div>
 </cpn:component>
