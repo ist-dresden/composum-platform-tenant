@@ -33,8 +33,24 @@
 
             initContent: function () {
                 tenants.AbstractManagerTab.prototype.initContent.apply(this);
+                this.$dashboard = this.$('.composum-platform-tenant_dashboard-content');
+                this.$tenants = this.$dashboard.find('.composum-platform-tenant-component');
+                this.$tenants.find('.panel-collapse').on('show.bs.collapse', _.bind(this.showCollapsible, this));
                 this.$('.detail-toolbar .create').click(_.bind(this.createTenant, this));
                 this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            showCollapsible: function (event) {
+                var $collapsible = $(event.currentTarget);
+                var loaded = $collapsible.data('loaded');
+                if (!loaded) {
+                    var path = $collapsible.data('path');
+                    core.getHtml('/libs/composum/platform/tenant/component.detail.html' + path,
+                        _.bind(function (content) {
+                            $collapsible.html(content);
+                            $collapsible.data('loaded', 'true');
+                        }, this));
+                }
             },
 
             createTenant: function (event) {
