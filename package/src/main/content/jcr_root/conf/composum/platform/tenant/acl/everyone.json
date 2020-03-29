@@ -142,5 +142,19 @@
         ]
       }
     ]
+  },
+  {
+    "path": "/libs/composum/pages/themes",
+    "acl": [
+      {
+        "principal": "everyone",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
   }
 ]
