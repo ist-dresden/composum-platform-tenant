@@ -100,6 +100,7 @@
   },
   {
     "path": "/libs/composum/pages",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
@@ -117,6 +118,7 @@
   },
   {
     "path": "/libs/composum/pages/commons",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
@@ -131,6 +133,7 @@
   },
   {
     "path": "/libs/composum/pages/components",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
@@ -145,6 +148,7 @@
   },
   {
     "path": "/libs/composum/pages/themes",
+    "jcr:primaryType": "sling:Folder",
     "acl": [
       {
         "principal": "everyone",
