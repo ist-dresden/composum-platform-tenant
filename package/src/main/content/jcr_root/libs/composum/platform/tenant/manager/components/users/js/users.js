@@ -60,7 +60,7 @@
                     event.preventDefault();
                 }
                 var u = tenants.const.users.dlg;
-                core.getHtml(u.base + u._add + this.path, _.bind(function (content) {
+                core.getHtml(u.base + u._add + core.encodePath(this.path), _.bind(function (content) {
                     core.showFormDialog(tenants.UserDialog, content, {}, undefined, _.bind(function () {
                         if (_.isFunction(this.onUserAction)) {
                             this.onUserAction();
@@ -78,7 +78,9 @@
                     var u = tenants.const.users.dlg;
                     var path = this.$selected.data('path');
                     var user = this.$selected.data('user');
-                    core.getHtml(u.base + u._change + this.path + '?user.id=' + user, _.bind(function (content) {
+                    core.getHtml(u.base + u._change + core.encodePath(this.path)
+                        + '?user.id=' + encodeURIComponent(user),
+                        _.bind(function (content) {
                             core.showFormDialog(tenants.UserDialog, content, {}, undefined, _.bind(function () {
                                 if (_.isFunction(this.onUserAction)) {
                                     this.onUserAction();
@@ -98,13 +100,15 @@
                     var u = tenants.const.users.dlg;
                     var path = this.$selected.data('path');
                     var user = this.$selected.data('user');
-                    core.getHtml(u.base + u._remove + this.path + '?user.id=' + user, _.bind(function (content) {
-                        core.showFormDialog(tenants.UserDialog, content, {}, undefined, _.bind(function () {
-                            if (_.isFunction(this.onUserAction)) {
-                                this.onUserAction();
-                            }
+                    core.getHtml(u.base + u._remove + core.encodePath(this.path)
+                        + '?user.id=' + encodeURIComponent(user),
+                        _.bind(function (content) {
+                            core.showFormDialog(tenants.UserDialog, content, {}, undefined, _.bind(function () {
+                                if (_.isFunction(this.onUserAction)) {
+                                    this.onUserAction();
+                                }
+                            }, this));
                         }, this));
-                    }, this));
                 }
                 return false;
             }

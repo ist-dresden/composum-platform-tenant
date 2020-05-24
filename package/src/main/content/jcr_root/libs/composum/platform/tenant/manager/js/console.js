@@ -45,7 +45,7 @@
                 var loaded = $collapsible.data('loaded');
                 if (!loaded) {
                     var path = $collapsible.data('path');
-                    core.getHtml('/libs/composum/platform/tenant/component.detail.html' + path,
+                    core.getHtml('/libs/composum/platform/tenant/component.detail.html' + core.encodePath(path),
                         _.bind(function (content) {
                             $collapsible.html(content);
                             $collapsible.data('loaded', 'true');
