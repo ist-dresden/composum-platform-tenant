@@ -56,7 +56,7 @@
                     var u = tenants.const.replication.url;
                     core.console.getProfile().set('tenants', 'replication', configPath);
                     this.$sites.filter('[data-config="' + configPath + '"]').addClass('active');
-                    core.getHtml(u.config + encodeURIComponent(configPath), _.bind(function (content) {
+                    core.getHtml(u.config + core.encodePath(configPath), _.bind(function (content) {
                         var c = tenants.const.replication.css;
                         this.$panel.html(content);
                         this.configSetup = core.getWidget(this.$el, '.' + c.config,

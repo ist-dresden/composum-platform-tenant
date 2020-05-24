@@ -7,7 +7,7 @@
         <div class="modal-dialog">
             <div class="modal-content form-panel default">
                 <cpn:form classes="widget-form tenant-dialog_form" method="POST"
-                          action="/bin/cpm/platform/tenants/host.{action}.json">
+                          action="/bin/cpm/platform/tenants/host.action.json">
                     <div class="modal-header tenant-dialog_header">
                         <button type="button" class="tenant-dialog_button-clode close" data-dismiss="modal"
                                 aria-label="${cpn:i18n(slingRequest, 'Close')}"><span
