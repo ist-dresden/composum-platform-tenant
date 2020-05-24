@@ -190,6 +190,7 @@ public class TenantManagerServlet extends AbstractTenantServlet {
                 throws IOException {
             ResourceResolver resolver = request.getResourceResolver();
             String rootPath = tenantManager.getTenantsRoot(resolver).getPath();
+            response.setContentType(ResponseUtil.JSON_CONTENT_TYPE);
             JsonWriter writer = new JsonWriter(response.getWriter());
             writer.beginObject();
             writer.name("id").value(rootPath);
@@ -225,6 +226,7 @@ public class TenantManagerServlet extends AbstractTenantServlet {
             ResourceResolver resolver = request.getResourceResolver();
             Tenant tenant = tenantManager.getTenant(resolver, tenantId);
             if (tenant != null) {
+                response.setContentType(ResponseUtil.JSON_CONTENT_TYPE);
                 JsonWriter writer = new JsonWriter(response.getWriter());
                 writer.beginObject();
                 tenantData(resolver, writer, tenant);
