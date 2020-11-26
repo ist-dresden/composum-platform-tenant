@@ -192,7 +192,7 @@ public class TenantBean extends AbstractTenantBean {
                 Tenant tenant = getTenant();
                 hosts = getHostManager().hostList(getResolver(), tenant != null ? tenant.getId() : null);
             } catch (HostManagerService.ProcessException ex) {
-                LOG.error(ex.getMessage(), ex);
+                LOG.info(ex.toString());
                 hosts = new HostList();
             }
         }
