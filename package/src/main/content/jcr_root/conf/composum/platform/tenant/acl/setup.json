@@ -1042,7 +1042,7 @@
         "principal": "composum-platform-tenant-editors",
         "acl": [
           {
-            "allow": true,
+            "allow": false,
             "privileges": "jcr:read"
           }
         ]
@@ -1051,7 +1051,7 @@
         "principal": "composum-platform-tenant-publishers",
         "acl": [
           {
-            "allow": true,
+            "allow": false,
             "privileges": "jcr:read"
           }
         ]
@@ -1060,7 +1060,7 @@
         "principal": "composum-platform-tenant-assistants",
         "acl": [
           {
-            "allow": true,
+            "allow": false,
             "privileges": "jcr:read"
           }
         ]
