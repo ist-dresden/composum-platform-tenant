@@ -70,6 +70,10 @@
         </dependency>
         <dependency>
             <groupId>com.composum.platform</groupId>
+            <artifactId>composum-platform-commons-bundle</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.composum.platform</groupId>
             <artifactId>composum-platform-models-bundle</artifactId>
         </dependency>
         <dependency>
@@ -79,10 +83,6 @@
         <dependency>
             <groupId>com.composum.platform</groupId>
             <artifactId>composum-platform-cache-bundle</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.composum.platform</groupId>
-            <artifactId>composum-platform-commons-bundle</artifactId>
         </dependency>
 
         <!-- Composum Nodes (Core) -->
