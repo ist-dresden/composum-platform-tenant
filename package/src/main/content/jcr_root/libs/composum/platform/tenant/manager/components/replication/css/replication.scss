@@ -1,0 +1,85 @@
+
+.tenant-replication {
+
+    &_content {
+        position: absolute;
+        top: 40px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    &_tabs {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 25%;
+        bottom: 41px;
+        border-right: 1px solid #ddd;
+    }
+
+    &_tabs-hint {
+        max-height: 47px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 10px 15px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    &_tabs-panel {
+        position: absolute;
+        top: 49px;
+        left: 0;
+        right: -1px;
+        bottom: 0;
+        overflow: auto;
+
+        .tabs-left {
+            padding-bottom: 10px;
+
+            .title {
+                font-size: 15px;
+            }
+
+            .path {
+                font-size: 13px;
+                color: #777;
+            }
+        }
+    }
+
+    &_panel {
+
+        &, &-empty {
+            position: absolute;
+            top: 0;
+            width: 75%;
+            right: 0;
+            bottom: 0;
+        }
+
+        .composum-platform-replication-setup {
+
+            &_form {
+                position: absolute;
+                top: 10px;
+                left: 0;
+                right: 0;
+                bottom: 41px;
+            }
+
+            &_form-content {
+                position: absolute;
+                top: 47px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+            }
+
+            &_panels {
+                padding: 5px 10px 15px;
+            }
+        }
+    }
+}

@@ -45,7 +45,7 @@
                 var loaded = $collapsible.data('loaded');
                 if (!loaded) {
                     var path = $collapsible.data('path');
-                    core.getHtml('/libs/composum/platform/tenant/component.detail.html' + path,
+                    core.getHtml('/libs/composum/platform/tenant/component.detail.html' + core.encodePath(path),
                         _.bind(function (content) {
                             $collapsible.html(content);
                             $collapsible.data('loaded', 'true');
@@ -146,6 +146,30 @@
 
             reload: function () {
                 CPM.platform.workflow.onTableLoad();
+            }
+        });
+
+        tenants.ReplicationTab = tenants.AbstractManagerTab.extend({
+
+            initialize: function (options) {
+                tenants.AbstractManagerTab.prototype.initialize.apply(this, [options]);
+            },
+
+            initContent: function () {
+                tenants.AbstractManagerTab.prototype.initContent.apply(this);
+                this.$('.detail-toolbar .reload').click(_.bind(this.reloadTab, this));
+            },
+
+            reloadTab: function (event) {
+                if (event) {
+                    event.preventDefault();
+                }
+                tenants.detailView.refreshContent();
+                return false;
+            },
+
+            reload: function () {
+                tenants.onReplicationContentLoad();
             }
         });
 

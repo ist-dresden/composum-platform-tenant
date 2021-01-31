@@ -2,12 +2,17 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
         jcr:primaryType="sling:OrderedFolder"
         depends="[category:composum.nodes.console.default]"
-        embed="[category:composum.platform.workflow.console,
-                composum/platform/tenant/component/css/component.css,
-                composum/pages/stage/edit/site/css/context.css,
-                composum/platform/tenant/workflow/dialog/message/clientlib/dialog.css,
-                composum/platform/tenant/manager/components/tenant/css/tenant.css,
-                composum/platform/tenant/manager/components/users/css/users.css,
-                composum/platform/tenant/manager/components/hosts/css/hosts.css,
-                composum/platform/tenant/manager/css/dialogs.css,
-                composum/platform/tenant/manager/css/manager.css]"/>
+        embed="[
+            jslibs/bootstrap-vertical-tabs/1.2.2/css/bootstrap.vertical-tabs.css,
+            category:composum.platform.workflow.console,
+            category:composum.platform.replication,
+            composum/platform/tenant/component/css/component.css,
+            composum/pages/stage/edit/site/css/context.css,
+            composum/platform/tenant/workflow/dialog/message/clientlib/dialog.css,
+            composum/platform/tenant/manager/components/tenant/css/tenant.css,
+            composum/platform/tenant/manager/components/users/css/users.css,
+            composum/platform/tenant/manager/components/hosts/css/hosts.css,
+            composum/platform/tenant/manager/components/replication/css/replication.css,
+            composum/platform/tenant/manager/css/dialogs.css,
+            composum/platform/tenant/manager/css/manager.css
+        ]"/>

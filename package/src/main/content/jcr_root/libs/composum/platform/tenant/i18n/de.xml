@@ -35,27 +35,33 @@
         <visitor jcr:primaryType="sling:MessageEntry"
                 sling:key="Visitor" sling:message="Visitor"/>
         <visitor-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="a visitor can view preview content only (review guest role)" sling:message="kann die Vorschau des Mandanten ansehen (Review-Gast-Rolle)"/>
+                sling:key="a visitor can view preview content only (review guest role)"
+                sling:message="kann die Vorschau des Mandanten ansehen (Review-Gast-Rolle)"/>
         <publisher jcr:primaryType="sling:MessageEntry"
                 sling:key="Publisher" sling:message="Publisher"/>
         <publisher-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="a publisher can build and publish the tenants site releases" sling:message="kann Content-Releases des Mandanten veröffentlichen"/>
+                sling:key="a publisher can build and publish the tenants site releases"
+                sling:message="kann Content-Releases des Mandanten veröffentlichen"/>
         <editor jcr:primaryType="sling:MessageEntry"
                 sling:key="Editor" sling:message="Editor"/>
         <editor-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="an editor can create and modify the tenants sites and pages" sling:message="kann Content-Sites und Seiten des Mandanten bearbeiten"/>
+                sling:key="an editor can create and modify the tenants sites and pages"
+                sling:message="kann Content-Sites und Seiten des Mandanten bearbeiten"/>
         <developer jcr:primaryType="sling:MessageEntry"
                 sling:key="Developer" sling:message="Developer"/>
         <developer-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="a developer can create and modify the tenants components" sling:message="kann die Componenten des Mandaten implementieren"/>
+                sling:key="a developer can create and modify the tenants components"
+                sling:message="kann die Componenten des Mandaten implementieren"/>
         <manager jcr:primaryType="sling:MessageEntry"
                 sling:key="Manager" sling:message="Manager"/>
         <manager-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="a manager can assign roles to users and configure the tenant" sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
+                sling:key="a manager can assign roles to users and configure the tenant"
+                sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
         <assistant jcr:primaryType="sling:MessageEntry"
                 sling:key="Assistant" sling:message="Assistant"/>
         <assistant-hint jcr:primaryType="sling:MessageEntry"
-                sling:key="an assistant can view the resources but change nothing (support role)" sling:message="kann alles sehen aber nichts ändern (Support Rolle)"/>
+                sling:key="an assistant can view the resources but change nothing (support role)"
+                sling:message="kann alles sehen aber nichts ändern (Support Rolle)"/>
 
     </roles>
     <dialog jcr:primaryType="sling:Folder">
@@ -70,7 +76,8 @@
         <tenant-id-hint jcr:primaryType="sling:MessageEntry"
                 sling:key="the tenants id" sling:message="Mandanten-ID"/>
         <message-hint-mgr jcr:primaryType="sling:MessageEntry"
-                sling:key="your message to the manager of the tenant" sling:message="Ihre Nachricht an den Manager des Mandanten"/>
+                sling:key="your message to the manager of the tenant"
+                sling:message="Ihre Nachricht an den Manager des Mandanten"/>
         <given-name-hint jcr:primaryType="sling:MessageEntry"
                 sling:key="your given name and the surname" sling:message="Ihr Vor- und Zuname"/>
 
@@ -98,4 +105,33 @@
                 sling:key="Target" sling:message="Ziel"/>
 
     </conversation>
+    <replication jcr:primaryType="sling:Folder">
+
+        <replication-config jcr:primaryType="sling:MessageEntry"
+                sling:key="Replication Configuration"
+                sling:message="Replikationskonfiguration"/>
+        <replication-tabs-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the replication configuration for each site of the tenant"
+                sling:message="die Replikationskonfiguration für jede 'Site' des Mandanten"/>
+
+        <replication-no-sites jcr:primaryType="sling:MessageEntry"
+                sling:key="There are no sites available for the tenant."
+                sling:message="Es sind keine 'Sites' für diesen Mandanten verfügbar."/>
+        <replication-create-site jcr:primaryType="sling:MessageEntry"
+                sling:key="Create your first site"
+                sling:message="Erzeugen Sie Ihre erste 'Site'"/>
+        <replication-view-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the tenant management console view to configure the replication of all sites of a tenant"
+                sling:message="die Mandaten-Management-Console zur Konfiguration der Replikation aller 'Sites' eines Mandanten"/>
+        <replication-several-types jcr:primaryType="sling:MessageEntry"
+                sling:key="Several replication strategies can be implemented and than configured here."
+                sling:message="Es können alle Implementierungen zur Content-Replikation hier konfiguriert werden."/>
+        <replication-default-types jcr:primaryType="sling:MessageEntry"
+                sling:key="By default the 'in-place' an the 'remote' replication types are available."
+                sling:message="Standardmäßig stehen die Replikationstypen 'in-place' und 'remote' zu Verfügung."/>
+        <replication-various-settings jcr:primaryType="sling:MessageEntry"
+                sling:key="Some replication settings can be added for the available stages and various paths of a site."
+                sling:message="Für die verfügbaren 'Stages' können beliebige Konfigurationen zu verschiedenen Pfaden einer 'Site' angelegt werden."/>
+
+    </replication>
 </jcr:root>

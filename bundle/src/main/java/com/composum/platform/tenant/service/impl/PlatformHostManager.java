@@ -6,12 +6,12 @@ import com.composum.pages.commons.service.SiteManager;
 import com.composum.platform.cache.service.CacheConfiguration;
 import com.composum.platform.cache.service.CacheManager;
 import com.composum.platform.cache.service.impl.CacheServiceImpl;
+import com.composum.platform.commons.request.AccessMode;
 import com.composum.platform.tenant.service.HostManagerService;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.util.ResourceUtil;
-import com.composum.sling.platform.security.AccessMode;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -650,7 +651,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
             } else {
                 throw new PersistenceException("host configuration not modifiable (" + hostNode.getName() + ")");
             }
-        } catch (PersistenceException ex) {
+        } catch (PersistenceException | RepositoryException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new ProcessException(ex.getMessage());
         }

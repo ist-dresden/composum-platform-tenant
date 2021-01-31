@@ -133,24 +133,6 @@
     ]
   },
   {
-    "path": "${contentRoot}/shared",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "tenant-${tenantId}-visitors"
-      },
-      {
-        "principal": "tenant-${tenantId}-visitors",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
     "path": "${publicRoot}",
     "jcr:primaryType": "sling:Folder",
     "acl": [
@@ -679,6 +661,36 @@
           {
             "allow": true,
             "privileges": "jcr:read"
+          }
+        ]
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/nodes/scenes${applicationRoot}",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-developers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-developers",
+        "acl": [
+          {
+            "allow": true,
+            "privileges":  "jcr:all"
           }
         ]
       },

@@ -61,7 +61,7 @@
 
             initAction: function (action) {
                 var $form = this.form.$el;
-                $form.attr('action', $form.attr('action').replace('{action}', action));
+                $form.attr('action', $form.attr('action').replace('.action.', '.' + action + '.'));
             },
 
             doSubmit: function (callback) {
@@ -100,7 +100,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._enable + this.hosts.path, {
+                core.ajaxPost(u.base + u._enable + core.encodePath(this.hosts.path), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -110,7 +111,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._disable + this.hosts.path, {
+                core.ajaxPost(u.base + u._disable + core.encodePath(this.hosts.path), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -120,7 +122,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._create + this.hosts.path, {
+                core.ajaxPost(u.base + u._create + core.encodePath(this.hosts.pathcore.encodePath), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -129,7 +132,7 @@
             dropHost: function (event) {
                 event.preventDefault();
                 var u = tenants.const.hosts.dlg.host;
-                core.getHtml(u.base + u._drop + this.hosts.path
+                core.getHtml(u.base + u._drop + core.encodePath(this.hosts.path)
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
@@ -143,7 +146,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._cert + this.hosts.path, {
+                core.ajaxPost(u.base + u._cert + core.encodePath(this.hosts.path), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -152,7 +156,7 @@
             revokeCert: function (event) {
                 event.preventDefault();
                 var u = tenants.const.hosts.dlg.host;
-                core.getHtml(u.base + u._revoke + this.hosts.path
+                core.getHtml(u.base + u._revoke + core.encodePath(this.hosts.path)
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
@@ -166,7 +170,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._secure + this.hosts.path, {
+                core.ajaxPost(u.base + u._secure + core.encodePath(this.hosts.path), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -176,7 +181,8 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._unsecure + this.hosts.path, {
+                core.ajaxPost(u.base + u._unsecure + core.encodePath(this.hosts.path), {
+                    _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);
                 return false;
@@ -185,7 +191,7 @@
             removeHost: function (event) {
                 event.preventDefault();
                 var u = tenants.const.hosts.dlg.host;
-                core.getHtml(u.base + u._remove + this.hosts.path
+                core.getHtml(u.base + u._remove + core.encodePath(this.hosts.path)
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
@@ -198,7 +204,7 @@
             assignSite: function (event) {
                 event.preventDefault();
                 var u = tenants.const.hosts.dlg.site;
-                core.getHtml(u.base + u._assign + this.hosts.path
+                core.getHtml(u.base + u._assign + core.encodePath(this.hosts.path)
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
@@ -210,7 +216,7 @@
             removeSite: function (event) {
                 event.preventDefault();
                 var u = tenants.const.hosts.dlg.site;
-                core.getHtml(u.base + u._remove + this.hosts.path
+                core.getHtml(u.base + u._remove + core.encodePath(this.hosts.path)
                     + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
@@ -222,7 +228,8 @@
             reloadHost: function () {
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.load.host;
-                core.getHtml(u + this.hosts.path + '?hostname=' + this.data.hostname,
+                core.getHtml(u + core.encodePath(this.hosts.path)
+                    + '?hostname=' + encodeURIComponent(this.data.hostname),
                     _.bind(function (content) {
                         this.$el.html(content);
                         this.initItem();
@@ -255,7 +262,7 @@
                     event.preventDefault();
                 }
                 var u = tenants.const.hosts.dlg.host;
-                core.getHtml(u.base + u._add + this.path, _.bind(function (content) {
+                core.getHtml(u.base + u._add + core.encodePath(this.path), _.bind(function (content) {
                     core.showFormDialog(tenants.HostDialog, content, {}, _.bind(function (dialog) {
                         dialog.initAction('add');
                     }, this), _.bind(this.onHostsAction, this));

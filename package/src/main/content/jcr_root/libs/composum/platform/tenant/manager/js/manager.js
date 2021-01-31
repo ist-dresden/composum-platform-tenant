@@ -36,7 +36,7 @@
             if (!tenants.current || tenants.current.path !== path) {
                 if (path) {
                     var u = tenants.const.url;
-                    core.getJson(u.base + u._tree + path, undefined, undefined,
+                    core.getJson(u.base + u._tree + core.encodePath(path), undefined, undefined,
                         _.bind(function (result) {
                             var l = tenants.const.link;
                             tenants.current = {
@@ -280,6 +280,9 @@
         }, {
             selector: '> .tenant-inbox',
             tabType: tenants.InboxTab
+        }, {
+            selector: '> .tenant-replication',
+            tabType: tenants.ReplicationTab
         }, {
             // the fallback to the basic implementation as a default rule
             selector: '> div',

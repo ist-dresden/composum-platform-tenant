@@ -192,7 +192,7 @@ public class TenantBean extends AbstractTenantBean {
                 Tenant tenant = getTenant();
                 hosts = getHostManager().hostList(getResolver(), tenant != null ? tenant.getId() : null);
             } catch (HostManagerService.ProcessException ex) {
-                LOG.error(ex.getMessage(), ex);
+                LOG.info(ex.toString());
                 hosts = new HostList();
             }
         }
@@ -224,8 +224,16 @@ public class TenantBean extends AbstractTenantBean {
             return site.getPath();
         }
 
+        public String getTitle() {
+            return site.getTitle();
+        }
+
         public String getLabel() {
             return site.getTitle() + " (" + site.getPath() + ")";
+        }
+
+        public String getReplicationConfig() {
+            return "/conf" + getPath() + "/replication";
         }
 
         public boolean isSelected() {
