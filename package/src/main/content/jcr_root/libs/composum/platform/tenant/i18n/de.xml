@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:language="de"
+        jcr:mixinTypes="[mix:language]"
+        jcr:primaryType="sling:Folder"
+        sling:basename="composum-platform-workflow">
+
+    <general jcr:primaryType="sling:Folder">
+
+        <tenant jcr:primaryType="sling:MessageEntry"
+                sling:key="Tenant" sling:message="Mandant"/>
+        <message jcr:primaryType="sling:MessageEntry"
+                sling:key="Message" sling:message="Nachricht"/>
+
+        <adapt jcr:primaryType="sling:MessageEntry"
+                sling:key="Adapt" sling:message="Anpassen"/>
+        <change jcr:primaryType="sling:MessageEntry"
+                sling:key="Change" sling:message="Ändern"/>
+
+    </general>
+    <tenant jcr:primaryType="sling:Folder">
+
+        <id-not-found jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is not known" sling:message="der Mandantenname ist nicht bekannt"/>
+        <id-not-valid jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is not valid" sling:message="der Mandantenname ist nicht erlaubt"/>
+        <id-is-reserved jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is reserved" sling:message="der Mandantenname ist reserviert"/>
+        <id-is-in-use jcr:primaryType="sling:MessageEntry"
+                sling:key="tenant id is in use already" sling:message="der Mandant wird bereits verwendet"/>
+
+    </tenant>
+    <roles jcr:primaryType="sling:Folder">
+
+        <visitor jcr:primaryType="sling:MessageEntry"
+                sling:key="Visitor" sling:message="Visitor"/>
+        <visitor-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a visitor can view preview content only (review guest role)"
+                sling:message="kann die Vorschau des Mandanten ansehen (Review-Gast-Rolle)"/>
+        <publisher jcr:primaryType="sling:MessageEntry"
+                sling:key="Publisher" sling:message="Publisher"/>
+        <publisher-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a publisher can build and publish the tenants site releases"
+                sling:message="kann Content-Releases des Mandanten veröffentlichen"/>
+        <editor jcr:primaryType="sling:MessageEntry"
+                sling:key="Editor" sling:message="Editor"/>
+        <editor-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="an editor can create and modify the tenants sites and pages"
+                sling:message="kann Content-Sites und Seiten des Mandanten bearbeiten"/>
+        <developer jcr:primaryType="sling:MessageEntry"
+                sling:key="Developer" sling:message="Developer"/>
+        <developer-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a developer can create and modify the tenants components"
+                sling:message="kann die Componenten des Mandaten implementieren"/>
+        <manager jcr:primaryType="sling:MessageEntry"
+                sling:key="Manager" sling:message="Manager"/>
+        <manager-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="a manager can assign roles to users and configure the tenant"
+                sling:message="kann Nutzer verwalten und den Mandanten konfigurieren"/>
+        <assistant jcr:primaryType="sling:MessageEntry"
+                sling:key="Assistant" sling:message="Assistant"/>
+        <assistant-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="an assistant can view the resources but change nothing (support role)"
+                sling:message="kann alles sehen aber nichts ändern (Support Rolle)"/>
+
+    </roles>
+    <dialog jcr:primaryType="sling:Folder">
+
+        <change-roles jcr:primaryType="sling:MessageEntry"
+                sling:key="Change User Roles" sling:message="Benutzer-Rollen Ändern"/>
+        <user-id jcr:primaryType="sling:MessageEntry"
+                sling:key="User ID" sling:message="Nutzer-ID"/>
+        <select-roles jcr:primaryType="sling:MessageEntry"
+                sling:key="Select Roles" sling:message="Rollen auswählen"/>
+
+        <tenant-id-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the tenants id" sling:message="Mandanten-ID"/>
+        <message-hint-mgr jcr:primaryType="sling:MessageEntry"
+                sling:key="your message to the manager of the tenant"
+                sling:message="Ihre Nachricht an den Manager des Mandanten"/>
+        <given-name-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="your given name and the surname" sling:message="Ihr Vor- und Zuname"/>
+
+    </dialog>
+    <conversation jcr:primaryType="sling:Folder">
+
+        <conversation jcr:primaryType="sling:MessageEntry"
+                sling:key="Conversation" sling:message="Konversation"/>
+        <message jcr:primaryType="sling:MessageEntry"
+                sling:key="Message" sling:message="Nachricht"/>
+        <answer jcr:primaryType="sling:MessageEntry"
+                sling:key="Answer" sling:message="Antwort"/>
+        <reply jcr:primaryType="sling:MessageEntry"
+                sling:key="Reply" sling:message="Antworten"/>
+        <delegate jcr:primaryType="sling:MessageEntry"
+                sling:key="Delegate" sling:message="Delegieren"/>
+
+        <from jcr:primaryType="sling:MessageEntry"
+                sling:key="From" sling:message="Von"/>
+        <to jcr:primaryType="sling:MessageEntry"
+                sling:key="To" sling:message="An"/>
+        <subject jcr:primaryType="sling:MessageEntry"
+                sling:key="Subject" sling:message="Betreff"/>
+        <target jcr:primaryType="sling:MessageEntry"
+                sling:key="Target" sling:message="Ziel"/>
+
+    </conversation>
+    <replication jcr:primaryType="sling:Folder">
+
+        <replication-config jcr:primaryType="sling:MessageEntry"
+                sling:key="Replication Configuration"
+                sling:message="Replikationskonfiguration"/>
+        <replication-tabs-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the replication configuration for each site of the tenant"
+                sling:message="die Replikationskonfiguration für jede 'Site' des Mandanten"/>
+
+        <replication-no-sites jcr:primaryType="sling:MessageEntry"
+                sling:key="There are no sites available for the tenant."
+                sling:message="Es sind keine 'Sites' für diesen Mandanten verfügbar."/>
+        <replication-create-site jcr:primaryType="sling:MessageEntry"
+                sling:key="Create your first site"
+                sling:message="Erzeugen Sie Ihre erste 'Site'"/>
+        <replication-view-hint jcr:primaryType="sling:MessageEntry"
+                sling:key="the tenant management console view to configure the replication of all sites of a tenant"
+                sling:message="die Mandaten-Management-Console zur Konfiguration der Replikation aller 'Sites' eines Mandanten"/>
+        <replication-several-types jcr:primaryType="sling:MessageEntry"
+                sling:key="Several replication strategies can be implemented and than configured here."
+                sling:message="Es können alle Implementierungen zur Content-Replikation hier konfiguriert werden."/>
+        <replication-default-types jcr:primaryType="sling:MessageEntry"
+                sling:key="By default the 'in-place' an the 'remote' replication types are available."
+                sling:message="Standardmäßig stehen die Replikationstypen 'in-place' und 'remote' zu Verfügung."/>
+        <replication-various-settings jcr:primaryType="sling:MessageEntry"
+                sling:key="Some replication settings can be added for the available stages and various paths of a site."
+                sling:message="Für die verfügbaren 'Stages' können beliebige Konfigurationen zu verschiedenen Pfaden einer 'Site' angelegt werden."/>
+
+    </replication>
+</jcr:root>

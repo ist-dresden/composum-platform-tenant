@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+#tenants {
+
+    &.top-disabled {
+
+        #split-view-vertical-split {
+
+            .top-pane, .split-pane-divider {
+                display: none;
+                min-height: 0;
+                max-height: 0;
+            }
+
+            .bottom-pane {
+                top: 0 !important;
+            }
+        }
+    }
+
+    .detail-panel {
+
+        .action-bar {
+
+            .tenant-status {
+
+                &_label {
+                    padding: 0 10px;
+                    line-height: 30px;
+                }
+            }
+        }
+    }
+
+    .composum-platform-tenant {
+
+        &_dashboard {
+
+            &-content {
+                position: absolute;
+                top: 40px;
+                left: 0;
+                right: 0;
+                bottom: 42px;
+                overflow: auto;
+                padding: 0 6px;
+            }
+        }
+    }
+}
+

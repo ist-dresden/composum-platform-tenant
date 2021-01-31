@@ -1,0 +1,47 @@
+@charset "UTF-8";
+
+.composum-platform-workflow {
+
+    &_dialog {
+
+        .conversation {
+
+            &-start, &-item {
+                clear: both;
+            }
+
+            &-item {
+                display: none;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e5e5e5;
+                margin-bottom: 15px;
+
+                &.visible {
+                    display: block;
+                }
+            }
+
+            &-meta {
+                white-space: nowrap;
+                font-size: 12px;
+                color: #666;
+            }
+
+            &-toggle {
+                float: right;
+            }
+
+            .composum-platform-workflow {
+
+                &_message {
+
+                    &-body {
+                        margin-top: 10px;
+                        border: none;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+    }
+}

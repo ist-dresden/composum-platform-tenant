@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0"
+        jcr:primaryType="nt:unstructured"
+        tenantId="Mandanten-ID"
+        tenantName="Mandantenname (Titel)"
+        description="Beschreibung"
+        btnCreate="Neuen Mandanten Anfordern"
+        yourName="Ihr Name"
+        message="Ihre Nachricht"
+        btnJoinMe="Rollenzuweisung Anfordern"/>

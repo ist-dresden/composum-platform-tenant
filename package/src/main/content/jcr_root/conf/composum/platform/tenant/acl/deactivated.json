@@ -1,0 +1,165 @@
+[
+  {
+    "path": "${contentRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-editors"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "${publicRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "${previewRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      },
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "${applicationRoot}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-developers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "/etc/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "/etc/packages/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-managers"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  },
+  {
+    "path": "/conf/content/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-developers"
+      }
+    ]
+  },
+  {
+    "path": "/conf/tenants/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-visitors"
+      },
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-developers"
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/assets/content/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-editors"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/content/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      },
+      {
+        "principal": "tenant-${tenantId}-editors"
+      },
+      {
+        "principal": "tenant-${tenantId}-publishers"
+      }
+    ]
+  },
+  {
+    "path": "/var/composum/workflow/${tenantId}",
+    "acl": [
+      {
+        "principal": "tenant-${tenantId}-members"
+      },
+      {
+        "principal": "tenant-${tenantId}-assistants"
+      }
+    ]
+  }
+]
