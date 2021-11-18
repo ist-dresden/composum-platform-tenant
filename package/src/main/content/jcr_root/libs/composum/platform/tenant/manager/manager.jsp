@@ -8,7 +8,7 @@
         <html data-context-path="${slingRequest.contextPath}">
         <head>
             <title>Composum ${cpn:i18n(slingRequest,'Tenant Manager')}</title>
-            <sling:call script="/libs/composum/nodes/console/page/head.jsp"/>
+            <sling:call script="/libs/composum/nodes/console/page/head-meta.jsp"/>
             <cpn:clientlib type="css" category="composum.platform.tenants.manager"/>
         </head>
         <body id="tenants" class="console left-open top-disabled">
