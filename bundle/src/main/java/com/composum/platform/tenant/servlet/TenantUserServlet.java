@@ -74,7 +74,7 @@ public class TenantUserServlet extends AbstractTenantServlet {
         return operations;
     }
 
-    @Override
+    @Deprecated
     protected boolean isEnabled() {
         return true;
     }

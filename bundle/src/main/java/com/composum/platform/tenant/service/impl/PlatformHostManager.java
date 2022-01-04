@@ -873,6 +873,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
             if (checkLocked) {
                 checkLocked(hostname);
             }
+            LOG.info("cmd '{} {} {}'...", config.host_manage_cmd(), operation, hostname);
             Process process = new ProcessBuilder().command(config.host_manage_cmd(), operation, hostname).start();
             if (out != null) {
                 BufferedReader processOut = new BufferedReader(new
@@ -894,7 +895,9 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
                 errorLines.add("process execution timed out");
             }
             if (exitValue != 0) {
-                LOG.error("process exited with '{}': {}", exitValue, StringUtils.join(errorLines, ", "));
+                LOG.error("cmd '{} {} {}' exited with '{}': {}",
+                        config.host_manage_cmd(), operation, hostname,
+                        exitValue, StringUtils.join(errorLines, ", "));
                 throw new ProcessException(exitValue, errorLines);
             }
         } catch (IOException | InterruptedException ex) {

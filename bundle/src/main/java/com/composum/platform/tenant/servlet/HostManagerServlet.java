@@ -100,7 +100,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
         return operations;
     }
 
-    @Override
+    @Deprecated
     protected boolean isEnabled() {
         return true;
     }
