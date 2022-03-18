@@ -51,7 +51,7 @@ public class SetupHook implements InstallHook {
             Session session = ctx.getSession();
             session.refresh(false);
             Node root = session.getNode("/");
-            root.setProperty("sling:target", "/libs/composum/platform/home.html");
+            root.setProperty("sling:target", "/cpm/home.html");
             session.save();
         } catch (RepositoryException ex) {
             LOG.error(ex.getMessage(), ex);

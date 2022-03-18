@@ -2,6 +2,7 @@ package com.composum.platform.tenant.servlet;
 
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.sling.core.ResourceHandle;
+import com.composum.sling.core.Restricted;
 import com.composum.sling.core.servlet.AbstractServiceServlet;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
@@ -27,6 +28,7 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
+import static com.composum.platform.tenant.servlet.TenantWorkflowServlet.SERVICE_KEY;
 import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
@@ -40,9 +42,12 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
+@Restricted(key = SERVICE_KEY)
 public class TenantWorkflowServlet extends AbstractServiceServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantWorkflowServlet.class);
+
+    public static final String SERVICE_KEY = "platform/tenant/workflow";
 
     public static final String PARAM_TENANT_ID = "tenant.id";
     public static final String PARAM_TENANT_NAME = "tenant.name";
@@ -82,7 +87,9 @@ public class TenantWorkflowServlet extends AbstractServiceServlet {
         return true;
     }
 
-    /** setup of the servlet operation set for this servlet instance */
+    /**
+     * setup of the servlet operation set for this servlet instance
+     */
     @Override
     public void init() throws ServletException {
         super.init();

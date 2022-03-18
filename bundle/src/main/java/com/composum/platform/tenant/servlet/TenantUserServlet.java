@@ -2,6 +2,7 @@ package com.composum.platform.tenant.servlet;
 
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.sling.core.ResourceHandle;
+import com.composum.sling.core.Restricted;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.util.RequestUtil;
@@ -29,6 +30,7 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
+import static com.composum.platform.tenant.servlet.TenantUserServlet.SERVICE_KEY;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 
 /**
@@ -41,9 +43,12 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
+@Restricted(key = SERVICE_KEY)
 public class TenantUserServlet extends AbstractTenantServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantUserServlet.class);
+
+    public static final String SERVICE_KEY = "platform/tenant/users";
 
     @Reference
     protected TenantUserManager userManager;
