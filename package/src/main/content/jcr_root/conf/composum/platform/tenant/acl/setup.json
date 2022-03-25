@@ -997,7 +997,7 @@
     ]
   },
   {
-    "path": "/libs/composum/nodes/system/status",
+    "path": "/libs/composum/nodes/system",
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {
