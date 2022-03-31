@@ -623,6 +623,21 @@
     ]
   },
   {
+    "path": "/etc/map.next",
+    "jcr:primaryType": "sling:Folder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:all"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/etc/map.test",
     "jcr:primaryType": "sling:Folder",
     "acl": [
