@@ -189,7 +189,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
             String tenantId = getTenantId(request, resource, true);
             List<Map<String, Object>> result = status.list(LIST_HOSTS);
             try {
-                for (Host host : hostManager.hostList(resolver, tenantId)) {
+                boolean clearCache = "no-cache".equals(request.getHeader("Cache-Control"));
+                for (Host host : hostManager.hostList(resolver, tenantId, clearCache)) {
                     result.add(new HashMap<String, Object>() {{
                         put(VALUE_HOSTNAME, host.getHostname());
                         put(VALUE_CONFIGURED, host.isConfigured());
