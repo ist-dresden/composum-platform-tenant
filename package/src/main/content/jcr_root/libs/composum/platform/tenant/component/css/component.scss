@@ -181,7 +181,12 @@
             }
 
             &-description {
+                margin: 8px 0;
                 font-style: italic;
+
+                p {
+                    margin: 0;
+                }
             }
         }
 

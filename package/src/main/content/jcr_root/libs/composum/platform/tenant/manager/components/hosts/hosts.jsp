@@ -7,7 +7,7 @@
     <div class="composum-platform-tenant_hosts-view tenant-hosts_content">
         <c:choose>
             <c:when test="${not empty model.hosts}">
-                <c:forEach items="${model.hosts}" var="host" varStatus="stat">
+                <c:forEach items="${model.hosts}" var="host" varStatus="loop">
                     <%slingRequest.setAttribute("host", pageContext.getAttribute("host"));%>
                     <div class="tenant-hosts_host">
                         <sling:include replaceSelectors="item"/><%-- can be reloaded via Ajax --%>

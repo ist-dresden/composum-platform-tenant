@@ -24,7 +24,7 @@
                             <div class="composum-platform-tenant-component_sites_site-text">
                                 <h4 class="composum-platform-tenant-component_sites_site-title">${cpn:text(site.title)}</h4>
                                 <cpn:text class="composum-platform-tenant-component_sites_site-description"
-                                          value="${site.description}"/>
+                                          value="${site.description}" type="rich"/>
                                 <a href="${cpn:unmappedUrl(slingRequest,'/bin/pages.html')}${cpn:path(site.path)}"
                                    class="composum-platform-tenant-component_sites_site-path">${cpn:text(site.path)}</a>
                             </div>

@@ -190,7 +190,8 @@ public class TenantBean extends AbstractTenantBean {
         if (hosts == null) {
             try {
                 Tenant tenant = getTenant();
-                hosts = getHostManager().hostList(getResolver(), tenant != null ? tenant.getId() : null);
+                boolean clearCache = "no-cache".equals(getRequest().getHeader("Cache-Control"));
+                hosts = getHostManager().hostList(getResolver(), tenant != null ? tenant.getId() : null, clearCache);
             } catch (HostManagerService.ProcessException ex) {
                 LOG.info(ex.toString());
                 hosts = new HostList();

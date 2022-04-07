@@ -3,6 +3,7 @@ package com.composum.platform.tenant.servlet;
 import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.impl.PlatformTenant;
 import com.composum.sling.core.ResourceHandle;
+import com.composum.sling.core.Restricted;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.util.ResponseUtil;
@@ -37,6 +38,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.composum.platform.tenant.servlet.TenantManagerServlet.SERVICE_KEY;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
@@ -50,9 +52,12 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
+@Restricted(key = SERVICE_KEY)
 public class TenantManagerServlet extends AbstractTenantServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(TenantManagerServlet.class);
+
+    public static final String SERVICE_KEY = "platform/tenant/manager";
 
     @Reference
     protected TenantManagerService tenantManager;
@@ -83,7 +88,7 @@ public class TenantManagerServlet extends AbstractTenantServlet {
         return operations;
     }
 
-    @Override
+    @Deprecated
     protected boolean isEnabled() {
         return true;
     }

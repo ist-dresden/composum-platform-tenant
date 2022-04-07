@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.composum.platform</groupId>
         <artifactId>composum-platform-tenant</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.1</version>
     </parent>
 
     <artifactId>composum-platform-tenant-package</artifactId>
@@ -132,12 +132,6 @@
                                 <include>.*/org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-tenant.config</include>
                             </includes>
                         </filter>
-                        <filter>
-                            <root>/libs/composum/platform/config/tenants</root>
-                            <includes>
-                                <include>.*/com.composum.sling.core.CoreConfigImpl.config</include>
-                            </includes>
-                        </filter>
                     </filters>
 
                     <embeddeds>
@@ -147,6 +141,20 @@
                             <target>/libs/composum/platform/install</target>
                         </embedded>
                     </embeddeds>
+
+                    <dependencies>
+                        <dependency>
+                            <group>com/composum/platform</group>
+                            <name>composum-platform-cache-package</name>
+                            <!-- <version>[${project.version},2.0)</version> -->
+                        </dependency>
+
+                        <dependency>
+                            <group>com/composum/platform</group>
+                            <name>composum-platform-workflow-package</name>
+                            <!-- <version>[${project.version},2.0)</version> -->
+                        </dependency>
+                    </dependencies>
 
                 </configuration>
             </plugin>
@@ -169,8 +177,8 @@
 
         <!-- Composum Core -->
         <dependency>
-            <groupId>com.composum.sling.core</groupId>
-            <artifactId>composum-sling-core-commons</artifactId>
+            <groupId>com.composum.nodes</groupId>
+            <artifactId>composum-nodes-commons</artifactId>
         </dependency>
 
         <!-- Taglib support -->

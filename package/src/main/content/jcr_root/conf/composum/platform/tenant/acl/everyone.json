@@ -117,37 +117,12 @@
     ]
   },
   {
-    "path": "/libs/composum/pages/commons",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/libs/composum/pages/components",
-    "jcr:primaryType": "sling:Folder",
-    "acl": [
-      {
-        "principal": "everyone",
-        "acl": [
-          {
-            "allow": true,
-            "privileges": "jcr:read"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "path": "/libs/composum/pages/themes",
+    "path": [
+      "/libs/composum/pages/commons",
+      "/libs/composum/pages/components",
+      "/libs/composum/pages/options",
+      "/libs/composum/pages/themes"
+    ],
     "jcr:primaryType": "sling:Folder",
     "acl": [
       {

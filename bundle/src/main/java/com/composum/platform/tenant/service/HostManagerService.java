@@ -235,7 +235,7 @@ public interface HostManagerService {
     /**
      * retrieves the list of hosts for one tenant or the list of configured hosts if tenant is 'null'
      */
-    HostList hostList(@Nonnull ResourceResolver resolver, @Nullable String tenantId)
+    HostList hostList(@Nonnull ResourceResolver resolver, @Nullable String tenantId, boolean clearCache)
             throws ProcessException;
 
     /**

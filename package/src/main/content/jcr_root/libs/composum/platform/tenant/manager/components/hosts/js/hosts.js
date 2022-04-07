@@ -122,7 +122,7 @@
                 event.preventDefault();
                 this.hosts.hostsBusyOn();
                 var u = tenants.const.hosts.action;
-                core.ajaxPost(u.base + u._create + core.encodePath(this.hosts.pathcore.encodePath), {
+                core.ajaxPost(u.base + u._create + core.encodePath(this.hosts.path), {
                     _charset_: 'UTF-8',
                     hostname: this.data.hostname
                 }, {}, _.bind(this.reloadHost, this), this.onError);

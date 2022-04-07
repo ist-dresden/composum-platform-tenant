@@ -5,6 +5,7 @@ import com.composum.platform.tenant.service.HostManagerService.Host;
 import com.composum.platform.tenant.service.HostManagerService.ProcessException;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.ResourceHandle;
+import com.composum.sling.core.Restricted;
 import com.composum.sling.core.servlet.ServletOperation;
 import com.composum.sling.core.servlet.ServletOperationSet;
 import com.composum.sling.core.servlet.Status;
@@ -43,6 +44,7 @@ import static com.composum.platform.tenant.service.HostManagerService.VALUE_HOST
 import static com.composum.platform.tenant.service.HostManagerService.VALUE_LOCKED;
 import static com.composum.platform.tenant.service.HostManagerService.VALUE_SECURED;
 import static com.composum.platform.tenant.service.HostManagerService.VALUE_VALID;
+import static com.composum.platform.tenant.servlet.HostManagerServlet.SERVICE_KEY;
 
 /**
  * The servlet to provide changes of the Asset Managers UI.
@@ -54,9 +56,12 @@ import static com.composum.platform.tenant.service.HostManagerService.VALUE_VALI
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_GET,
                 ServletResolverConstants.SLING_SERVLET_METHODS + "=" + HttpConstants.METHOD_POST
         })
+@Restricted(key = SERVICE_KEY)
 public class HostManagerServlet extends AbstractTenantServlet {
 
     private static final Logger LOG = LoggerFactory.getLogger(HostManagerServlet.class);
+
+    public static final String SERVICE_KEY = "platform/tenant/hosts";
 
     public static final String PARAM_HOSTNAME = "hostname";
     public static final String PARAM_SITE = "site";
@@ -100,7 +105,7 @@ public class HostManagerServlet extends AbstractTenantServlet {
         return operations;
     }
 
-    @Override
+    @Deprecated
     protected boolean isEnabled() {
         return true;
     }
@@ -184,7 +189,8 @@ public class HostManagerServlet extends AbstractTenantServlet {
             String tenantId = getTenantId(request, resource, true);
             List<Map<String, Object>> result = status.list(LIST_HOSTS);
             try {
-                for (Host host : hostManager.hostList(resolver, tenantId)) {
+                boolean clearCache = "no-cache".equals(request.getHeader("Cache-Control"));
+                for (Host host : hostManager.hostList(resolver, tenantId, clearCache)) {
                     result.add(new HashMap<String, Object>() {{
                         put(VALUE_HOSTNAME, host.getHostname());
                         put(VALUE_CONFIGURED, host.isConfigured());
