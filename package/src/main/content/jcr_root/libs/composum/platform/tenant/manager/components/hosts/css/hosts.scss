@@ -61,13 +61,13 @@ $busy-symbol-size: 150px;
                     &_name,
                     &_address {
                         display: inline-block;
-                        margin: 0 6px;
+                        margin: 0 10px;
                         line-height: $host-icon-size;
                         text-align: right;
                     }
 
                     &_name {
-                        min-width: 180px;
+                        min-width: 200px;
                     }
 
                     &_address {
@@ -186,6 +186,13 @@ $busy-symbol-size: 150px;
                     flex-wrap: nowrap;
                 }
 
+                .tenant-host {
+
+                    &_site-satus {
+                        margin: 0 10px;
+                    }
+                }
+
                 &-status {
                     flex-grow: 9;
 
@@ -193,9 +200,10 @@ $busy-symbol-size: 150px;
 
                         &_message {
                             display: inline-block;
-                            margin: 0 6px;
+                            overflow: auto;
                             line-height: $host-icon-size;
                             font-style: italic;
+                            white-space: nowrap;
                             color: #777;
                         }
 
@@ -206,12 +214,8 @@ $busy-symbol-size: 150px;
                                 line-height: $host-icon-size;
                             }
 
-                            &-stage, &-path {
-                                margin: 0 6px;
-                            }
-
                             &-at {
-                                margin: 0 -3px;
+                                margin: 0 3px;
                                 color: #777;
                             }
 
@@ -232,6 +236,16 @@ $busy-symbol-size: 150px;
                     &.enabled {
                         cursor: pointer;
                     }
+                }
+            }
+        }
+
+        .panel-body {
+
+            .tenant-host {
+
+                &_site-status {
+                    margin: 0 10px;
                 }
             }
         }
