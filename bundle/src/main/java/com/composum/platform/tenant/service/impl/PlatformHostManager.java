@@ -12,7 +12,6 @@ import com.composum.platform.tenant.service.TenantManagerService;
 import com.composum.platform.tenant.service.TenantUserManager;
 import com.composum.sling.core.BeanContext;
 import com.composum.sling.core.util.ResourceUtil;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.sling.api.resource.LoginException;
@@ -65,6 +64,8 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
     public static final String PN_SITE_REF = "siteRef";
     public static final String PN_SITE_STAGE = "siteStage";
+    public static final String PN_MESSAGE = "message";
+    public static final String PN_ADDRESS = "address";
     public static final String PN_LOCKED = "locked";
 
     public static final String SP_RESOLVER_MAP_LOCATION = "resource.resolver.map.location";
@@ -107,15 +108,15 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
         String resource_resolver_map_template() default "/conf/composum/platform/tenant/map/template";
     }
 
-    public final static Map<String, Object> MAP_FOLDER_PROPS = new HashMap<String, Object>() {{
+    public final static Map<String, Object> MAP_FOLDER_PROPS = new HashMap<>() {{
         put(JcrConstants.JCR_PRIMARYTYPE, ResourceUtil.TYPE_SLING_FOLDER);
     }};
 
-    public final static Map<String, Object> HOSTS_PROPS = new HashMap<String, Object>() {{
+    public final static Map<String, Object> HOSTS_PROPS = new HashMap<>() {{
         put(JcrConstants.JCR_PRIMARYTYPE, ResourceUtil.TYPE_SLING_FOLDER);
     }};
 
-    public final static Map<String, Object> HOST_PROPS = new HashMap<String, Object>() {{
+    public final static Map<String, Object> HOST_PROPS = new HashMap<>() {{
         put(JcrConstants.JCR_PRIMARYTYPE, JcrConstants.NT_UNSTRUCTURED);
     }};
 
@@ -124,9 +125,10 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
         private String siteRef;
         private String siteStage;
 
+        private String message;
+        private List<InetAddress> expected;
+        private Boolean foreignHost;
         private boolean locked;
-
-        private transient String reversedName;
 
         protected PlatformHost(@Nonnull final String hostname) {
             this(hostname, false, false, false, false);
@@ -144,6 +146,15 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
             ValueMap values = resource.getValueMap();
             siteRef = values.get(PN_SITE_REF, String.class);
             siteStage = values.get(PN_SITE_STAGE, String.class);
+            message = values.get(PN_MESSAGE, String.class);
+            expected = new ArrayList<>();
+            for (String adr : values.get(PN_ADDRESS, new String[0])) {
+                try {
+                    expected.add(InetAddress.getByName(adr));
+                } catch (UnknownHostException ex) {
+                    LOG.error(ex.toString());
+                }
+            }
             locked = values.get(PN_LOCKED, Boolean.FALSE);
         }
 
@@ -154,11 +165,15 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
         @Override
         public boolean isValid() {
-            if (publicIpAddresses != null && publicIpAddresses.size() > 0) {
+            List<InetAddress> expected = getExpectedAddresses();
+            if (expected.isEmpty() && publicIpAddresses != null) {
+                expected = publicIpAddresses;
+            }
+            if (expected.size() > 0) {
                 List<InetAddress> addresses = getInetAddresses();
                 if (addresses != null && addresses.size() > 0) {
                     for (InetAddress adr : addresses) {
-                        if (!publicIpAddresses.contains(adr)) {
+                        if (!expected.contains(adr)) {
                             return false; // the whole set must be equal
                         }
                     }
@@ -166,6 +181,24 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
                 }
             }
             return false; // at least one address set is empty
+        }
+
+        public boolean isForeignHost() {
+            if (foreignHost == null) {
+                foreignHost = false;
+                List<InetAddress> expected = getExpectedAddresses();
+                if (!expected.isEmpty()) {
+                    if (publicIpAddresses != null) {
+                        for (InetAddress adr : expected) {
+                            if (!publicIpAddresses.contains(adr)) {
+                                foreignHost = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return foreignHost;
         }
 
         @Override
@@ -186,18 +219,15 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
         }
 
         @Override
-        public int compareTo(@Nonnull final Host other) {
-            return getReversedName().compareTo(((PlatformHost) other).getReversedName());
+        @Nullable
+        public String getMessage() {
+            return message;
         }
 
+        @Override
         @Nonnull
-        protected String getReversedName() {
-            if (reversedName == null) {
-                String[] segments = StringUtils.split(getHostname(), ".");
-                ArrayUtils.reverse(segments);
-                reversedName = StringUtils.join(segments, ".");
-            }
-            return reversedName;
+        public List<InetAddress> getExpectedAddresses() {
+            return expected != null ? expected : Collections.emptyList();
         }
 
         @Override
@@ -228,28 +258,28 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     }
 
     @Reference
-    protected ResourceResolverFactory resolverFactory;
+    private ResourceResolverFactory resolverFactory;
 
     @Reference
-    protected CacheManager cacheManager;
+    private CacheManager cacheManager;
 
     @Reference
-    protected ResourceManager resourceManager;
+    private ResourceManager resourceManager;
 
     @Reference
-    protected SiteManager siteManager;
+    private SiteManager siteManager;
 
     @Reference
-    protected TenantManagerService tenantManager;
+    private TenantManagerService tenantManager;
 
     @Reference
-    protected TenantUserManager userManager;
+    private TenantUserManager userManager;
 
-    protected PlatformHostManager.Configuration config;
+    private PlatformHostManager.Configuration config;
 
-    protected String publicHostname;
-    protected List<InetAddress> publicIpAddresses;
-    protected String resolverMapLocation;
+    private String publicHostname;
+    private List<InetAddress> publicIpAddresses;
+    private String resolverMapLocation;
 
     @SuppressWarnings("ClassExplicitlyAnnotation")
     public static class InetAddressCacheConfig implements CacheConfiguration {
@@ -297,7 +327,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
     @Activate
     @Modified
-    protected void activate(BundleContext bundleContext, PlatformHostManager.Configuration config) {
+    private void activate(BundleContext bundleContext, PlatformHostManager.Configuration config) {
         this.config = config;
         super.activate(cacheManager, new InetAddressCacheConfig());
         publicIpAddresses = null;
@@ -322,7 +352,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     @Override
     public HostList hostList(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId, boolean clearCache)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, null, false);
+        checkPermissions(resolver, tenantId, null, false, false);
         if (clearCache) {
             clear();
         }
@@ -396,13 +426,13 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostStatus(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, false);
+        checkPermissions(resolver, tenantId, hostname, false, false);
         return getStatus(hostname);
     }
 
     // tenant hosts management
 
-    protected void checkHostname(@Nullable final String hostname) throws ProcessException {
+    private void checkHostname(@Nullable final String hostname) throws ProcessException {
         if (StringUtils.isBlank(hostname) || !HOSTNAME_PATTERN.matcher(hostname).matches()) {
             LOG.error("invalid hostname '{}'", hostname);
             throw new ProcessException("invalid hostname");
@@ -425,7 +455,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public void removeHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException, PersistenceException {
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         Tenant tenant = tenantManager.getTenant(resolver, tenantId);
         if (tenant == null) {
             throw new ProcessException("tenant '" + tenantId + "' not available");
@@ -448,7 +478,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host addHost(@Nonnull final ResourceResolver resolver, @Nonnull final String tenantId,
                         @Nonnull final String hostname)
             throws ProcessException, PersistenceException {
-        checkPermissions(resolver, tenantId, hostname, false);
+        checkPermissions(resolver, tenantId, hostname, false, true);
         Tenant tenant = tenantManager.getTenant(resolver, tenantId);
         if (tenant == null) {
             throw new ProcessException("tenant '" + tenantId + "' not available");
@@ -484,7 +514,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
     @SuppressWarnings("deprecation")
     @Nullable
-    protected String getHostsTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
+    private String getHostsTenant(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
         try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
             String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
             String query = ("/jcr:root" + tenantsRoot + "/*/hosts/" + hostname);
@@ -501,7 +531,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
     @SuppressWarnings("deprecation")
     @Nullable
-    protected String getDomainOwner(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
+    private String getDomainOwner(@Nonnull final ResourceResolver resolver, @Nonnull final String hostname) {
         try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
             String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
             String domain = hostname;
@@ -539,15 +569,15 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
             LOG.info("assignSite '{}' - '{}/{}'", hostname, siteRef, siteStage);
         }
         ResourceResolver resolver = context.getResolver();
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         checkHostname(hostname);
         checkLocked(hostname);
         try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
             Resource hostNode = getHostNode(serviceResolver, tenantId, hostname);
             if (hostNode != null) {
                 Resource siteRes = StringUtils.isNotBlank(siteRef) ? serviceResolver.getResource(siteRef) : null;
-                Site site;
-                if (siteRes != null && (site = siteManager.createBean(context, siteRes)) != null) {
+                if (siteRes != null) {
+                    Site site = siteManager.createBean(context, siteRes);
                     PlatformTenant tenant = (PlatformTenant) tenantManager.getTenant(serviceResolver, tenantId);
                     if (tenant != null) {
                         if (LOG.isInfoEnabled()) {
@@ -687,7 +717,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
 
     @SuppressWarnings("deprecation")
     @Nullable
-    protected String getSiteHost(@Nonnull final String siteRef, @Nonnull final String siteStage) {
+    private String getSiteHost(@Nonnull final String siteRef, @Nonnull final String siteStage) {
         try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
             String tenantsRoot = tenantManager.getTenantsRoot(serviceResolver).getPath();
             String query = ("/jcr:root" + tenantsRoot + "/*/hosts/*"
@@ -703,7 +733,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
         return null;
     }
 
-    protected Resource getMapFolder(@Nonnull final ResourceResolver resolver, String name)
+    private Resource getMapFolder(@Nonnull final ResourceResolver resolver, String name)
             throws ProcessException, PersistenceException {
         Resource mapRoot = getConfigResource(resolver, config.resource_resolver_map_location());
         Resource folder = mapRoot.getChild(name);
@@ -714,7 +744,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     }
 
     @Nonnull
-    protected Resource getConfigResource(@Nonnull final ResourceResolver resolver, String path)
+    private Resource getConfigResource(@Nonnull final ResourceResolver resolver, String path)
             throws ProcessException {
         Resource configRes = resolver.getResource(path);
         if (configRes != null) {
@@ -731,7 +761,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostCreate(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         int exitValue = hostManageCmd(null, "create", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostCreate({}): {}", hostname, exitValue);
@@ -743,8 +773,8 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostEnable(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
-        int exitValue = hostManageCmd(null, "enable", hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
+        int exitValue = hostManageCmd(null, "enable", hostname, false);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostEnable({}): {}", hostname, exitValue);
         }
@@ -755,8 +785,8 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostDisable(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                             @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
-        int exitValue = hostManageCmd(null, "disable", hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
+        int exitValue = hostManageCmd(null, "disable", hostname, false);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostDisable({}): {}", hostname, exitValue);
         }
@@ -767,8 +797,8 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostCert(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                          @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
-        int exitValue = hostManageCmd(null, "cert", hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
+        int exitValue = hostManageCmd(null, "cert", hostname, false);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostCert({}): {}", hostname, exitValue);
         }
@@ -779,8 +809,8 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostRevoke(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
-        int exitValue = hostManageCmd(null, "revoke", hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
+        int exitValue = hostManageCmd(null, "revoke", hostname, false);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostRevoke({}): {}", hostname, exitValue);
         }
@@ -791,7 +821,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostSecure(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         int exitValue = hostManageCmd(null, "secure", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostSecure({}): {}", hostname, exitValue);
@@ -803,7 +833,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public Host hostUnsecure(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                              @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         int exitValue = hostManageCmd(null, "unsecure", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostUnsecure({}): {}", hostname, exitValue);
@@ -815,7 +845,7 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
     public void hostDelete(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
                            @Nonnull final String hostname)
             throws ProcessException {
-        checkPermissions(resolver, tenantId, hostname, true);
+        checkPermissions(resolver, tenantId, hostname, true, true);
         int exitValue = hostManageCmd(null, "delete", hostname, true);
         if (LOG.isInfoEnabled()) {
             LOG.info("hostDelete({}): {}", hostname, exitValue);
@@ -831,12 +861,13 @@ public final class PlatformHostManager extends CacheServiceImpl<List<InetAddress
      * @param hostMustBeAssigned 'true' if the host must be assigned to the tenant
      */
     private void checkPermissions(@Nonnull final ResourceResolver resolver, @Nullable final String tenantId,
-                                  @Nullable final String hostname, boolean hostMustBeAssigned)
+                                  @Nullable final String hostname, boolean hostMustBeAssigned, boolean modify)
             throws ProcessException {
         String userId = resolver.getUserID();
         if (StringUtils.isBlank(userId) || (!"admin".equals(userId) &&
                 (StringUtils.isBlank(tenantId) ||
-                        !userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) ||
+                        (!userManager.isInRole(tenantId, TenantUserManager.Role.manager, userId) &&
+                                (modify || !userManager.isInRole(tenantId, TenantUserManager.Role.assistant, userId))) ||
                         (hostMustBeAssigned && (hostname == null || !hostList(resolver, tenantId, false).contains(hostname)))))) {
             LOG.error("permissions.failure:{},{},{},{}", hostname, userId, tenantId,
                     StringUtils.isNotBlank(tenantId) && StringUtils.isNotBlank(userId)

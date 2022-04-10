@@ -5,6 +5,8 @@ import com.composum.sling.core.util.XSS;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
 
@@ -40,12 +42,13 @@ public interface HostManagerService {
 
     abstract class Host implements Comparable<Host> {
 
-        private String hostname;
-        private boolean configured;
-        private boolean enabled;
-        private boolean certAvailable;
-        private boolean secured;
+        private final String hostname;
+        private final boolean configured;
+        private final boolean enabled;
+        private final boolean certAvailable;
+        private final boolean secured;
 
+        private transient String reversedName;
         private transient List<InetAddress> inetAddresses;
 
         public Host(@Nonnull String hostname,
@@ -71,9 +74,26 @@ public interface HostManagerService {
         public abstract boolean isValid();
 
         /**
+         * @return 'true' if the host is not managed by this host manager
+         */
+        public abstract boolean isForeignHost();
+
+        /**
          * @return 'true' if an admin has locked the host to prevent from changes
          */
         public abstract boolean isLocked();
+
+        /**
+         * @return an assigned message
+         */
+        @Nullable
+        public abstract String getMessage();
+
+        /**
+         * @return the expected inet address
+         */
+        @Nonnull
+        public abstract List<InetAddress> getExpectedAddresses();
 
         /**
          * @return the path of the assigned site
@@ -174,6 +194,20 @@ public interface HostManagerService {
             return object;
         }
 
+        @Override
+        public int compareTo(@Nonnull final Host other) {
+            return getReversedName().compareTo(other.getReversedName());
+        }
+
+        @Nonnull
+        protected String getReversedName() {
+            if (reversedName == null) {
+                String[] segments = StringUtils.split(getHostname(), ".");
+                ArrayUtils.reverse(segments);
+                reversedName = StringUtils.join(segments, ".");
+            }
+            return reversedName;
+        }
         @Override
         public String toString() {
             return hostname;

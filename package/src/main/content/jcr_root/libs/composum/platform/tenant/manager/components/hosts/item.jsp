@@ -4,7 +4,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
-    <div class="tenant-hosts_item panel panel-${model.host.available?'success':'warning'}"
+    <div class="tenant-hosts_item panel panel-${model.host.foreignHost?'default':(model.host.available?'success':'warning')}"
          data-host="${model.host.encodedData}">
         <div class="panel-heading" role="tab" id="host_title_${model.host.id}">
             <h4 class="panel-title tenant-hosts_item-title">

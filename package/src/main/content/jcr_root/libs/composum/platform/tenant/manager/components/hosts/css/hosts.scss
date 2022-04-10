@@ -25,15 +25,12 @@ $busy-symbol-size: 150px;
 
                 &-title {
                     position: relative;
+                }
 
-                    .tenant-host {
+                &.panel-default {
 
-                        &_site {
-
-                            &-status {
-                                color: $host-icon-fg-on;
-                            }
-                        }
+                    .panel-heading {
+                        color: #777;
                     }
                 }
             }
@@ -66,6 +63,7 @@ $busy-symbol-size: 150px;
                         display: inline-block;
                         margin: 0 6px;
                         line-height: $host-icon-size;
+                        text-align: right;
                     }
 
                     &_name {
@@ -74,7 +72,6 @@ $busy-symbol-size: 150px;
 
                     &_address {
                         min-width: 155px;
-                        text-align: right;
                     }
 
                     &_delete {
@@ -194,6 +191,14 @@ $busy-symbol-size: 150px;
 
                     .tenant-host {
 
+                        &_message {
+                            display: inline-block;
+                            margin: 0 6px;
+                            line-height: $host-icon-size;
+                            font-style: italic;
+                            color: #777;
+                        }
+
                         &_site {
 
                             &-label {
@@ -207,6 +212,7 @@ $busy-symbol-size: 150px;
 
                             &-at {
                                 margin: 0 -3px;
+                                color: #777;
                             }
 
                             &-path {

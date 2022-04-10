@@ -5,10 +5,17 @@
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
     <cpn:div class="tenant-host_site-status">
-        <c:if test="${not empty model.host.siteRef}">
-            <div class="tenant-host_site-stage tenant-host_site-label">${cpn:text(model.host.siteStage)}</div>
-            <div class="tenant-host_site-at tenant-host_site-label">@</div>
-            <div class="tenant-host_site-path tenant-host_site-label">${cpn:text(model.host.siteRef)}</div>
-        </c:if>
+        <c:choose>
+            <c:when test="${not empty model.host.siteRef}">
+                <div class="tenant-host_site-stage tenant-host_site-label">${cpn:text(model.host.siteStage)}</div>
+                <div class="tenant-host_site-at tenant-host_site-label">@</div>
+                <div class="tenant-host_site-path tenant-host_site-label">${cpn:text(model.host.siteRef)}</div>
+            </c:when>
+            <c:otherwise>
+                <c:if test="${not empty model.host.message}">
+                    <div class="tenant-host_message">${cpn:text(model.host.message)}</div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </cpn:div>
 </cpn:component>

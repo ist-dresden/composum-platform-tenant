@@ -5,11 +5,11 @@
 <sling:defineObjects/>
 <cpn:component id="model" type="com.composum.platform.tenant.view.TenantBean">
     <cpn:div test="${model.host!=null}" class="tenant-host row">
-        <div class="tenant-host_status col col-xs-5">
+        <cpn:div test="${!model.host.foreignHost}" class="tenant-host_status col col-xs-5">
             <div class="tenant-host_status_enabled ${model.host.enabled?'enabled':'disabled'}">
                 <i class="tenant-host_status_icon enabled ${model.host.enabled?'on':'off'} fa fa-${model.host.enabled?'check':'power-off'}"></i>
                 <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.enabled?'enabled':'disabled')}</span>
-                <span class="tenant-host_status_toggle fa fa-toggle-${model.host.enabled?'on':'off'} ${model.host.locked?'disabled':''}"
+                <span class="tenant-host_status_toggle fa fa-toggle-${model.host.enabled?'on':'off'}"
                       title="${cpn:i18n(slingRequest,model.host.enabled?'disable':'enable')}"></span>
             </div>
             <div class="tenant-host_status_configured ${model.host.configured?'configured':'unconfigured'}">
@@ -21,7 +21,7 @@
             <div class="tenant-host_status_certificate ${model.host.certAvailable?'certificate':'nocertificate'}">
                 <i class="tenant-host_status_icon certificate ${model.host.certAvailable?'on':'off'} fa fa-tag"></i>
                 <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.certAvailable?'valid certificate':'no certificate')}</span>
-                <span class="tenant-host_status_toggle fa fa-${model.host.certAvailable?'trash':'toggle-off'} ${model.host.locked?'disabled':''}"
+                <span class="tenant-host_status_toggle fa fa-${model.host.certAvailable?'trash':'toggle-off'}"
                       title="${cpn:i18n(slingRequest,model.host.certAvailable?'revoke certificate':'get certificate')}"></span>
             </div>
             <div class="tenant-host_status_secured ${model.host.secured?'secured':'unsecure'}">
@@ -40,7 +40,19 @@
                     <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.locked?'locked':'unlocked')}</span>
                 </a>
             </div>
-        </div>
+        </cpn:div>
+        <cpn:div test="${model.host.foreignHost}" class="tenant-host_status col col-xs-5">
+            <div class="tenant-host_status_static ${model.host.valid?'locked':'unlocked'}">
+                <a class="tenant-host_status_valid" href="#">
+                    <i class="tenant-host_status_icon valid ${model.host.valid?'on':'off'} fa fa-${model.host.valid?'link':'chain-broken'}"></i>
+                    <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.valid?'reachable':'not reachable!')}</span>
+                </a>
+                <a class="tenant-host_status_locked" href="#">
+                    <i class="tenant-host_status_icon locked ${model.host.locked?'on':'off'} fa fa-${model.host.locked?'lock':'unlock'}"></i>
+                    <span class="tenant-host_status_label">${cpn:i18n(slingRequest,model.host.locked?'locked':'unlocked')}</span>
+                </a>
+            </div>
+        </cpn:div>
         <div class="tenant-host_site col col-xs-7">
             <div class="tenant-host_site">
                 <div class="tenant-host_site-content">
@@ -49,7 +61,6 @@
                     <sling:include replaceSelectors="site"/>
                     <span class="tenant-host_site_remove ${empty model.host.siteRef or model.host.locked?'locked':'enabled'}"><i
                             class="tenant-host_status_icon ${empty model.host.siteRef or model.host.locked?'locked':'off'} fa fa-times"></i></span>
-
                 </div>
                 <cpn:div test="${not empty model.host.siteRef}" class="tenant-host_site-tile">
                     <sling:include path="${model.host.siteRef}"

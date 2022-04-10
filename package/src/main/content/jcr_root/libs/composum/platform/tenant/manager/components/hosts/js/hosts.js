@@ -79,15 +79,15 @@
             initItem: function () {
                 this.$item = this.$('.tenant-hosts_item');
                 this.data = JSON.parse(atob(this.$item.data('host')));
+                var c = tenants.const.hosts.css.status;
+                this.$('.' + c.base + c._enabled + '.enabled .' + c.base + c._toggle).click(_.bind(this.disableHost, this));
+                this.$('.' + c.base + c._enabled + '.disabled .' + c.base + c._toggle).click(_.bind(this.enableHost, this));
+                this.$('.' + c.base + c._certificate + '.nocertificate .' + c.base + c._toggle).click(_.bind(this.hostCert, this));
+                this.$('.' + c.base + c._certificate + '.certificate .' + c.base + c._toggle).click(_.bind(this.revokeCert, this));
                 if (!this.data.locked) {
                     this.$('.tenant-host_title .tenant-host_delete').click(_.bind(this.removeHost, this));
-                    var c = tenants.const.hosts.css.status;
-                    this.$('.' + c.base + c._enabled + '.enabled .' + c.base + c._toggle).click(_.bind(this.disableHost, this));
-                    this.$('.' + c.base + c._enabled + '.disabled .' + c.base + c._toggle).click(_.bind(this.enableHost, this));
                     this.$('.' + c.base + c._configured + '.unconfigured .' + c.base + c._toggle).click(_.bind(this.createHost, this));
                     this.$('.' + c.base + c._configured + '.configured .' + c.base + c._toggle).click(_.bind(this.dropHost, this));
-                    this.$('.' + c.base + c._certificate + '.nocertificate .' + c.base + c._toggle).click(_.bind(this.hostCert, this));
-                    this.$('.' + c.base + c._certificate + '.certificate .' + c.base + c._toggle).click(_.bind(this.revokeCert, this));
                     this.$('.' + c.base + c._secured + '.unsecure .' + c.base + c._toggle).click(_.bind(this.secureHost, this));
                     this.$('.' + c.base + c._secured + '.secured .' + c.base + c._toggle).click(_.bind(this.unsecureHost, this));
                     c = tenants.const.hosts.css.site;
