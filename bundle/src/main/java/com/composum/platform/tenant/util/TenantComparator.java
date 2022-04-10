@@ -19,6 +19,6 @@ public class TenantComparator implements Comparator<Tenant> {
         if (StringUtils.isBlank(key)) {
             key = tenant.getId();
         }
-        return key;
+        return key.toLowerCase();
     }
 }

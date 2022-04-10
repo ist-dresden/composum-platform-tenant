@@ -362,6 +362,10 @@ public final class PlatformTenantManager extends AbstractTenantService
                     }
                 }
             }
+            sort(Comparator.comparing(tenant -> {
+                final String name = tenant.getName();
+                return (StringUtils.isNotBlank(name) ? name : tenant.getId()).toLowerCase();
+            }));
         }
     }
 
@@ -381,10 +385,6 @@ public final class PlatformTenantManager extends AbstractTenantService
             if (LOG.isDebugEnabled()) {
                 LOG.debug("getTenants({}): {}", resolver.getUserID(), tenants.size());
             }
-            tenants.sort(Comparator.comparing(tenant -> {
-                final String name = tenant.getName();
-                return (StringUtils.isNotBlank(name) ? name : tenant.getId()).toLowerCase();
-            }));
             return tenants.iterator();
         }, resolver, null);
         return result != null ? result : Collections.emptyIterator();
