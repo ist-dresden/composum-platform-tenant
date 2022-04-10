@@ -1339,6 +1339,21 @@
     ]
   },
   {
+    "path": "/home/users",
+    "jcr:primaryType": "rep:AuthorizableFolder",
+    "acl": [
+      {
+        "principal": "composum-platform-tenant-service",
+        "acl": [
+          {
+            "allow": true,
+            "privileges": "jcr:read"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "path": "/var/composum/assets",
     "jcr:primaryType": "sling:Folder",
     "acl": [

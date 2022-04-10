@@ -369,35 +369,35 @@ public class PlatformTenantUserManager extends AbstractTenantService implements 
                          @Nonnull ResourceResolver context, @Nonnull String tenantId)
             throws RepositoryException {
         T result;
-        JackrabbitSession session = (JackrabbitSession) context.adaptTo(Session.class);
-        if (session != null) {
-            if (permissionsService.isMemberOfAll(session, getGroupId(tenantId, Role.manager))) {
-                try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("access granted, using service resolver ({})...", context.getUserID());
+        Session session = context.adaptTo(Session.class);
+        if (session instanceof JackrabbitSession) {
+            try {
+                if (permissionsService.isMemberOfAll(session, getGroupId(tenantId, Role.manager))) {
+                    try (ResourceResolver serviceResolver = resolverFactory.getServiceResourceResolver(null)) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("access granted, using service resolver ({})...", context.getUserID());
+                        }
+                        session = serviceResolver.adaptTo(Session.class);
+                        if (session instanceof JackrabbitSession) {
+                            result = task.call((JackrabbitSession) session, context);
+                            session.save();
+                        } else {
+                            throw new RepositoryException("can't adapt to session");
+                        }
+                    } catch (LoginException ex) {
+                        LOG.error(ex.getMessage(), ex);
+                        throw new RepositoryException(ex.getMessage(), ex);
                     }
-                    session = (JackrabbitSession) serviceResolver.adaptTo(Session.class);
-                    if (session != null) {
-                        result = task.call(session, context);
-                        session.save();
-                    } else {
-                        throw new RepositoryException("can't adapt to session");
-                    }
-                } catch (LoginException ex) {
-                    LOG.error(ex.getMessage(), ex);
-                    throw new RepositoryException(ex.getMessage(), ex);
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("using context resolver ({})...", context.getUserID());
-                }
-                session = (JackrabbitSession) context.adaptTo(Session.class);
-                if (session != null) {
-                    result = task.call(session, context);
-                    session.save();
                 } else {
-                    throw new RepositoryException("can't adapt to session");
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("using context resolver ({})...", context.getUserID());
+                    }
+                    result = task.call((JackrabbitSession) session, context);
+                    session.save();
                 }
+            } catch (RuntimeException rex) {
+                LOG.error(rex.getMessage(), rex);
+                throw new RepositoryException(rex.getMessage());
             }
         } else {
             throw new RepositoryException("can't adapt to session");
